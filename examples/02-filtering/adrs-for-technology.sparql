@@ -1,0 +1,21 @@
+# ADRs for a Specific Technology
+#
+# Find all ADRs that decide on PostgreSQL.
+# Try changing :PostgreSQL to :Kafka or other technologies.
+#
+# Expected: 3 ADRs (ADR-002, ADR-005, ADR-008)
+# Time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?adr ?label ?status ?confidence
+WHERE {
+    ?adr a :ADR ;
+         rdfs:label ?label ;
+         :decidesTechnology :PostgreSQL ;
+         :hasStatus ?status ;
+         :hasConfidence ?confidence .
+}
+ORDER BY DESC(?confidence)
+

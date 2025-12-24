@@ -1,0 +1,17 @@
+# Список всех ADR
+#
+# Получить все Architecture Decision Records с их названиями.
+#
+# Ожидаемый результат: 8 ADR
+# Время: < 1 секунда
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?adr ?label
+WHERE {
+    ?adr a :ADR ;
+         rdfs:label ?label .
+}
+ORDER BY ?adr
+

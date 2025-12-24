@@ -1,0 +1,120 @@
+@prefix : <http://example.org/adr#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Core vocabulary (lightweight)
+
+:ADR a rdfs:Class ;
+    rdfs:label "Architecture Decision Record" .
+
+:System a rdfs:Class ;
+    rdfs:label "Software System" .
+
+:Technology a rdfs:Class ;
+    rdfs:label "Technology" .
+
+:Team a rdfs:Class ;
+    rdfs:label "Team" .
+
+:decidesTechnology a rdf:Property ;
+    rdfs:label "decides on technology" ;
+    rdfs:domain :ADR ;
+    rdfs:range :Technology .
+
+:appliesTo a rdf:Property ;
+    rdfs:label "applies to system" ;
+    rdfs:domain :ADR ;
+    rdfs:range :System .
+
+:uses a rdf:Property ;
+    rdfs:label "uses technology" ;
+    rdfs:domain :System ;
+    rdfs:range :Technology .
+
+:supersedes a rdf:Property ;
+    rdfs:label "supersedes ADR" ;
+    rdfs:domain :ADR ;
+    rdfs:range :ADR .
+
+:ownedBy a rdf:Property ;
+    rdfs:label "owned by team" ;
+    rdfs:range :Team .
+
+:hasStatus a rdf:Property ;
+    rdfs:label "has status" .
+
+:hasConfidence a rdf:Property ;
+    rdfs:label "has confidence score" ;
+    rdfs:range xsd:decimal .
+
+# Status values
+
+:Proposed a :Status ;
+    rdfs:label "Proposed" .
+
+:Accepted a :Status ;
+    rdfs:label "Accepted" .
+
+:Deprecated a :Status ;
+    rdfs:label "Deprecated" .
+
+# Technologies
+
+:Kafka a :Technology ;
+    rdfs:label "Apache Kafka" .
+
+:PostgreSQL a :Technology ;
+    rdfs:label "PostgreSQL" .
+
+:Redis a :Technology ;
+    rdfs:label "Redis" .
+
+:MongoDB a :Technology ;
+    rdfs:label "MongoDB" .
+
+:Kubernetes a :Technology ;
+    rdfs:label "Kubernetes" .
+
+:Docker a :Technology ;
+    rdfs:label "Docker" .
+
+# Systems
+
+:OrderService a :System ;
+    rdfs:label "Order Service" ;
+    :ownedBy :TeamCheckout .
+
+:PaymentService a :System ;
+    rdfs:label "Payment Service" ;
+    :ownedBy :TeamPayments .
+
+:InventoryService a :System ;
+    rdfs:label "Inventory Service" ;
+    :ownedBy :TeamSupplyChain .
+
+:NotificationService a :System ;
+    rdfs:label "Notification Service" ;
+    :ownedBy :TeamPlatform .
+
+:AnalyticsService a :System ;
+    rdfs:label "Analytics Service" ;
+    :ownedBy :TeamData .
+
+# Teams
+
+:TeamCheckout a :Team ;
+    rdfs:label "Checkout Team" .
+
+:TeamPayments a :Team ;
+    rdfs:label "Payments Team" .
+
+:TeamSupplyChain a :Team ;
+    rdfs:label "Supply Chain Team" .
+
+:TeamPlatform a :Team ;
+    rdfs:label "Platform Team" .
+
+:TeamData a :Team ;
+    rdfs:label "Data Team" .
+

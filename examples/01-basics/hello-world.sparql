@@ -1,0 +1,14 @@
+# Hello World: Your First SPARQL Query
+# 
+# This query returns the first 10 triples in the database.
+# Think of it as "SELECT * FROM table LIMIT 10" in SQL.
+#
+# Expected: 10 rows showing subject, predicate, object
+# Time: < 1 second
+
+SELECT ?subject ?predicate ?object
+WHERE {
+    ?subject ?predicate ?object .
+}
+LIMIT 10
+

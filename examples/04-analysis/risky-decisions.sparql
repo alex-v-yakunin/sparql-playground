@@ -1,0 +1,27 @@
+# Risky Architectural Decisions
+#
+# Find accepted ADRs with low confidence (<0.70).
+# These decisions are in production but uncertain - need review!
+#
+# Expected: 1-2 ADRs
+# Time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?adr ?label ?technology ?confidence ?source
+WHERE {
+    GRAPH ?source {
+        ?adr a :ADR ;
+             rdfs:label ?label ;
+             :hasStatus :Accepted ;
+             :decidesTechnology ?tech ;
+             :hasConfidence ?confidence .
+    }
+    
+    ?tech rdfs:label ?technology .
+    
+    FILTER(?confidence < 0.70)
+}
+ORDER BY ?confidence
+

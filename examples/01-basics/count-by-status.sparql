@@ -1,0 +1,20 @@
+# Count ADRs by Status
+#
+# How many ADRs are Accepted vs Proposed vs Deprecated?
+#
+# Expected: 3 rows (Accepted: 6, Proposed: 1, Deprecated: 1)
+# Time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?status ?statusLabel (COUNT(?adr) AS ?count)
+WHERE {
+    ?adr a :ADR ;
+         :hasStatus ?status .
+    
+    ?status rdfs:label ?statusLabel .
+}
+GROUP BY ?status ?statusLabel
+ORDER BY DESC(?count)
+

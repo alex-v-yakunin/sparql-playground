@@ -1,0 +1,24 @@
+# Technology Adoption Analysis
+#
+# Rank technologies by how many ADRs decide on them
+# and their average confidence score.
+#
+# Expected: 6 technologies ranked by adoption
+# Time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?technology 
+       (COUNT(?adr) AS ?adrCount)
+       (AVG(?confidence) AS ?avgConfidence)
+       (COUNT(?adr) * AVG(?confidence) AS ?trustScore)
+WHERE {
+    ?adr :decidesTechnology ?tech ;
+         :hasConfidence ?confidence .
+    
+    ?tech rdfs:label ?technology .
+}
+GROUP BY ?technology
+ORDER BY DESC(?trustScore)
+

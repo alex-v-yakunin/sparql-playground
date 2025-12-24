@@ -1,0 +1,23 @@
+# ADRs from Official Registry Only
+#
+# Query only the official ADR registry (highest quality source).
+#
+# Expected: 4 ADRs (ADR-001, ADR-002, ADR-005, ADR-007)
+# Time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?adr ?label ?technology ?confidence
+WHERE {
+    GRAPH :adr-registry {
+        ?adr a :ADR ;
+             rdfs:label ?label ;
+             :decidesTechnology ?tech ;
+             :hasConfidence ?confidence .
+    }
+    
+    ?tech rdfs:label ?technology .
+}
+ORDER BY ?adr
+

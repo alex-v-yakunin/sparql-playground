@@ -1,0 +1,41 @@
+# Полный граф зависимостей до 3 уровней
+#
+# Property path с ограничением {min,max} - еще одна уникальная возможность
+# {1,3} означает "от 1 до 3 шагов по графу"
+#
+# Этот запрос строит полную карту зависимостей для визуализации
+#
+# В SQL: невозможно выразить элегантно!
+# Ожидаемый результат: Все пары технология->зависимость до 3 уровней
+# Время: < 1 секунда
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?techLabel ?depLabel ?depthLevel
+WHERE {
+    # Технология должна быть использована в ADR
+    ?adr :decidesTechnology ?tech .
+    ?tech rdfs:label ?techLabel .
+    
+    # Найти зависимости на глубину от 1 до 3 уровней
+    ?tech :dependsOn{1,3} ?dep .
+    ?dep rdfs:label ?depLabel .
+    
+    # Определить уровень глубины
+    BIND(
+        IF(EXISTS { ?tech :dependsOn ?dep }, 1,
+        IF(EXISTS { ?tech :dependsOn/:dependsOn ?dep }, 2, 3))
+        AS ?depthLevel
+    )
+}
+ORDER BY ?techLabel ?depthLevel ?depLabel
+
+# Этот запрос создаёт данные для визуализации:
+# Kafka → Java (уровень 1)
+# Kafka → Zookeeper (уровень 1)
+# Kafka → JVM (уровень 2, через Java)
+# ...
+#
+# Можно импортировать в Gephi, Cytoscape или D3.js для визуализации
+

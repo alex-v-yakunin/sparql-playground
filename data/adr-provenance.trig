@@ -1,0 +1,147 @@
+@prefix : <http://example.org/adr#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Named graphs for provenance tracking
+
+:adr-registry a :DataSource ;
+    rdfs:label "Official ADR Registry" .
+
+:confluence a :DataSource ;
+    rdfs:label "Confluence Documentation" .
+
+:interview-notes a :DataSource ;
+    rdfs:label "Architecture Interview Notes" .
+
+# ADR-001: Use Kafka for event streaming (from official registry)
+# Status: Accepted, High confidence, applies to OrderService
+
+:adr-registry {
+    :ADR-001 a :ADR ;
+        rdfs:label "Use Kafka for Event Streaming in Order Processing" ;
+        :decidesTechnology :Kafka ;
+        :appliesTo :OrderService ;
+        :hasStatus :Accepted ;
+        :hasConfidence "0.95"^^xsd:decimal ;
+        :ownedBy :TeamCheckout .
+}
+
+# ADR-002: Use PostgreSQL for transactional data (from official registry)
+# Status: Accepted, High confidence, applies to PaymentService
+
+:adr-registry {
+    :ADR-002 a :ADR ;
+        rdfs:label "Use PostgreSQL for Payment Transactions" ;
+        :decidesTechnology :PostgreSQL ;
+        :appliesTo :PaymentService ;
+        :hasStatus :Accepted ;
+        :hasConfidence "0.92"^^xsd:decimal ;
+        :ownedBy :TeamPayments .
+}
+
+# ADR-003: Use Kafka for analytics pipeline (from confluence)
+# Status: Accepted, applies to AnalyticsService
+# Demonstrates: Multiple ADRs deciding on same technology (Kafka)
+
+:confluence {
+    :ADR-003 a :ADR ;
+        rdfs:label "Use Kafka for Real-time Analytics Pipeline" ;
+        :decidesTechnology :Kafka ;
+        :appliesTo :AnalyticsService ;
+        :hasStatus :Accepted ;
+        :hasConfidence "0.88"^^xsd:decimal ;
+        :ownedBy :TeamData .
+}
+
+# ADR-004: Use MongoDB for analytics (from interview notes)
+# Status: Deprecated, Low confidence
+# Demonstrates: Deprecated ADR, superseded by ADR-002, low confidence
+
+:interview-notes {
+    :ADR-004 a :ADR ;
+        rdfs:label "Use MongoDB for Payment History" ;
+        :decidesTechnology :MongoDB ;
+        :appliesTo :PaymentService ;
+        :hasStatus :Deprecated ;
+        :hasConfidence "0.45"^^xsd:decimal ;
+        :ownedBy :TeamPayments .
+}
+
+# ADR-005: Use PostgreSQL for payment history (from official registry)
+# Status: Accepted, supersedes ADR-004
+# Demonstrates: Supersession relationship
+
+:adr-registry {
+    :ADR-005 a :ADR ;
+        rdfs:label "Use PostgreSQL for Payment History Storage" ;
+        :decidesTechnology :PostgreSQL ;
+        :appliesTo :PaymentService ;
+        :hasStatus :Accepted ;
+        :hasConfidence "0.90"^^xsd:decimal ;
+        :supersedes :ADR-004 ;
+        :ownedBy :TeamPayments .
+}
+
+# ADR-006: Use Redis for caching (from confluence)
+# Status: Proposed, NO appliesTo (incomplete knowledge)
+# Demonstrates: Missing context, no system specified
+
+:confluence {
+    :ADR-006 a :ADR ;
+        rdfs:label "Use Redis for Session Caching" ;
+        :decidesTechnology :Redis ;
+        :hasStatus :Proposed ;
+        :hasConfidence "0.65"^^xsd:decimal .
+}
+
+# ADR-007: Use Kubernetes for orchestration (from multiple sources)
+# Status: Accepted, NO appliesTo (applies broadly)
+# Demonstrates: ADR in multiple named graphs, incomplete knowledge
+
+:adr-registry {
+    :ADR-007 a :ADR ;
+        rdfs:label "Use Kubernetes for Container Orchestration" ;
+        :decidesTechnology :Kubernetes ;
+        :hasStatus :Accepted ;
+        :hasConfidence "0.98"^^xsd:decimal ;
+        :ownedBy :TeamPlatform .
+}
+
+:confluence {
+    :ADR-007 :decidesTechnology :Docker ;
+        :hasConfidence "0.75"^^xsd:decimal .
+}
+
+# ADR-008: Use PostgreSQL for inventory (from interview notes)
+# Status: Accepted, Low confidence, NO appliesTo initially
+# Demonstrates: Low confidence accepted decision
+
+:interview-notes {
+    :ADR-008 a :ADR ;
+        rdfs:label "Use PostgreSQL for Inventory Management" ;
+        :decidesTechnology :PostgreSQL ;
+        :hasStatus :Accepted ;
+        :hasConfidence "0.62"^^xsd:decimal ;
+        :ownedBy :TeamSupplyChain .
+}
+
+# Additional context in confluence (partial information)
+:confluence {
+    :ADR-008 :appliesTo :InventoryService .
+}
+
+# System-level usage (what systems actually use)
+# This creates interesting patterns for SPARQL queries
+
+:adr-registry {
+    :OrderService :uses :Kafka ;
+        :uses :PostgreSQL .
+    
+    :PaymentService :uses :PostgreSQL .
+    
+    :AnalyticsService :uses :Kafka .
+    
+    :NotificationService :uses :Kafka .
+}
+

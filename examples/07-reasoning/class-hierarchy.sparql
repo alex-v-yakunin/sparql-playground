@@ -1,0 +1,37 @@
+# RDFS Reasoning: Иерархия классов решений
+#
+# Демонстрация автоматического вывода типов через rdfs:subClassOf
+#
+# Определили:
+# :TechnicalDecision rdfs:subClassOf :ArchitecturalDecision
+# :DatabaseDecision rdfs:subClassOf :TechnicalDecision
+#
+# Теперь запрос "все архитектурные решения" автоматически
+# включает технические И специализированные решения!
+#
+# В SQL: таблицы наследования или сложные UNION'ы
+# В RDF: естественная иерархия с автоматическим выводом
+#
+# Ожидаемый результат: ADR со всеми их типами (включая выведенные)
+# Время: < 1 секунда
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?adrLabel ?type ?typeLabel WHERE {
+    ?adr a :ArchitecturalDecision ;
+         rdfs:label ?adrLabel ;
+         a ?type .
+    
+    OPTIONAL { ?type rdfs:label ?typeLabel }
+}
+ORDER BY ?adrLabel ?type
+
+# Результат покажет:
+# ADR-001 | :ADR | (базовый тип)
+# ADR-001 | :ArchitecturalDecision | (выведено)
+# ADR-001 | :TechnicalDecision | (прямой тип)
+# ADR-001 | :InfrastructureDecision | (прямой тип)
+#
+# Все типы доступны без дополнительных запросов!
+

@@ -1,0 +1,17 @@
+# List All Technologies
+#
+# Get all technologies mentioned in the dataset.
+#
+# Expected: 6 technologies (Kafka, PostgreSQL, Redis, MongoDB, Kubernetes, Docker)
+# Time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?technology ?label
+WHERE {
+    ?technology a :Technology ;
+                rdfs:label ?label .
+}
+ORDER BY ?label
+

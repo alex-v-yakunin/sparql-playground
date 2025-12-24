@@ -1,0 +1,75 @@
+# Сложные паттерны: BIND, VALUES, MINUS, EXISTS
+#
+# Демонстрация продвинутых возможностей SPARQL
+# Комбинация нескольких техник в одном запросе
+#
+# Ожидаемый результат: Анализ зрелости архитектурных решений
+# Время: < 1 секунда
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?adrLabel ?techLabel 
+       ?confidence ?hasEvidence ?hasVoting ?maturityScore
+WHERE {
+    # VALUES: ограничить поиск конкретными статусами
+    VALUES ?status { :Accepted :Proposed }
+    
+    ?adr :hasStatus ?status ;
+         :decidesTechnology ?tech ;
+         rdfs:label ?adrLabel .
+    
+    ?tech rdfs:label ?techLabel .
+    
+    # EXISTS: проверка наличия доказательств
+    BIND(EXISTS {
+        ?stmt rdf:subject ?adr ;
+              :evidenceSource ?evidence .
+    } AS ?hasEvidence)
+    
+    # EXISTS: проверка наличия голосования
+    BIND(EXISTS {
+        ?stmt rdf:subject ?adr ;
+              :votingResult ?voting .
+    } AS ?hasVoting)
+    
+    # Получить confidence (если есть)
+    OPTIONAL {
+        ?stmt rdf:subject ?adr ;
+              :confidence ?confidence .
+    }
+    
+    # BIND: вычислить maturity score
+    BIND(
+        (IF(?hasEvidence, 40, 0) +
+         IF(?hasVoting, 30, 0) +
+         IF(BOUND(?confidence), ?confidence * 30, 0))
+        AS ?maturityScore
+    )
+    
+    # MINUS: исключить deprecated решения
+    MINUS {
+        ?adr :hasStatus :Deprecated .
+    }
+    
+    # MINUS: исключить решения без команды-владельца
+    MINUS {
+        FILTER NOT EXISTS { ?adr :ownedBy ?team }
+    }
+}
+ORDER BY DESC(?maturityScore)
+
+# Этот запрос демонстрирует:
+# - VALUES для ограничения значений
+# - EXISTS для проверки наличия данных
+# - BIND для вычислений
+# - MINUS для исключения паттернов
+# - Комбинацию условий
+#
+# Maturity Score:
+# - 40 баллов за доказательства
+# - 30 баллов за голосование
+# - до 30 баллов за уверенность
+# Макс: 100 баллов
+

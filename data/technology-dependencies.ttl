@@ -1,0 +1,170 @@
+@prefix : <http://example.org/adr#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================
+# ТЕХНОЛОГИЧЕСКИЕ ЗАВИСИМОСТИ
+# ============================================
+# 
+# Этот файл демонстрирует Property Paths -
+# уникальную возможность SPARQL для навигации
+# по транзитивным зависимостям в графе
+#
+# В SQL для этого нужны рекурсивные CTE!
+# ============================================
+
+# ----- Прямые зависимости -----
+
+:Kafka :dependsOn :Java ;
+       :dependsOn :Zookeeper ;
+       rdfs:comment "Kafka требует Java Runtime и Zookeeper для координации" .
+
+:Kubernetes :dependsOn :Docker ;
+            :dependsOn :etcd ;
+            rdfs:comment "Kubernetes использует Docker и etcd для хранения состояния" .
+
+:Docker :dependsOn :Linux ;
+        :dependsOn :ContainerRuntime ;
+        rdfs:comment "Docker работает на Linux и нуждается в container runtime" .
+
+:PostgreSQL :dependsOn :Linux ;
+            :dependsOn :FileSystem ;
+            rdfs:comment "PostgreSQL требует Linux и файловую систему" .
+
+:Redis :dependsOn :Linux ;
+       rdfs:comment "Redis работает на Linux" .
+
+:MongoDB :dependsOn :Linux ;
+         rdfs:comment "MongoDB требует Linux" .
+
+# Дополнительные низкоуровневые зависимости
+:Linux :dependsOn :Kernel .
+:Java :dependsOn :JVM .
+:Zookeeper :dependsOn :Java .
+:etcd :dependsOn :Go .
+
+# ----- Версионные требования -----
+
+:Kafka :requiresMinVersion [
+    a :VersionRequirement ;
+    :technology :Java ;
+    :minVersion "11" ;
+    :recommendedVersion "17" ;
+    :reason "Улучшения производительности и безопасности"
+] .
+
+:Kubernetes :requiresMinVersion [
+    a :VersionRequirement ;
+    :technology :Docker ;
+    :minVersion "20.10" ;
+    :reason "Исправления безопасности и совместимость API"
+] .
+
+:PostgreSQL :requiresMinVersion [
+    a :VersionRequirement ;
+    :technology :Linux ;
+    :minVersion "3.10" ;
+    :reason "Поддержка современных системных вызовов"
+] .
+
+# ----- Конфликты технологий -----
+
+:Kafka :conflictsWith :RabbitMQ ;
+       rdfs:comment "Архитектурные различия: streaming vs messaging" .
+
+:PostgreSQL :conflictsWith :MongoDB ;
+            rdfs:comment "Разные модели данных: реляционная vs документная" .
+
+# ----- Альтернативы -----
+
+:Kafka :hasAlternative :ApachePulsar ;
+       :hasAlternative :AmazonKinesis ;
+       :hasAlternative :RabbitMQ .
+
+:PostgreSQL :hasAlternative :MySQL ;
+            :hasAlternative :MongoDB ;
+            :hasAlternative :CockroachDB .
+
+:Kubernetes :hasAlternative :DockerSwarm ;
+            :hasAlternative :Nomad ;
+            :hasAlternative :AmazonECS .
+
+# ----- Категории технологий -----
+
+:Kafka a :MessageBroker ;
+       a :EventStreamingPlatform ;
+       a :DistributedSystem ;
+       rdfs:label "Apache Kafka" .
+
+:PostgreSQL a :RelationalDatabase ;
+            a :ACID_Compliant ;
+            a :SQLDatabase ;
+            rdfs:label "PostgreSQL" .
+
+:Kubernetes a :ContainerOrchestrator ;
+            a :CloudNative ;
+            a :DistributedSystem ;
+            rdfs:label "Kubernetes" .
+
+:Docker a :ContainerRuntime ;
+        a :Virtualization ;
+        rdfs:label "Docker" .
+
+:Redis a :InMemoryDatabase ;
+       a :CacheSystem ;
+       a :KeyValueStore ;
+       rdfs:label "Redis" .
+
+:MongoDB a :DocumentDatabase ;
+         a :NoSQL ;
+         a :DistributedSystem ;
+         rdfs:label "MongoDB" .
+
+# ----- Вспомогательные технологии -----
+
+:Zookeeper a :CoordinationService ;
+           rdfs:label "Apache Zookeeper" .
+
+:etcd a :KeyValueStore ;
+      a :DistributedConfiguration ;
+      rdfs:label "etcd" .
+
+:Java a :ProgrammingLanguage ;
+      rdfs:label "Java" .
+
+:Go a :ProgrammingLanguage ;
+    rdfs:label "Go" .
+
+:Linux a :OperatingSystem ;
+       rdfs:label "Linux" .
+
+:Kernel a :SystemComponent ;
+        rdfs:label "Linux Kernel" .
+
+:JVM a :Runtime ;
+     rdfs:label "Java Virtual Machine" .
+
+:ContainerRuntime a :SystemComponent ;
+                  rdfs:label "Container Runtime" .
+
+:FileSystem a :SystemComponent ;
+            rdfs:label "File System" .
+
+# ----- Лицензии -----
+
+:Kafka :hasLicense :ApacheLicense ;
+       :licenseType :OpenSource .
+
+:PostgreSQL :hasLicense :PostgreSQLLicense ;
+            :licenseType :OpenSource .
+
+:MongoDB :hasLicense :SSPLLicense ;
+         :licenseType :SourceAvailable .
+
+:Kubernetes :hasLicense :ApacheLicense ;
+            :licenseType :OpenSource .
+
+:Docker :hasLicense :ApacheLicense ;
+        :licenseType :OpenSource .
+

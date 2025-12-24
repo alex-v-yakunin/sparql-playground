@@ -1,0 +1,55 @@
+# Результаты голосования по архитектурным решениям
+#
+# Reification позволяет хранить сложные метаданные,
+# включая результаты голосования команды
+#
+# Blank nodes внутри reified statements для структурированных данных
+# 
+# В SQL: ещё одна таблица voting_results с foreign keys
+# В RDF: вложенная структура данных естественным образом
+#
+# Ожидаемый результат: Статистика голосований по ADR
+# Время: < 1 секунда
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?adrLabel ?techLabel 
+       ?inFavor ?against ?abstain ?totalVoters
+       ?approvalRate ?status
+WHERE {
+    # Найти решения с результатами голосования
+    ?stmt a rdf:Statement ;
+          rdf:subject ?adr ;
+          rdf:predicate :decidesTechnology ;
+          rdf:object ?tech ;
+          :votingResult ?result .
+    
+    # Извлечь результаты голосования из blank node
+    ?result :inFavor ?inFavor ;
+            :against ?against ;
+            :abstain ?abstain ;
+            :totalVoters ?totalVoters .
+    
+    ?adr rdfs:label ?adrLabel ;
+         :hasStatus ?statusVal .
+    ?tech rdfs:label ?techLabel .
+    ?statusVal rdfs:label ?status .
+    
+    # Вычислить процент одобрения
+    BIND((?inFavor / ?totalVoters * 100) AS ?approvalRate)
+}
+ORDER BY DESC(?approvalRate)
+
+# Результат:
+# ADR-007 | Kubernetes | 11 | 0 | 0 | 11 | 100% | Accepted
+# ADR-005 | PostgreSQL | 10 | 0 | 0 | 10 | 100% | Accepted  
+# ADR-002 | PostgreSQL |  9 | 0 | 1 | 10 |  90% | Accepted
+# ADR-001 | Kafka      |  8 | 1 | 2 | 11 |  73% | Accepted
+#
+# Можно анализировать:
+# - Консенсус vs спорные решения
+# - Корреляцию между % одобрения и confidence score
+# - Паттерны голосования по командам
+

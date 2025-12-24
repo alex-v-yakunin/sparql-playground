@@ -1,0 +1,20 @@
+# Systems and Their Owning Teams
+#
+# List all systems with the teams that own them.
+#
+# Expected: 5 systems with team info
+# Time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?system ?systemLabel ?team ?teamLabel
+WHERE {
+    ?system a :System ;
+            rdfs:label ?systemLabel ;
+            :ownedBy ?team .
+    
+    ?team rdfs:label ?teamLabel .
+}
+ORDER BY ?systemLabel
+

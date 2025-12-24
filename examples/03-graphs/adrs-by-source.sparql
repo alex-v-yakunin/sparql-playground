@@ -1,0 +1,20 @@
+# ADRs by Data Source
+#
+# Show which ADRs come from which named graph (data source).
+# Demonstrates provenance tracking.
+#
+# Expected: Multiple rows showing ADRs and their sources
+# Time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?source ?adr ?label
+WHERE {
+    GRAPH ?source {
+        ?adr a :ADR ;
+             rdfs:label ?label .
+    }
+}
+ORDER BY ?source ?adr
+

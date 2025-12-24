@@ -1,0 +1,38 @@
+# Обратные зависимости: что зависит от Linux?
+#
+# Демонстрация обратной навигации по графу
+# Находим все технологии, которые зависят от Linux (прямо или транзитивно)
+#
+# В SQL: сложный рекурсивный CTE + LEFT JOIN
+# В SPARQL: одна строка!
+#
+# Ожидаемый результат: Все технологии, требующие Linux
+# Время: < 1 секунда
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?technology ?techLabel (COUNT(?middle) AS ?depthLevel)
+WHERE {
+    # Найти все технологии, зависящие от Linux
+    # (прямо или через промежуточные зависимости)
+    ?technology :dependsOn+ :Linux .
+    
+    ?technology rdfs:label ?techLabel .
+    
+    # Подсчитать глубину зависимости
+    OPTIONAL {
+        ?technology :dependsOn+ ?middle .
+        ?middle :dependsOn* :Linux .
+    }
+}
+GROUP BY ?technology ?techLabel
+ORDER BY ?depthLevel ?techLabel
+
+# Результат:
+# - Docker (прямая зависимость от Linux)
+# - PostgreSQL (прямая зависимость от Linux)
+# - Redis (прямая зависимость от Linux)
+# - Kubernetes (зависит через Docker)
+# - Kafka (зависит через Java → JVM → ...)
+

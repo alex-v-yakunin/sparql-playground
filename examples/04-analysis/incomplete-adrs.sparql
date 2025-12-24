@@ -1,0 +1,29 @@
+# Incomplete ADRs (Missing System Context)
+#
+# Find ADRs that don't specify which system they apply to.
+# Demonstrates Open World Assumption - absence doesn't mean false.
+#
+# Expected: 3 ADRs (ADR-006, ADR-007, and partially ADR-008)
+# Time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?adr ?label ?technology ?status
+WHERE {
+    ?adr a :ADR ;
+         rdfs:label ?label ;
+         :decidesTechnology ?tech ;
+         :hasStatus ?status .
+    
+    ?tech rdfs:label ?technology .
+    
+    # This ADR does NOT have an :appliesTo relationship
+    FILTER NOT EXISTS {
+        GRAPH ?g {
+            ?adr :appliesTo ?system .
+        }
+    }
+}
+ORDER BY ?adr
+

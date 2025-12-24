@@ -1,0 +1,45 @@
+# Проверка циклических зависимостей
+#
+# Property paths позволяют легко обнаружить циклы в графе
+# Если технология зависит сама от себя транзитивно - это цикл!
+#
+# В SQL: сложная рекурсия с отслеживанием посещённых узлов
+# В SPARQL: простой паттерн
+#
+# Ожидаемый результат: Технологии с циклическими зависимостями (если есть)
+# Время: < 1 секунда
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?tech ?techLabel ?cyclePath
+WHERE {
+    # Технология транзитивно зависит от самой себя = цикл!
+    ?tech :dependsOn+ ?tech .
+    ?tech rdfs:label ?techLabel .
+    
+    # Попытаться построить путь цикла
+    OPTIONAL {
+        {
+            SELECT ?tech (GROUP_CONCAT(?middleLabel; separator=" → ") AS ?cyclePath)
+            WHERE {
+                ?tech :dependsOn+ ?middle .
+                ?middle :dependsOn+ ?tech .
+                ?middle rdfs:label ?middleLabel .
+            }
+            GROUP BY ?tech
+        }
+    }
+}
+
+# В нашем датасете циклов нет (это хорошая практика!)
+# Но если бы были, например:
+# A :dependsOn B .
+# B :dependsOn C .
+# C :dependsOn A .
+# 
+# Запрос бы нашёл: A → B → C → A
+
+# Этот запрос полезен для валидации архитектуры:
+# циклические зависимости обычно указывают на проблемы в дизайне!
+

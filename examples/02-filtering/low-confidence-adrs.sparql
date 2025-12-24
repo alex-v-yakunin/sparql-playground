@@ -1,0 +1,22 @@
+# Low Confidence ADRs
+#
+# Find ADRs with confidence < 0.70
+# These decisions might need validation or review.
+#
+# Expected: 2 ADRs (ADR-004: 0.45, ADR-006: 0.65, ADR-008: 0.62)
+# Time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?adr ?label ?confidence ?status
+WHERE {
+    ?adr a :ADR ;
+         rdfs:label ?label ;
+         :hasConfidence ?confidence ;
+         :hasStatus ?status .
+    
+    FILTER(?confidence < 0.70)
+}
+ORDER BY ?confidence
+

@@ -1,0 +1,23 @@
+# Deprecated ADRs
+#
+# Find architectural decisions that are no longer valid.
+# Useful for understanding what approaches were rejected.
+#
+# Expected: 1 ADR (ADR-004: MongoDB for Payment History)
+# Time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?adr ?label ?technology ?confidence
+WHERE {
+    ?adr a :ADR ;
+         rdfs:label ?label ;
+         :hasStatus :Deprecated ;
+         :decidesTechnology ?tech ;
+         :hasConfidence ?confidence .
+    
+    ?tech rdfs:label ?technology .
+}
+ORDER BY ?adr
+

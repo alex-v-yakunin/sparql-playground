@@ -1,0 +1,26 @@
+# Technology Migration Paths
+#
+# Find ADRs that supersede other ADRs, showing technology changes.
+# Useful for understanding architectural evolution.
+#
+# Expected: 1 migration (MongoDB → PostgreSQL for payment history)
+# Time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?oldADR ?oldLabel ?oldTech 
+       ?newADR ?newLabel ?newTech
+WHERE {
+    ?newADR :supersedes ?oldADR .
+    
+    ?oldADR rdfs:label ?oldLabel ;
+            :decidesTechnology ?oldTechnology .
+    
+    ?newADR rdfs:label ?newLabel ;
+            :decidesTechnology ?newTechnology .
+    
+    ?oldTechnology rdfs:label ?oldTech .
+    ?newTechnology rdfs:label ?newTech .
+}
+

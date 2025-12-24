@@ -1,0 +1,61 @@
+# История изменения решений (что было отклонено и почему)
+#
+# Reification позволяет отслеживать полную историю решений:
+# - Когда было предложено
+# - Кто предложил
+# - Когда отклонено
+# - Кто отклонил
+# - Почему отклонено
+#
+# В SQL: сложная временная таблица с версионированием
+# В RDF: естественная концепция через reification
+#
+# Ожидаемый результат: История отклонённых решений
+# Время: < 1 секунда
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?adrLabel ?techLabel 
+       ?proposedBy ?proposedDate 
+       ?rejectedBy ?rejectedDate ?rejectionReason
+       ?supersededByLabel
+WHERE {
+    # Найти отклонённые решения
+    ?stmt a rdf:Statement ;
+          rdf:subject ?adr ;
+          rdf:predicate :decidesTechnology ;
+          rdf:object ?tech ;
+          # Первоначальное предложение
+          :statedBy ?proposer ;
+          :statedOn ?proposedDate ;
+          # Отклонение
+          :rejectedOn ?rejectedDate ;
+          :rejectedBy ?rejecter ;
+          :rejectionReason ?rejectionReason .
+    
+    # Читаемые имена
+    ?adr rdfs:label ?adrLabel .
+    ?tech rdfs:label ?techLabel .
+    ?proposer rdfs:label ?proposedBy .
+    ?rejecter rdfs:label ?rejectedBy .
+    
+    # Чем заменено (если есть)
+    OPTIONAL {
+        ?stmt :supersededBy ?newStmt .
+        ?newStmt rdf:subject ?newAdr .
+        ?newAdr rdfs:label ?supersededByLabel .
+    }
+}
+ORDER BY ?rejectedDate
+
+# Результат:
+# ADR-004 | MongoDB | Иван Петров | 2024-01-10 | 
+#         Мария Сидорова | 2024-06-20 | 
+#         "Проблемы производительности в production" |
+#         ADR-005 (PostgreSQL)
+#
+# Это показывает полную audit trail решений!
+# В регулируемых индустриях (finance, healthcare) это критично
+

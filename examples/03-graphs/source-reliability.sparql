@@ -1,0 +1,25 @@
+# Data Source Reliability Analysis
+#
+# Calculate average confidence score per data source.
+# Helps assess which sources provide higher quality data.
+#
+# Expected: 3 sources with their avg confidence
+#   :adr-registry     ~0.94 (highest)
+#   :confluence       ~0.76 (medium)
+#   :interview-notes  ~0.54 (lowest)
+# Time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+
+SELECT ?source 
+       (AVG(?confidence) AS ?avgConfidence)
+       (COUNT(?adr) AS ?adrCount)
+WHERE {
+    GRAPH ?source {
+        ?adr a :ADR ;
+             :hasConfidence ?confidence .
+    }
+}
+GROUP BY ?source
+ORDER BY DESC(?avgConfidence)
+

@@ -1,0 +1,50 @@
+# Альтернативные пути в графе зависимостей
+#
+# Оператор | в property paths означает "ИЛИ"
+# Можно навигировать по разным типам отношений одновременно
+#
+# Демонстрация гибкости SPARQL для навигации по графу
+#
+# Ожидаемый результат: Все связи между технологиями
+# Время: < 1 секунда
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?tech1Label ?relationshipType ?tech2Label
+WHERE {
+    ?tech1 rdfs:label ?tech1Label .
+    ?tech2 rdfs:label ?tech2Label .
+    
+    # Найти любой из типов связей между технологиями
+    {
+        ?tech1 :dependsOn ?tech2 .
+        BIND("зависит от" AS ?relationshipType)
+    }
+    UNION
+    {
+        ?tech1 :conflictsWith ?tech2 .
+        BIND("конфликтует с" AS ?relationshipType)
+    }
+    UNION
+    {
+        ?tech1 :hasAlternative ?tech2 .
+        BIND("альтернатива" AS ?relationshipType)
+    }
+    
+    FILTER(?tech1 != ?tech2)  # Исключить самоссылки
+}
+ORDER BY ?tech1Label ?relationshipType
+
+# Можно также использовать property path с | напрямую:
+# ?tech1 (:dependsOn|:conflictsWith|:hasAlternative)+ ?tech2
+#
+# Это найдёт ВСЕ возможные связи (включая транзитивные)
+# через любую комбинацию этих отношений
+
+# Результат показывает полную карту взаимосвязей технологий:
+# - Kafka зависит от Java
+# - Kafka конфликтует с RabbitMQ
+# - Kafka имеет альтернативу ApachePulsar
+# - и т.д.
+

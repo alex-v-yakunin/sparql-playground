@@ -1,0 +1,22 @@
+# ADRs Appearing in Multiple Sources
+#
+# Find ADRs that are documented in more than one place.
+# Could indicate well-documented decisions OR conflicting information.
+#
+# Expected: 2 ADRs (ADR-007, ADR-008)
+# Time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?adr ?label (COUNT(DISTINCT ?source) AS ?sourceCount)
+WHERE {
+    GRAPH ?source {
+        ?adr a :ADR ;
+             rdfs:label ?label .
+    }
+}
+GROUP BY ?adr ?label
+HAVING (?sourceCount > 1)
+ORDER BY DESC(?sourceCount)
+

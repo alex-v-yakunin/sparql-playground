@@ -1,0 +1,205 @@
+@prefix : <http://example.org/adr#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================
+# ОНТОЛОГИЯ ADR
+# ============================================
+#
+# Этот файл демонстрирует RDFS/OWL reasoning -
+# автоматический вывод новых фактов из правил
+#
+# В SQL для этого нужны триггеры и процедуры!
+# ============================================
+
+# ----- Иерархия классов решений -----
+
+:ArchitecturalDecision a rdfs:Class ;
+    rdfs:label "Архитектурное решение" ;
+    rdfs:comment "Базовый класс для всех архитектурных решений" .
+
+:TechnicalDecision rdfs:subClassOf :ArchitecturalDecision ;
+    rdfs:label "Техническое решение" ;
+    rdfs:comment "Решения о выборе технологий и инструментов" .
+
+:BusinessDecision rdfs:subClassOf :ArchitecturalDecision ;
+    rdfs:label "Бизнес-решение" ;
+    rdfs:comment "Решения, связанные с бизнес-требованиями" .
+
+:SecurityDecision rdfs:subClassOf :ArchitecturalDecision ;
+    rdfs:label "Решение по безопасности" ;
+    rdfs:comment "Решения, касающиеся информационной безопасности" .
+
+:ComplianceDecision rdfs:subClassOf :ArchitecturalDecision ;
+    rdfs:label "Решение по соответствию" ;
+    rdfs:comment "Решения для соответствия регуляторным требованиям" .
+
+# Специализированные технические решения
+:DatabaseDecision rdfs:subClassOf :TechnicalDecision ;
+    rdfs:label "Решение по базе данных" .
+
+:InfrastructureDecision rdfs:subClassOf :TechnicalDecision ;
+    rdfs:label "Инфраструктурное решение" .
+
+:IntegrationDecision rdfs:subClassOf :TechnicalDecision ;
+    rdfs:label "Решение по интеграции" .
+
+:PerformanceDecision rdfs:subClassOf :TechnicalDecision ;
+    rdfs:label "Решение по производительности" .
+
+# ----- Иерархия свойств -----
+
+# Базовое свойство инфраструктурных требований
+:requiresInfrastructure a rdf:Property ;
+    rdfs:label "требует инфраструктуру" ;
+    rdfs:domain :ADR ;
+    rdfs:range :Technology .
+
+# Специализации инфраструктурных требований
+:requiresOrchestration rdfs:subPropertyOf :requiresInfrastructure ;
+    rdfs:label "требует оркестрацию" ;
+    rdfs:comment "Если решение требует оркестрацию, оно автоматически требует инфраструктуру" .
+
+:usesMicroservices rdfs:subPropertyOf :requiresOrchestration ;
+    rdfs:label "использует микросервисы" ;
+    rdfs:comment "Микросервисы требуют оркестрацию (автоматически выводится)" .
+
+:usesContainers rdfs:subPropertyOf :requiresOrchestration ;
+    rdfs:label "использует контейнеры" .
+
+:requiresDistributedSystem rdfs:subPropertyOf :requiresInfrastructure ;
+    rdfs:label "требует распределенную систему" .
+
+# ----- Inverse properties -----
+
+:dependsOn a rdf:Property ;
+    rdfs:label "зависит от" ;
+    rdfs:comment "Технология A зависит от технологии B" .
+
+:requiredBy owl:inverseOf :dependsOn ;
+    rdfs:label "требуется для" ;
+    rdfs:comment "Технология B требуется для технологии A (обратное к dependsOn)" .
+
+:supersedes a rdf:Property ;
+    rdfs:label "заменяет" .
+
+:supersededBy owl:inverseOf :supersedes ;
+    rdfs:label "заменено на" .
+
+# ----- Домены и диапазоны -----
+
+:decidesTechnology rdfs:domain :ADR ;
+                   rdfs:range :Technology ;
+                   rdfs:label "решает использовать технологию" .
+
+:appliesTo rdfs:domain :ADR ;
+           rdfs:range :System ;
+           rdfs:label "применяется к" .
+
+:uses rdfs:domain :System ;
+      rdfs:range :Technology ;
+      rdfs:label "использует" .
+
+:ownedBy rdfs:range :Team ;
+         rdfs:label "принадлежит" .
+
+:hasStatus rdfs:domain :ADR ;
+           rdfs:range :Status ;
+           rdfs:label "имеет статус" .
+
+:hasConfidence rdfs:domain :ADR ;
+               rdfs:range xsd:decimal ;
+               rdfs:label "имеет уверенность" .
+
+# ----- OWL правила и ограничения -----
+
+# Определение архитектуры микросервисов
+:MicroserviceArchitecture a owl:Class ;
+    rdfs:label "Архитектура микросервисов" ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty :usesMicroservices ;
+        owl:someValuesFrom :Technology
+    ] .
+
+# Если ADR использует микросервисы, он автоматически требует оркестрацию
+# (это выводится через rdfs:subPropertyOf выше)
+
+# Ограничение: только один статус на ADR
+:hasStatus a owl:FunctionalProperty ;
+    rdfs:comment "ADR может иметь только один статус одновременно" .
+
+# Симметричное свойство для конфликтов
+:conflictsWith a owl:SymmetricProperty ;
+    rdfs:label "конфликтует с" ;
+    rdfs:comment "Если A конфликтует с B, то B конфликтует с A" .
+
+# Транзитивное свойство для зависимостей
+:dependsOn a owl:TransitiveProperty ;
+    rdfs:comment "Если A зависит от B, и B зависит от C, то A зависит от C" .
+
+# ----- Категории технологий -----
+
+:Technology a rdfs:Class ;
+    rdfs:label "Технология" .
+
+:MessageBroker rdfs:subClassOf :Technology ;
+    rdfs:label "Брокер сообщений" .
+
+:EventStreamingPlatform rdfs:subClassOf :Technology ;
+    rdfs:label "Платформа потоковой обработки событий" .
+
+:Database rdfs:subClassOf :Technology ;
+    rdfs:label "База данных" .
+
+:RelationalDatabase rdfs:subClassOf :Database ;
+    rdfs:label "Реляционная база данных" .
+
+:NoSQLDatabase rdfs:subClassOf :Database ;
+    rdfs:label "NoSQL база данных" .
+
+:DocumentDatabase rdfs:subClassOf :NoSQLDatabase ;
+    rdfs:label "Документная база данных" .
+
+:KeyValueStore rdfs:subClassOf :NoSQLDatabase ;
+    rdfs:label "Хранилище ключ-значение" .
+
+:InMemoryDatabase rdfs:subClassOf :Database ;
+    rdfs:label "In-memory база данных" .
+
+:ContainerOrchestrator rdfs:subClassOf :Technology ;
+    rdfs:label "Оркестратор контейнеров" .
+
+:DistributedSystem rdfs:subClassOf :Technology ;
+    rdfs:label "Распределенная система" .
+
+:OpenSourceTechnology a rdfs:Class ;
+    rdfs:label "Open Source технология" .
+
+:ACID_Compliant a rdfs:Class ;
+    rdfs:label "ACID-совместимая система" .
+
+# ----- Аннотации для типов ADR -----
+
+:ADR-001 a :TechnicalDecision ;
+         a :InfrastructureDecision ;
+         a :IntegrationDecision .
+
+:ADR-002 a :TechnicalDecision ;
+         a :DatabaseDecision ;
+         a :SecurityDecision .
+
+:ADR-003 a :TechnicalDecision ;
+         a :InfrastructureDecision ;
+         a :PerformanceDecision .
+
+:ADR-005 a :TechnicalDecision ;
+         a :DatabaseDecision .
+
+:ADR-007 a :InfrastructureDecision .
+
+:ADR-008 a :TechnicalDecision ;
+         a :DatabaseDecision .
+
