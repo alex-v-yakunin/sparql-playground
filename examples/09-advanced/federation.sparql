@@ -28,7 +28,7 @@ WHERE {
         ("Redis"       dbr:Redis)
         ("MongoDB"     dbr:MongoDB)
         ("Kubernetes"  dbr:Kubernetes)
-        ("Docker"      dbr:Docker_(software))
+        ("Docker"      <http://dbpedia.org/resource/Docker_(software)>)
     }
     
     SERVICE <https://dbpedia.org/sparql> {   # Запрос к внешнему endpoint

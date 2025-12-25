@@ -75,11 +75,19 @@ test_query() {
                 
                 # Show result count if available
                 if echo "$body" | grep -q '"bindings"'; then
-                    local result_count=$(echo "$body" | grep -o '"bindings"' | wc -l)
-                    if [ $result_count -gt 0 ]; then
-                        local bindings=$(echo "$body" | grep -A1000 '"bindings"' | grep -o '{[^}]*}' | wc -l)
-                        echo -e "  ${YELLOW}→${NC} Results: $bindings rows"
+                    # Try to use jq if available for accurate counting
+                    if command -v jq >/dev/null 2>&1; then
+                        local bindings=$(echo "$body" | jq '.results.bindings | length' 2>/dev/null || echo "?")
+                    else
+                        # Fallback: count lines with opening braces in bindings array
+                        # Extract the bindings array and count object starts
+                        local bindings=$(echo "$body" | sed -n '/"bindings"/,/\]/p' | grep -c '^\s*{')
+                        # If that doesn't work, try alternative method
+                        if [ "$bindings" = "0" ]; then
+                            bindings=$(echo "$body" | grep -o '"bindings"\s*:\s*\[' -A 10000 | grep -c '{' || echo "?")
+                        fi
                     fi
+                    echo -e "  ${YELLOW}→${NC} Results: $bindings rows"
                 fi
             else
                 echo -e "${RED}✗${NC} (Invalid JSON response)"
