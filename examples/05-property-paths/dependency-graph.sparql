@@ -18,16 +18,20 @@ WHERE {
     ?adr :decidesTechnology ?tech .
     ?tech rdfs:label ?techLabel .
     
-    # Найти зависимости на глубину от 1 до 3 уровней
-    ?tech :dependsOn{1,3} ?dep .
-    ?dep rdfs:label ?depLabel .
-    
-    # Определить уровень глубины
-    BIND(
-        IF(EXISTS { ?tech :dependsOn ?dep }, 1,
-        IF(EXISTS { ?tech :dependsOn/:dependsOn ?dep }, 2, 3))
-        AS ?depthLevel
-    )
+    # Найти зависимости на глубину от 1 до 3 уровней (используем альтернативные пути)
+    {
+        ?tech :dependsOn ?dep .
+        ?dep rdfs:label ?depLabel .
+        BIND(1 AS ?depthLevel)
+    } UNION {
+        ?tech :dependsOn/:dependsOn ?dep .
+        ?dep rdfs:label ?depLabel .
+        BIND(2 AS ?depthLevel)
+    } UNION {
+        ?tech :dependsOn/:dependsOn/:dependsOn ?dep .
+        ?dep rdfs:label ?depLabel .
+        BIND(3 AS ?depthLevel)
+    }
 }
 ORDER BY ?techLabel ?depthLevel ?depLabel
 

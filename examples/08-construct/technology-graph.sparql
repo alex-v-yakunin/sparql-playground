@@ -27,20 +27,24 @@ WHERE {
     ?adr :decidesTechnology ?tech1 .
     ?tech1 rdfs:label ?label1 .
     
-    # Её зависимости (до 3 уровней)
-    ?tech1 :dependsOn{1,3} ?tech2 .
-    ?tech2 rdfs:label ?label2 .
+    # Её зависимости (до 3 уровней через UNION)
+    {
+        ?tech1 :dependsOn ?tech2 .
+        ?tech2 rdfs:label ?label2 .
+        BIND(1 AS ?level)
+    } UNION {
+        ?tech1 :dependsOn/:dependsOn ?tech2 .
+        ?tech2 rdfs:label ?label2 .
+        BIND(2 AS ?level)
+    } UNION {
+        ?tech1 :dependsOn/:dependsOn/:dependsOn ?tech2 .
+        ?tech2 rdfs:label ?label2 .
+        BIND(3 AS ?level)
+    }
     
     # Категории технологий
     OPTIONAL { ?tech1 a ?category1 . FILTER(?category1 != :Technology) }
     OPTIONAL { ?tech2 a ?category2 . FILTER(?category2 != :Technology) }
-    
-    # Уровень зависимости
-    BIND(
-        IF(EXISTS { ?tech1 :dependsOn ?tech2 }, 1,
-        IF(EXISTS { ?tech1 :dependsOn/:dependsOn ?tech2 }, 2, 3))
-        AS ?level
-    )
 }
 
 # Новый граф содержит:
