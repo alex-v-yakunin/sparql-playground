@@ -7,6 +7,11 @@
 # В SPARQL: одна строка!
 #
 # Ожидаемый результат: Все технологии, требующие Linux
+# - Docker (прямая зависимость от Linux)
+# - PostgreSQL (прямая зависимость от Linux)
+# - Redis (прямая зависимость от Linux)
+# - Kubernetes (зависит через Docker)
+# - Kafka (зависит через Java → JVM → ...)
 # Время: < 1 секунда
 
 PREFIX : <http://example.org/adr#>
@@ -28,11 +33,3 @@ WHERE {
 }
 GROUP BY ?technology ?techLabel
 ORDER BY ?depthLevel ?techLabel
-
-# Результат:
-# - Docker (прямая зависимость от Linux)
-# - PostgreSQL (прямая зависимость от Linux)
-# - Redis (прямая зависимость от Linux)
-# - Kubernetes (зависит через Docker)
-# - Kafka (зависит через Java → JVM → ...)
-
