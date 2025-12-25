@@ -1,9 +1,13 @@
 # Список всех ADR
 #
 # Получить все Architecture Decision Records с их названиями.
+# Используем паттерн "?adr a :ADR" для поиска всех сущностей типа ADR.
 #
-# Ожидаемый результат: 8 ADR
-# Время: < 1 секунда
+# В SQL: SELECT * FROM adr ORDER BY id
+# В SPARQL: фильтрация по типу через предикат rdf:type (сокращённо "a")
+#
+# Ожидаемый результат: 8 ADR с их названиями
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

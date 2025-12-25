@@ -1,10 +1,13 @@
-# ADRs Appearing in Multiple Sources
+# ADR из нескольких источников
 #
-# Find ADRs that are documented in more than one place.
-# Could indicate well-documented decisions OR conflicting information.
+# Найти ADR, задокументированные более чем в одном месте.
+# Может указывать на хорошо задокументированные решения ИЛИ на противоречивую информацию.
 #
-# Expected: 2 ADRs (ADR-007, ADR-008)
-# Time: < 1 second
+# В SQL: сложный GROUP BY с подзапросами
+# В SPARQL: COUNT(DISTINCT ?source) с HAVING - естественный способ
+#
+# Ожидаемый результат: 2 ADR (ADR-007, ADR-008)
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

@@ -1,9 +1,13 @@
-# ADRs from Official Registry Only
+# ADR только из официального реестра
 #
-# Query only the official ADR registry (highest quality source).
+# Запрос только к официальному реестру ADR (источник наивысшего качества).
+# Используем GRAPH для выборки данных из конкретного именованного графа.
 #
-# Expected: 4 ADRs (ADR-001, ADR-002, ADR-005, ADR-007)
-# Time: < 1 second
+# В SQL: WHERE source_id = 'official'
+# В SPARQL: GRAPH :adr-registry { ... } - явное указание источника
+#
+# Ожидаемый результат: 4 ADR (ADR-001, ADR-002, ADR-005, ADR-007)
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

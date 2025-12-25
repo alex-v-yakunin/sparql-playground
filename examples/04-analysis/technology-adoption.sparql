@@ -1,10 +1,13 @@
-# Technology Adoption Analysis
+# Анализ внедрения технологий
 #
-# Rank technologies by how many ADRs decide on them
-# and their average confidence score.
+# Ранжировать технологии по количеству ADR, которые их выбирают,
+# и их средней уверенности.
 #
-# Expected: 6 technologies ranked by adoption
-# Time: < 1 second
+# В SQL: SELECT tech, COUNT(*), AVG(conf) FROM ... GROUP BY tech
+# В SPARQL: агрегация с вычисляемым полем trustScore
+#
+# Ожидаемый результат: 6 технологий, ранжированных по степени внедрения
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

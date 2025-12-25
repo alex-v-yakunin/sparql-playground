@@ -1,10 +1,13 @@
-# Deprecated ADRs
+# Устаревшие ADR
 #
-# Find architectural decisions that are no longer valid.
-# Useful for understanding what approaches were rejected.
+# Найти архитектурные решения, которые больше не актуальны.
+# Полезно для понимания, какие подходы были отклонены.
 #
-# Expected: 1 ADR (ADR-004: MongoDB for Payment History)
-# Time: < 1 second
+# В SQL: WHERE status = 'Deprecated'
+# В SPARQL: фильтрация по URI статуса :Deprecated
+#
+# Ожидаемый результат: 1 ADR (ADR-004: MongoDB for Payment History)
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

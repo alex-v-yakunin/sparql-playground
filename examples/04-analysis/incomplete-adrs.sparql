@@ -1,11 +1,14 @@
-# Incomplete ADRs (Missing System Context)
+# Неполные ADR (без привязки к системе)
 #
-# Find ADRs that don't specify which system they apply to.
-# Demonstrates Open World Assumption - absence doesn't mean false.
+# Найти ADR, которые не указывают, к какой системе они относятся.
+# Демонстрирует Open World Assumption - отсутствие данных не означает ложь.
 #
-# Expected: 2 ADRs (ADR-006 without system, ADR-007 with 2 technologies)
-# Note: ADR-007 appears twice due to multiple technologies (Kubernetes + Docker)
-# Time: < 1 second
+# В SQL: LEFT JOIN с проверкой NULL
+# В SPARQL: FILTER NOT EXISTS - явная проверка отсутствия паттерна
+#
+# Ожидаемый результат: 3 строки (ADR-006 без системы, ADR-007 с 2 технологиями)
+# Примечание: ADR-007 появляется дважды из-за двух технологий (Kubernetes + Docker)
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

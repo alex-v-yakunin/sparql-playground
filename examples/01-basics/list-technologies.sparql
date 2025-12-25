@@ -1,9 +1,13 @@
-# List All Technologies
+# Список всех технологий
 #
-# Get all technologies mentioned in the dataset.
+# Получить все технологии, упомянутые в наборе данных.
+# Используем DISTINCT для исключения дубликатов.
 #
-# Expected: 6 technologies (Kafka, PostgreSQL, Redis, MongoDB, Kubernetes, Docker)
-# Time: < 1 second
+# В SQL: SELECT DISTINCT technology FROM technologies
+# В SPARQL: DISTINCT работает аналогично
+#
+# Ожидаемый результат: 7 технологий (Kafka, PostgreSQL, Redis, MongoDB, Kubernetes, Docker, ServiceMesh)
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

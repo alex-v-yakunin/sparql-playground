@@ -12,11 +12,11 @@
 # В SQL: таблицы наследования или сложные UNION'ы
 # В RDF: естественная иерархия с автоматическим выводом
 #
-# Ожидаемый результат: 6 ADR со всеми их типами (включая выведенные)
+# Ожидаемый результат: 27 строк (6 ADR со всеми их типами, включая выведенные)
 # Примеры:
 #   ADR-001 (Kubernetes) → :ADR, :ArchitecturalDecision, :TechnicalDecision, :InfrastructureDecision
 #   ADR-004 (PostgreSQL) → :ADR, :ArchitecturalDecision, :TechnicalDecision, :DatabaseDecision, :SecurityDecision
-# Время: < 1 секунда
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

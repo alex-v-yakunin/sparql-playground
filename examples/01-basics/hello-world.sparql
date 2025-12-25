@@ -1,10 +1,13 @@
-# Hello World: Your First SPARQL Query
-# 
-# This query returns the first 10 triples in the database.
-# Think of it as "SELECT * FROM table LIMIT 10" in SQL.
+# Hello World: Первый SPARQL-запрос
 #
-# Expected: 10 rows showing subject, predicate, object
-# Time: < 1 second
+# Возвращает первые 10 троек (триплов) из базы данных.
+# Тройка = (субъект, предикат, объект) - базовая единица данных в RDF.
+#
+# В SQL: аналог "SELECT * FROM table LIMIT 10"
+# В SPARQL: работаем с графом, а не с таблицами
+#
+# Ожидаемый результат: 10 троек, показывающих структуру данных
+# Время: < 1 секунды
 
 SELECT ?subject ?predicate ?object
 WHERE {

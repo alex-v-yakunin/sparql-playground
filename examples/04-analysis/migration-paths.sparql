@@ -1,10 +1,13 @@
-# Technology Migration Paths
+# Пути миграции технологий
 #
-# Find ADRs that supersede other ADRs, showing technology changes.
-# Useful for understanding architectural evolution.
+# Найти ADR, которые заменяют другие ADR, показывая изменения технологий.
+# Полезно для понимания эволюции архитектуры.
 #
-# Expected: 1 migration (MongoDB → PostgreSQL for payment history)
-# Time: < 1 second
+# В SQL: сложный self-JOIN с двумя подзапросами
+# В SPARQL: естественное следование связям :supersedes
+#
+# Ожидаемый результат: 1 миграция (MongoDB → PostgreSQL для истории платежей)
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

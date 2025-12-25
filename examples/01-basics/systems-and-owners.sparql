@@ -1,9 +1,13 @@
-# Systems and Their Owning Teams
+# Системы и их владельцы
 #
-# List all systems with the teams that own them.
+# Список всех систем с командами, которые ими владеют.
+# Демонстрирует связь между сущностями через свойство :ownedBy.
 #
-# Expected: 5 systems with team info
-# Time: < 1 second
+# В SQL: SELECT * FROM systems JOIN teams ON systems.owner_id = teams.id
+# В SPARQL: естественный граф связей, JOIN не нужен
+#
+# Ожидаемый результат: 5 систем с информацией о командах-владельцах
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

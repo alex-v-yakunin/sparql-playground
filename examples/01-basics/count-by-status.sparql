@@ -1,9 +1,13 @@
-# Count ADRs by Status
+# Подсчёт ADR по статусам
 #
-# How many ADRs are Accepted vs Proposed vs Deprecated?
+# Сколько архитектурных решений находится в каждом статусе?
+# Используем GROUP BY и агрегатную функцию COUNT.
 #
-# Expected: 3 rows (Accepted: 6, Proposed: 1, Deprecated: 1)
-# Time: < 1 second
+# В SQL: SELECT status, COUNT(*) FROM adr GROUP BY status
+# В SPARQL: те же агрегатные функции, но работаем с графом
+#
+# Ожидаемый результат: 3 строки (Accepted: 6, Proposed: 1, Deprecated: 1)
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

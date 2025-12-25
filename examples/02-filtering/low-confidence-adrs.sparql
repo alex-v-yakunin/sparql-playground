@@ -1,10 +1,13 @@
-# Low Confidence ADRs
+# ADR с низкой уверенностью
 #
-# Find ADRs with confidence < 0.70
-# These decisions might need validation or review.
+# Найти архитектурные решения с уровнем уверенности < 0.70.
+# Эти решения могут требовать дополнительной проверки или пересмотра.
 #
-# Expected: 2 ADRs (ADR-004: 0.45, ADR-006: 0.65, ADR-008: 0.62)
-# Time: < 1 second
+# В SQL: WHERE confidence < 0.70
+# В SPARQL: FILTER с числовым сравнением
+#
+# Ожидаемый результат: 3 ADR (ADR-004: 0.45, ADR-006: 0.65, ADR-008: 0.62)
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

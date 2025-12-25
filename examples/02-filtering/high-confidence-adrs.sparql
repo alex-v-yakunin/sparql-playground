@@ -1,10 +1,13 @@
-# High Confidence ADRs
+# ADR с высокой уверенностью
 #
-# Find ADRs with confidence score >= 0.90
-# These are well-validated architectural decisions.
+# Найти архитектурные решения с уровнем уверенности >= 0.90.
+# Это хорошо проверенные и обоснованные решения.
 #
-# Expected: 4 ADRs (ADR-001, ADR-002, ADR-005, ADR-007)
-# Time: < 1 second
+# В SQL: WHERE confidence >= 0.90
+# В SPARQL: FILTER с числовым сравнением
+#
+# Ожидаемый результат: 4 ADR (ADR-001, ADR-002, ADR-005, ADR-007)
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

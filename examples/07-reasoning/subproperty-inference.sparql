@@ -10,11 +10,11 @@
 # Теперь запрос "что требует инфраструктуру" автоматически
 # включает всё, что использует микросервисы!
 #
-# Ожидаемый результат: ADR с автоматически выведенными требованиями
-# - ADR-001: Kafka (через :usesMicroservices → выводится :requiresInfrastructure)
+# Ожидаемый результат: 3 ADR с автоматически выведенными требованиями
+# - ADR-001: Kubernetes (через :usesMicroservices → выводится :requiresInfrastructure)
 # - ADR-003: Kafka (через :requiresDistributedSystem → выводится :requiresInfrastructure)
-# - ADR-007: Kubernetes (через :usesContainers → выводится :requiresInfrastructure)
-# Время: < 1 секунда
+# - ADR-007: Docker (через :usesContainers → выводится :requiresInfrastructure)
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

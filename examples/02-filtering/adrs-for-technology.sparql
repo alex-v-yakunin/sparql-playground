@@ -1,10 +1,13 @@
-# ADRs for a Specific Technology
+# ADR для конкретной технологии
 #
-# Find all ADRs that decide on PostgreSQL.
-# Try changing :PostgreSQL to :Kafka or other technologies.
+# Найти все архитектурные решения, касающиеся PostgreSQL.
+# Можно заменить :PostgreSQL на :Kafka или другие технологии.
 #
-# Expected: 3 ADRs (ADR-002, ADR-005, ADR-008)
-# Time: < 1 second
+# В SQL: WHERE technology = 'PostgreSQL'
+# В SPARQL: прямое указание URI технологии в паттерне
+#
+# Ожидаемый результат: 4 ADR (ADR-002, ADR-004, ADR-005, ADR-008)
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

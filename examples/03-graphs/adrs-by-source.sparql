@@ -1,10 +1,13 @@
-# ADRs by Data Source
+# ADR по источникам данных
 #
-# Show which ADRs come from which named graph (data source).
-# Demonstrates provenance tracking.
+# Показать, какие ADR из каких именованных графов (источников данных).
+# Демонстрирует отслеживание происхождения данных (data provenance).
 #
-# Expected: Multiple rows showing ADRs and their sources
-# Time: < 1 second
+# В SQL: нужна отдельная таблица sources + JOIN
+# В SPARQL: Named Graphs - встроенная возможность для провенанса
+#
+# Ожидаемый результат: 10 строк, показывающих ADR и их источники
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

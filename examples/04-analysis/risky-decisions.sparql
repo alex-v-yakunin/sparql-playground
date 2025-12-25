@@ -1,11 +1,14 @@
-# Risky Architectural Decisions
+# Рискованные архитектурные решения
 #
-# Find accepted ADRs with low confidence (<0.70).
-# These decisions are in production but uncertain - need review!
+# Найти принятые ADR с низкой уверенностью (<0.70).
+# Эти решения в продакшене, но неопределённые - требуют проверки!
 #
-# Expected: 1 ADR (ADR-008 with confidence 0.62 from interview-notes)
-# Note: Same ADR may have different confidence in different sources
-# Time: < 1 second
+# В SQL: WHERE status = 'Accepted' AND confidence < 0.70
+# В SPARQL: комбинация фильтрации по URI и FILTER с числовым сравнением
+#
+# Ожидаемый результат: 1 ADR (ADR-008 с уверенностью 0.62 из interview-notes)
+# Примечание: Один ADR может иметь разную уверенность в разных источниках
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

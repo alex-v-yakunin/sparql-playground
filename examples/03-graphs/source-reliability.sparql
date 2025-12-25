@@ -1,13 +1,16 @@
-# Data Source Reliability Analysis
+# Анализ надёжности источников данных
 #
-# Calculate average confidence score per data source.
-# Helps assess which sources provide higher quality data.
+# Рассчитать средний уровень уверенности для каждого источника данных.
+# Помогает оценить, какие источники предоставляют данные более высокого качества.
 #
-# Expected: 3 sources with their avg confidence
-#   :adr-registry     ~0.94 (highest)
-#   :confluence       ~0.76 (medium)
-#   :interview-notes  ~0.54 (lowest)
-# Time: < 1 second
+# В SQL: SELECT source, AVG(confidence) FROM ... GROUP BY source
+# В SPARQL: агрегация по именованным графам - уникальная возможность!
+#
+# Ожидаемый результат: 3 источника с их средней уверенностью
+#   :adr-registry     ~0.94 (наивысший)
+#   :confluence       ~0.76 (средний)
+#   :interview-notes  ~0.54 (низкий)
+# Время: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 
