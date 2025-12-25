@@ -101,9 +101,9 @@ SELECT (COUNT(*) as ?count) WHERE { ?s a :ADR }
 
 **Synthetic ADR (Architecture Decision Records)** — архитектурные решения технологической компании:
 - 8 ADR (решений)
-- 15+ технологий с зависимостями
+- 7 технологий с зависимостями (Kafka, PostgreSQL, MongoDB, Redis, Kubernetes, Docker, etcd)
 - 5 архитекторов с метаданными
-- 4 named graphs (источники данных)
+- 7 named graphs (источники данных и метаданные)
 - Реифицированные утверждения (метаданные о решениях)
 - Онтология (RDFS/OWL для reasoning)
 

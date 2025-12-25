@@ -11,10 +11,10 @@
 | Тип данных | Количество | Описание |
 |------------|------------|----------|
 | **ADR** | 8 решений | Архитектурные решения о технологиях |
-| **Технологии** | 15+ | Kafka, PostgreSQL, Kubernetes, Docker и др. |
+| **Технологии** | 7 | Kafka, PostgreSQL, MongoDB, Redis, Kubernetes, Docker, etcd |
 | **Системы** | 5 сервисов | OrderService, PaymentService, AnalyticsService и др. |
 | **Архитекторы** | 5 человек | С профилями, ролями и экспертизой |
-| **Named Graphs** | 4 источника | Разные источники знаний с провенансом |
+| **Named Graphs** | 7 источников | Разные источники знаний с провенансом и метаданными |
 | **Зависимости** | 20+ связей | Транзитивные зависимости технологий |
 | **Реификация** | 8 утверждений | Метаданные о том, КТО принял решение и КОГДА |
 
@@ -298,10 +298,10 @@ SELECT ?adr ?tech ?person ?date ?confidence WHERE {
 |-----|------------|---------|
 | **ADR** | 8 | ADR-001, ADR-002, ..., ADR-008 |
 | **Системы** | 5 | OrderService, PaymentService, AnalyticsService, NotificationService, InventoryService |
-| **Технологии** | 15+ | Kafka, PostgreSQL, MongoDB, Redis, Kubernetes, Docker, Linux, Java, Go, etcd, Zookeeper, Nginx, FileSystem, ContainerRuntime, Kernel |
+| **Технологии** | 7 | Kafka, PostgreSQL, MongoDB, Redis, Kubernetes, Docker, etcd |
 | **Команды** | 5 | TeamCheckout, TeamPayments, TeamData, TeamPlatform, Security |
 | **Архитекторы** | 5 | Иван Петров, Мария Сидорова, Алексей Козлов, Елена Никитина, Дмитрий Волков |
-| **Named Graphs** | 4 | adr-registry, confluence, interview-notes, people |
+| **Named Graphs** | 7 | adr-registry, confluence, confluence-metadata, decision-metadata, decision-timeline, interview-notes, people |
 | **Реификации** | 8 | statement_001, ..., statement_008 |
 
 ### Свойства (relationships)

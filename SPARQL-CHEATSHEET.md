@@ -277,7 +277,11 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 - `:adr-registry` — Официальный реестр ADR (высшее качество)
 - `:confluence` — Документация Confluence
+- `:confluence-metadata` — Метаданные из Confluence
+- `:decision-metadata` — Метаданные о решениях
+- `:decision-timeline` — Временная шкала решений
 - `:interview-notes` — Заметки интервью (низшее качество)
+- `:people` — Профили архитекторов и команд
 
 ---
 
