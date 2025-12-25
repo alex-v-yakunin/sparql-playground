@@ -97,7 +97,7 @@
 
 # ADR-007: Use Kubernetes for orchestration (from multiple sources)
 # Status: Accepted, NO appliesTo (applies broadly)
-# Demonstrates: ADR in multiple named graphs, incomplete knowledge
+# Demonstrates: ADR in multiple named graphs with slightly different information
 
 :adr-registry {
     :ADR-007 a :ADR ;
@@ -109,13 +109,16 @@
 }
 
 :confluence {
-    :ADR-007 :decidesTechnology :Docker ;
+    :ADR-007 a :ADR ;
+        rdfs:label "Use Kubernetes for Container Orchestration" ;
+        :decidesTechnology :Kubernetes ;
+        :decidesTechnology :Docker ;
         :hasConfidence "0.75"^^xsd:decimal .
 }
 
-# ADR-008: Use PostgreSQL for inventory (from interview notes)
-# Status: Accepted, Low confidence, NO appliesTo initially
-# Demonstrates: Low confidence accepted decision
+# ADR-008: Use PostgreSQL for inventory (from interview notes and confluence)
+# Status: Accepted, Low confidence in interview notes, more context in confluence
+# Demonstrates: Same ADR documented in multiple sources with complementary information
 
 :interview-notes {
     :ADR-008 a :ADR ;
@@ -126,9 +129,13 @@
         :ownedBy :TeamSupplyChain .
 }
 
-# Additional context in confluence (partial information)
+# Additional context in confluence with more complete information
 :confluence {
-    :ADR-008 :appliesTo :InventoryService .
+    :ADR-008 a :ADR ;
+        rdfs:label "Use PostgreSQL for Inventory Management" ;
+        :decidesTechnology :PostgreSQL ;
+        :appliesTo :InventoryService ;
+        :hasConfidence "0.85"^^xsd:decimal .
 }
 
 # System-level usage (what systems actually use)
