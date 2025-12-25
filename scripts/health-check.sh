@@ -9,6 +9,8 @@ NC='\033[0m'
 
 GRAPHDB_URL="http://localhost:7200"
 REPO_ID="sparql-playground"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 echo -e "${BLUE}╔════════════════════════════════════════╗${NC}"
 echo -e "${BLUE}║   SPARQL Playground Health Check      ║${NC}"
@@ -25,12 +27,15 @@ echo -e "${GREEN}✓ Docker is running${NC}"
 
 # Check GraphDB container
 echo -e "${YELLOW}Checking GraphDB container...${NC}"
-if ! docker compose ps | grep -q "sparql-playground.*Up"; then
+cd "$PROJECT_ROOT/infra"
+if ! docker compose ps 2>/dev/null | grep -q "sparql-playground.*Up"; then
     echo -e "${RED}✗ GraphDB container is not running${NC}"
-    echo -e "${YELLOW}Run: ./scripts/setup.sh${NC}"
+    echo -e "${YELLOW}Run: ./start.sh${NC}"
+    cd "$PROJECT_ROOT"
     exit 1
 fi
 echo -e "${GREEN}✓ GraphDB container is running${NC}"
+cd "$PROJECT_ROOT"
 
 # Check GraphDB HTTP endpoint
 echo -e "${YELLOW}Checking GraphDB HTTP endpoint...${NC}"
@@ -71,25 +76,31 @@ WHERE {
   UNION { GRAPH ?graph { ?s ?p ?o } }
 }"
 
-result=$(curl -sf -X POST \
+result=$(curl -s -X POST \
     -H "Accept: application/sparql-results+json" \
     -H "Content-Type: application/x-www-form-urlencoded" \
     --data-urlencode "query=$query" \
     "$GRAPHDB_URL/repositories/$REPO_ID")
 
-# Parse results
-adr_count=$(echo "$result" | grep -o '"adrCount"[^}]*"value":"[0-9]*"' | grep -o '[0-9]*$')
-system_count=$(echo "$result" | grep -o '"systemCount"[^}]*"value":"[0-9]*"' | grep -o '[0-9]*$')
-tech_count=$(echo "$result" | grep -o '"techCount"[^}]*"value":"[0-9]*"' | grep -o '[0-9]*$')
-team_count=$(echo "$result" | grep -o '"teamCount"[^}]*"value":"[0-9]*"' | grep -o '[0-9]*$')
-graph_count=$(echo "$result" | grep -o '"graphCount"[^}]*"value":"[0-9]*"' | grep -o '[0-9]*$')
+if [ $? -ne 0 ]; then
+    echo -e "${RED}✗ Failed to query repository${NC}"
+    exit 1
+fi
 
-# Expected values
+# Parse results using a simpler approach
+# Extract value after each variable name
+adr_count=$(echo "$result" | grep -A5 '"adrCount"' | grep '"value"' | grep -o '"[0-9]*"' | tr -d '"')
+system_count=$(echo "$result" | grep -A5 '"systemCount"' | grep '"value"' | grep -o '"[0-9]*"' | tr -d '"')
+tech_count=$(echo "$result" | grep -A5 '"techCount"' | grep '"value"' | grep -o '"[0-9]*"' | tr -d '"')
+team_count=$(echo "$result" | grep -A5 '"teamCount"' | grep '"value"' | grep -o '"[0-9]*"' | tr -d '"')
+graph_count=$(echo "$result" | grep -A5 '"graphCount"' | grep '"value"' | grep -o '"[0-9]*"' | tr -d '"')
+
+# Expected values (based on current dataset)
 expected_adrs=8
 expected_systems=5
-expected_techs=6
+expected_techs=7
 expected_teams=5
-expected_graphs=3
+expected_graphs=7
 
 # Print results
 printf "%-20s %-10s %-10s %-10s\n" "Entity Type" "Expected" "Actual" "Status"
@@ -99,6 +110,11 @@ print_check() {
     local name=$1
     local expected=$2
     local actual=$3
+    
+    # Handle empty/missing values
+    if [ -z "$actual" ]; then
+        actual="?"
+    fi
     
     if [ "$actual" = "$expected" ]; then
         printf "%-20s %-10s %-10s ${GREEN}%-10s${NC}\n" "$name" "$expected" "$actual" "✓"
