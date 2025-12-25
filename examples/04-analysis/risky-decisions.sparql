@@ -3,7 +3,8 @@
 # Find accepted ADRs with low confidence (<0.70).
 # These decisions are in production but uncertain - need review!
 #
-# Expected: 1-2 ADRs
+# Expected: 1 ADR (ADR-008 with confidence 0.62 from interview-notes)
+# Note: Same ADR may have different confidence in different sources
 # Time: < 1 second
 
 PREFIX : <http://example.org/adr#>
