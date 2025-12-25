@@ -1,33 +1,33 @@
 # Неполные ADR (без привязки к системе)
 #
 # Найти ADR, которые не указывают, к какой системе они относятся.
-# Демонстрирует Open World Assumption - отсутствие данных не означает ложь.
 #
-# В SQL: LEFT JOIN с проверкой NULL
-# В SPARQL: FILTER NOT EXISTS - явная проверка отсутствия паттерна
-#
-# Ожидаемый результат: 3 строки (ADR-006 без системы, ADR-007 с 2 технологиями)
+# Ожидаемый результат: 3 строки (ADR-006, ADR-007 дважды)
 # Примечание: ADR-007 появляется дважды из-за двух технологий (Kubernetes + Docker)
-# Время: < 1 секунды
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?adr ?label ?technology ?status
 WHERE {
-    ?adr a :ADR ;
-         rdfs:label ?label ;
-         :decidesTechnology ?tech ;
-         :hasStatus ?status .
+    ?adr a :ADR ;                      # Найти все ADR
+         rdfs:label ?label ;           # Получить название
+         :decidesTechnology ?tech ;    # Получить технологию
+         :hasStatus ?status .          # Получить статус
     
-    ?tech rdfs:label ?technology .
+    ?tech rdfs:label ?technology .     # Получить название технологии
     
-    # This ADR does NOT have an :appliesTo relationship
-    FILTER NOT EXISTS {
-        GRAPH ?g {
-            ?adr :appliesTo ?system .
+    FILTER NOT EXISTS {                # Проверка отсутствия связи
+        GRAPH ?g {                     # Искать в любом графе
+            ?adr :appliesTo ?system .  # Проверить наличие привязки к системе
         }
     }
 }
-ORDER BY ?adr
+ORDER BY ?adr                          # Сортировать по URI
 
+# Пояснение:
+# Демонстрирует Open World Assumption - отсутствие данных не означает ложь.
+# FILTER NOT EXISTS проверяет отсутствие паттерна :appliesTo в любом графе.
+# В SQL: LEFT JOIN с проверкой NULL.
+# В Property Graph: проверка отсутствия связи определённого типа.

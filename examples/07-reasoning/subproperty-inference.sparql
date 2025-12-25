@@ -1,28 +1,42 @@
-# RDFS Reasoning: Вывод через подсвойства
+# Вывод подсвойств (RDFS Reasoning)
 #
-# 🔥 АВТОМАТИЧЕСКИЙ ВЫВОД - УНИКАЛЬНАЯ ВОЗМОЖНОСТЬ RDF!
-# В SQL нужны триггеры или хранимые процедуры
+# Продемонстрировать автоматический вывод более общих свойств.
 #
-# Определяем правило ОДИН РАЗ:
-# :usesMicroservices rdfs:subPropertyOf :requiresOrchestration
-# :requiresOrchestration rdfs:subPropertyOf :requiresInfrastructure
-#
-# Теперь запрос "что требует инфраструктуру" автоматически
-# включает всё, что использует микросервисы!
-#
-# Ожидаемый результат: 3 ADR с автоматически выведенными требованиями
-# - ADR-001: Kubernetes (через :usesMicroservices → выводится :requiresInfrastructure)
-# - ADR-003: Kafka (через :requiresDistributedSystem → выводится :requiresInfrastructure)
-# - ADR-007: Docker (через :usesContainers → выводится :requiresInfrastructure)
-# Время: < 1 секунды
+# Ожидаемый результат: 3 ADR с требованиями инфраструктуры
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?adrLabel ?requirement ?value WHERE {
-    ?adr rdfs:label ?adrLabel ;
-         :requiresInfrastructure ?value .
+SELECT ?adrLabel ?technology ?specificProperty
+WHERE {
+    ?adr rdfs:label ?adrLabel ;        # Название ADR
+         :requiresInfrastructure ?tech . # Общее свойство (выведено автоматически)
     
-    BIND("требует инфраструктуру" AS ?requirement)
+    ?tech rdfs:label ?technology .     # Название технологии
+    
+    BIND(
+        IF(EXISTS { ?adr :usesMicroservices ?tech }, "usesMicroservices",
+        IF(EXISTS { ?adr :requiresDistributedSystem ?tech }, "requiresDistributedSystem",
+        IF(EXISTS { ?adr :usesContainers ?tech }, "usesContainers",
+        "requiresInfrastructure")))
+        AS ?specificProperty           # Определить конкретное свойство
+    )
 }
-ORDER BY ?adrLabel
+ORDER BY ?adrLabel                     # Сортировать по названию ADR
+
+# Пояснение:
+# В онтологии определено:
+# :usesMicroservices rdfs:subPropertyOf :requiresInfrastructure
+# :requiresDistributedSystem rdfs:subPropertyOf :requiresInfrastructure
+# :usesContainers rdfs:subPropertyOf :requiresInfrastructure
+# 
+# GraphDB автоматически выводит:
+# если (?adr :usesMicroservices ?tech), то (?adr :requiresInfrastructure ?tech)
+# 
+# Мы можем запрашивать по общему свойству :requiresInfrastructure,
+# а reasoner найдёт все ADR с любыми специфичными подсвойствами!
+# 
+# В SQL: потребовались бы триггеры или сложные UNION запросы.
+# В Property Graph: дублирование рёбер или мета-запросы.
+# В RDF с reasoning: автоматическая дедукция на основе онтологии!

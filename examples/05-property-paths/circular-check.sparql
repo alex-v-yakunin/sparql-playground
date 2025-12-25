@@ -1,35 +1,25 @@
-# Проверка циклических зависимостей
+# Проверка на циклические зависимости
 #
-# Property paths позволяют легко обнаружить циклы в графе
-# Если технология зависит сама от себя транзитивно - это цикл!
+# Обнаружить циклы в графе зависимостей технологий.
 #
-# В SQL: сложная рекурсия с отслеживанием посещённых узлов
-# В SPARQL: простой паттерн
-#
-# Ожидаемый результат: Технологии с циклическими зависимостями
-# - ServiceMesh → Kubernetes → Docker → ServiceMesh (demo cycle)
-# В production данных циклов быть не должно (архитектурный антипаттерн)
-# Время: < 1 секунда
+# Ожидаемый результат: 1 цикл (Docker → ServiceMesh → Kubernetes → Docker)
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?tech ?techLabel ?cyclePath
+SELECT ?technology ?label
 WHERE {
-    # Технология транзитивно зависит от самой себя = цикл!
-    ?tech :dependsOn+ ?tech .
-    ?tech rdfs:label ?techLabel .
+    ?tech :dependsOn+ ?tech ;          # Транзитивная зависимость сама на себя
+          rdfs:label ?label .          # Получить название технологии
     
-    # Попытаться построить путь цикла
-    OPTIONAL {
-        {
-            SELECT ?tech (GROUP_CONCAT(?middleLabel; separator=" → ") AS ?cyclePath)
-            WHERE {
-                ?tech :dependsOn+ ?middle .
-                ?middle :dependsOn+ ?tech .
-                ?middle rdfs:label ?middleLabel .
-            }
-            GROUP BY ?tech
-        }
-    }
+    BIND(STR(?tech) AS ?technology)    # Преобразовать URI в строку
 }
+
+# Пояснение:
+# Property Path :dependsOn+ означает "один или более шагов по :dependsOn".
+# Паттерн ?tech :dependsOn+ ?tech ищет технологии, зависящие от самих себя через цепочку.
+# Это антипаттерн в архитектуре, требующий немедленного внимания!
+# В SQL потребовались бы рекурсивные CTE (Common Table Expressions).
+# В Property Graph: аналогичный обход с проверкой на цикл.
+# В отличие от SQL, SPARQL естественно работает с транзитивными связями.

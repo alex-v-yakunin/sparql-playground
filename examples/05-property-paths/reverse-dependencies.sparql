@@ -1,35 +1,24 @@
-# Обратные зависимости: что зависит от Linux?
+# Обратные зависимости (кто зависит от Linux)
 #
-# Демонстрация обратной навигации по графу
-# Находим все технологии, которые зависят от Linux (прямо или транзитивно)
+# Найти все технологии, которые прямо или косвенно зависят от конкретной технологии.
 #
-# В SQL: сложный рекурсивный CTE + LEFT JOIN
-# В SPARQL: одна строка!
-#
-# Ожидаемый результат: Все технологии, требующие Linux
-# - Docker (прямая зависимость от Linux)
-# - PostgreSQL (прямая зависимость от Linux)
-# - Redis (прямая зависимость от Linux)
-# - Kubernetes (зависит через Docker)
-# - Kafka (зависит через Java → JVM → ...)
-# Время: < 1 секунда
+# Ожидаемый результат: 5 технологий, зависящих от Linux
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?technology ?techLabel (COUNT(?middle) AS ?depthLevel)
+SELECT DISTINCT ?dependent
 WHERE {
-    # Найти все технологии, зависящие от Linux
-    # (прямо или через промежуточные зависимости)
-    ?technology :dependsOn+ :Linux .
-    
-    ?technology rdfs:label ?techLabel .
-    
-    # Подсчитать глубину зависимости
-    OPTIONAL {
-        ?technology :dependsOn+ ?middle .
-        ?middle :dependsOn* :Linux .
-    }
+    ?tech ^:dependsOn+ :Linux ;        # Обратный транзитивный путь от :Linux
+          rdfs:label ?dependent .      # Получить название зависимой технологии
 }
-GROUP BY ?technology ?techLabel
-ORDER BY ?depthLevel ?techLabel
+ORDER BY ?dependent                    # Сортировать по названию
+
+# Пояснение:
+# Property Path ^ означает "обратное направление" (от объекта к субъекту).
+# ^:dependsOn+ читается как "один или более шагов в обратном направлении по :dependsOn".
+# Ищет все технологии, для которых есть путь зависимости до :Linux.
+# В SQL: рекурсивный CTE с обратным JOIN.
+# В Property Graph: обход по входящим рёбрам.
+# Критично для анализа влияния: если Linux недоступен, какие технологии пострадают?

@@ -1,31 +1,30 @@
-# RDFS Reasoning: Иерархия классов решений
+# Иерархия классов (RDFS Reasoning)
 #
-# Демонстрация автоматического вывода типов через rdfs:subClassOf
+# Продемонстрировать автоматический вывод типов через rdfs:subClassOf.
 #
-# Определили:
-# :TechnicalDecision rdfs:subClassOf :ArchitecturalDecision
-# :DatabaseDecision rdfs:subClassOf :TechnicalDecision
-#
-# Теперь запрос "все архитектурные решения" автоматически
-# включает технические И специализированные решения!
-#
-# В SQL: таблицы наследования или сложные UNION'ы
-# В RDF: естественная иерархия с автоматическим выводом
-#
-# Ожидаемый результат: 27 строк (6 ADR со всеми их типами, включая выведенные)
-# Примеры:
-#   ADR-001 (Kubernetes) → :ADR, :ArchitecturalDecision, :TechnicalDecision, :InfrastructureDecision
-#   ADR-004 (PostgreSQL) → :ADR, :ArchitecturalDecision, :TechnicalDecision, :DatabaseDecision, :SecurityDecision
-# Время: < 1 секунды
+# Ожидаемый результат: 7 пар (тип, супертип) для каждого ADR
+# Примечание: Каждый ADR является и :ADR, и :ArchitecturalDecision
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?adrLabel ?type ?typeLabel WHERE {
-    ?adr a :ArchitecturalDecision ;
-         rdfs:label ?adrLabel ;
-         a ?type .
-    
-    OPTIONAL { ?type rdfs:label ?typeLabel }
+SELECT ?adr ?type
+WHERE {
+    ?adr a :ArchitecturalDecision ;    # Искать экземпляры родительского класса
+         a ?type .                     # Получить все типы (включая выведенные)
 }
-ORDER BY ?adrLabel ?type
+ORDER BY ?adr ?type                    # Сортировать по ADR и типу
+
+# Пояснение:
+# В онтологии определено: :ADR rdfs:subClassOf :ArchitecturalDecision
+# GraphDB с включённым RDFS reasoning автоматически выводит:
+# если (?x a :ADR), то (?x a :ArchitecturalDecision)
+# 
+# Каждый ADR имеет оба типа:
+# - Явно заявленный: :ADR
+# - Автоматически выведенный: :ArchitecturalDecision
+# 
+# В SQL: потребовались бы триггеры, представления или сложная нормализация.
+# В Property Graph: дублирование меток или отдельные узлы.
+# В RDF с reasoning: автоматическая дедукция на основе онтологии!

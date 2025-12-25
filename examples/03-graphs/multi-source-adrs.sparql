@@ -1,25 +1,27 @@
 # ADR из нескольких источников
 #
 # Найти ADR, задокументированные более чем в одном месте.
-# Может указывать на хорошо задокументированные решения ИЛИ на противоречивую информацию.
-#
-# В SQL: сложный GROUP BY с подзапросами
-# В SPARQL: COUNT(DISTINCT ?source) с HAVING - естественный способ
 #
 # Ожидаемый результат: 2 ADR (ADR-007, ADR-008)
-# Время: < 1 секунды
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?adr ?label (COUNT(DISTINCT ?source) AS ?sourceCount)
+SELECT ?adr ?label (COUNT(DISTINCT ?source) AS ?sourceCount)  # Подсчёт уникальных источников
 WHERE {
-    GRAPH ?source {
-        ?adr a :ADR ;
-             rdfs:label ?label .
+    GRAPH ?source {                    # Искать во всех графах
+        ?adr a :ADR ;                  # Найти ADR
+             rdfs:label ?label .       # Получить название
     }
 }
-GROUP BY ?adr ?label
-HAVING (?sourceCount > 1)
-ORDER BY DESC(?sourceCount)
+GROUP BY ?adr ?label                   # Группировать по ADR
+HAVING (?sourceCount > 1)              # Оставить только с >1 источником
+ORDER BY DESC(?sourceCount)            # Сортировать от большего к меньшему
 
+# Пояснение:
+# Может указывать на хорошо задокументированные решения ИЛИ на противоречивую информацию.
+# COUNT(DISTINCT ?source) подсчитывает количество уникальных источников для каждого ADR.
+# HAVING фильтрует группы, оставляя только те, где источников больше одного.
+# В SQL потребовался бы сложный GROUP BY с подзапросами.
+# В Property Graph: подсчёт связей с узлами-источниками.

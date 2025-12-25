@@ -1,45 +1,40 @@
-# Полный граф зависимостей до 3 уровней
+# Граф зависимостей (до 3 уровней)
 #
-# Строит полную карту зависимостей для визуализации.
-# Используем UNION для явного указания глубины 1, 2 и 3 уровня.
+# Построить полный граф зависимостей с явным указанием глубины.
 #
-# В SQL: невозможно выразить элегантно!
-# В SPARQL: property paths с явным указанием уровней через UNION
-#
-# Ожидаемый результат: 256 пар технология→зависимость до 3 уровней глубины
-# Время: < 1 секунды
+# Ожидаемый результат: 15 связей (уровни 1, 2, 3)
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?techLabel ?depLabel ?depthLevel
+SELECT ?from ?to ?depth
 WHERE {
-    # Технология должна быть использована в ADR
-    ?adr :decidesTechnology ?tech .
-    ?tech rdfs:label ?techLabel .
-    
-    # Найти зависимости на глубину от 1 до 3 уровней (используем альтернативные пути)
     {
-        ?tech :dependsOn ?dep .
-        ?dep rdfs:label ?depLabel .
-        BIND(1 AS ?depthLevel)
-    } UNION {
-        ?tech :dependsOn/:dependsOn ?dep .
-        ?dep rdfs:label ?depLabel .
-        BIND(2 AS ?depthLevel)
-    } UNION {
-        ?tech :dependsOn/:dependsOn/:dependsOn ?dep .
-        ?dep rdfs:label ?depLabel .
-        BIND(3 AS ?depthLevel)
+        ?fromTech :dependsOn ?toTech .           # Уровень 1: прямая зависимость
+        BIND(1 AS ?depth)                        # Глубина = 1
     }
+    UNION
+    {
+        ?fromTech :dependsOn/:dependsOn ?toTech . # Уровень 2: цепочка из 2 шагов
+        BIND(2 AS ?depth)                         # Глубина = 2
+    }
+    UNION
+    {
+        ?fromTech :dependsOn/:dependsOn/:dependsOn ?toTech . # Уровень 3: цепочка из 3 шагов
+        BIND(3 AS ?depth)                                     # Глубина = 3
+    }
+    
+    ?fromTech rdfs:label ?from .                 # Название технологии-источника
+    ?toTech rdfs:label ?to .                     # Название технологии-назначения
 }
-ORDER BY ?techLabel ?depthLevel ?depLabel
+ORDER BY ?from ?depth                            # Сортировать по источнику и глубине
 
-# Этот запрос создаёт данные для визуализации:
-# Kafka → Java (уровень 1)
-# Kafka → Zookeeper (уровень 1)
-# Kafka → JVM (уровень 2, через Java)
-# ...
-#
-# Можно импортировать в Gephi, Cytoscape или D3.js для визуализации
-
+# Пояснение:
+# Property Path / означает "следовать по связи" (аналог JOIN в SQL).
+# :dependsOn/:dependsOn - два последовательных шага по :dependsOn.
+# :dependsOn/:dependsOn/:dependsOn - три последовательных шага.
+# UNION объединяет все три уровня в один результат.
+# Полезно для визуализации и понимания сложных архитектурных зависимостей.
+# В SQL: рекурсивные CTE с ограничением глубины.
+# В Property Graph: обход в ширину с контролем глубины.

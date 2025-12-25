@@ -1,24 +1,24 @@
 # ADR для конкретной технологии
 #
 # Найти все архитектурные решения, касающиеся PostgreSQL.
-# Можно заменить :PostgreSQL на :Kafka или другие технологии.
-#
-# В SQL: WHERE technology = 'PostgreSQL'
-# В SPARQL: прямое указание URI технологии в паттерне
 #
 # Ожидаемый результат: 4 ADR (ADR-002, ADR-004, ADR-005, ADR-008)
-# Время: < 1 секунды
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?adr ?label ?status ?confidence
 WHERE {
-    ?adr a :ADR ;
-         rdfs:label ?label ;
-         :decidesTechnology :PostgreSQL ;
-         :hasStatus ?status ;
-         :hasConfidence ?confidence .
+    ?adr a :ADR ;                      # Найти все ADR
+         rdfs:label ?label ;           # Получить название
+         :decidesTechnology :PostgreSQL ;  # Фильтр: только PostgreSQL
+         :hasStatus ?status ;          # Получить статус
+         :hasConfidence ?confidence .  # Получить уровень уверенности
 }
-ORDER BY DESC(?confidence)
+ORDER BY DESC(?confidence)             # Сортировать по уверенности (выше = лучше)
 
+# Пояснение:
+# Можно заменить :PostgreSQL на :Kafka или другие технологии.
+# В SQL: WHERE technology_id = 'PostgreSQL'
+# В SPARQL: прямое указание URI технологии в паттерне.

@@ -1,21 +1,21 @@
 # Список всех технологий
 #
-# Получить все технологии, упомянутые в наборе данных.
-# Используем DISTINCT для исключения дубликатов.
-#
-# В SQL: SELECT DISTINCT technology FROM technologies
-# В SPARQL: DISTINCT работает аналогично
+# Получить все уникальные технологии из набора данных.
 #
 # Ожидаемый результат: 7 технологий (Kafka, PostgreSQL, Redis, MongoDB, Kubernetes, Docker, ServiceMesh)
-# Время: < 1 секунды
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT DISTINCT ?technology ?label
+SELECT DISTINCT ?technology ?label  # DISTINCT исключает дубликаты
 WHERE {
-    ?technology a :Technology ;
-                rdfs:label ?label .
+    ?technology a :Technology ;     # Найти все сущности типа :Technology
+                rdfs:label ?label . # Получить их названия
 }
-ORDER BY ?label
+ORDER BY ?label                     # Сортировать по алфавиту
 
+# Пояснение:
+# DISTINCT исключает дубликаты из результата.
+# В SQL: SELECT DISTINCT technology FROM technologies
+# В SPARQL: DISTINCT работает аналогично.

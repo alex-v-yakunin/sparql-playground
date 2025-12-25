@@ -1,78 +1,59 @@
-# Сложные паттерны: BIND, VALUES, MINUS, EXISTS
+# Сложные SPARQL-паттерны
 #
-# Демонстрация продвинутых возможностей SPARQL.
-# Комбинация нескольких техник в одном запросе для анализа зрелости ADR.
+# Демонстрация продвинутых возможностей: BIND, VALUES, MINUS, EXISTS.
 #
-# В SQL: потребуется множество подзапросов и CASE WHEN
-# В SPARQL: естественная комбинация паттернов и функций
-#
-# Ожидаемый результат: 9 ADR с оценкой зрелости (maturity score 0-100)
-# Время: < 1 секунды
+# Ожидаемый результат: ADR с заданными статусами, имеющие системный контекст, без Redis
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?adrLabel ?techLabel 
-       ?confidence ?hasEvidence ?hasVoting ?maturityScore
+SELECT ?adr ?label ?technology ?confidence ?hasEvidence
 WHERE {
-    # VALUES: ограничить поиск конкретными статусами
-    VALUES ?status { :Accepted :Proposed }
+    VALUES ?targetStatus { :Accepted :Proposed }  # Ограничить статусы списком
     
-    ?adr :hasStatus ?status ;
-         :decidesTechnology ?tech ;
-         rdfs:label ?adrLabel .
+    ?adr a :ADR ;                      # Найти все ADR
+         rdfs:label ?label ;           # Получить название
+         :hasStatus ?targetStatus ;    # Фильтр: только указанные статусы
+         :decidesTechnology ?tech ;    # Получить технологию
+         :hasConfidence ?confidence .  # Получить уверенность
     
-    ?tech rdfs:label ?techLabel .
+    ?tech rdfs:label ?technology .     # Название технологии
     
-    # EXISTS: проверка наличия доказательств
-    BIND(EXISTS {
-        ?stmt rdf:subject ?adr ;
-              :evidenceSource ?evidence .
-    } AS ?hasEvidence)
-    
-    # EXISTS: проверка наличия голосования
-    BIND(EXISTS {
-        ?stmt rdf:subject ?adr ;
-              :votingResult ?voting .
-    } AS ?hasVoting)
-    
-    # Получить confidence (если есть)
-    OPTIONAL {
-        ?stmt rdf:subject ?adr ;
-              :confidence ?confidence .
+    FILTER EXISTS {                    # Проверить наличие системного контекста
+        ?adr :appliesTo ?system .      # ADR должен быть привязан к системе
     }
     
-    # BIND: вычислить maturity score
-    BIND(
-        (IF(?hasEvidence, 40, 0) +
-         IF(?hasVoting, 30, 0) +
-         IF(BOUND(?confidence), ?confidence * 30, 0))
-        AS ?maturityScore
+    MINUS {                            # Исключить Redis
+        ?adr :decidesTechnology :Redis . # Убрать ADR о Redis
+    }
+    
+    BIND(                              # Вычислить наличие доказательств
+        EXISTS {
+            ?statement a <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> ;
+                       <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> ?adr ;
+                       :evidenceSource ?source .
+        }
+        AS ?hasEvidence                # Присвоить результат переменной
     )
-    
-    # MINUS: исключить deprecated решения
-    MINUS {
-        ?adr :hasStatus :Deprecated .
-    }
-    
-    # MINUS: исключить решения без команды-владельца
-    MINUS {
-        FILTER NOT EXISTS { ?adr :ownedBy ?team }
-    }
 }
-ORDER BY DESC(?maturityScore)
+ORDER BY DESC(?confidence)             # Сортировать по уверенности (убывание)
 
-# Этот запрос демонстрирует:
-# - VALUES для ограничения значений
-# - EXISTS для проверки наличия данных
-# - BIND для вычислений
-# - MINUS для исключения паттернов
-# - Комбинацию условий
-#
-# Maturity Score:
-# - 40 баллов за доказательства
-# - 30 баллов за голосование
-# - до 30 баллов за уверенность
-# Макс: 100 баллов
-
+# Пояснение:
+# Демонстрирует четыре продвинутых возможности SPARQL:
+# 
+# 1. VALUES - задаёт список допустимых значений (IN в SQL)
+#    VALUES ?targetStatus { :Accepted :Proposed }
+# 
+# 2. FILTER EXISTS - проверяет наличие паттерна
+#    Оставляет только ADR с системным контекстом
+# 
+# 3. MINUS - исключает результаты, соответствующие паттерну
+#    Убирает все ADR о Redis из результатов
+# 
+# 4. BIND с EXISTS - создаёт вычисляемую переменную
+#    Проверяет наличие доказательств для каждого ADR
+# 
+# В SQL: комбинация WHERE IN, EXISTS, NOT IN и подзапросов.
+# В Property Graph: фильтры на узлах и рёбрах.
+# В SPARQL: декларативный и выразительный синтаксис!

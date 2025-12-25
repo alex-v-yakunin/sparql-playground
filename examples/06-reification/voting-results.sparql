@@ -1,59 +1,37 @@
-# Результаты голосования по архитектурным решениям
+# Результаты голосования по ADR
 #
-# Reification позволяет хранить сложные метаданные,
-# включая результаты голосования команды
+# Проанализировать, как команда голосовала за архитектурные решения.
 #
-# Blank nodes внутри reified statements для структурированных данных
-# 
-# В SQL: ещё одна таблица voting_results с foreign keys
-# В RDF: вложенная структура данных естественным образом
-#
-# Ожидаемый результат: 4 ADR со статистикой голосований
-# - ADR-007 (Kubernetes): 100% одобрения
-# - ADR-005 (PostgreSQL): 100% одобрения
-# - ADR-002 (PostgreSQL): 90% одобрения
-# - ADR-001 (Kafka): 73% одобрения
-# Время: < 1 секунды
+# Ожидаемый результат: 1 ADR с результатами голосования (ADR-001: 75% за)
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?adrLabel ?techLabel 
-       ?inFavor ?against ?abstain ?totalVoters
-       ?approvalRate ?status
+SELECT ?adrLabel ?votesFor ?votesAgainst ?totalVotes ?approvalRate
 WHERE {
-    # Найти решения с результатами голосования
-    ?stmt a rdf:Statement ;
-          rdf:subject ?adr ;
-          rdf:predicate :decidesTechnology ;
-          rdf:object ?tech ;
-          :votingResult ?result .
+    ?statement a rdf:Statement ;       # Найти реифицированное утверждение
+               rdf:subject ?adr ;      # О каком ADR
+               rdf:predicate :hasStatus ; # Предикат: статус
+               rdf:object :Accepted ;     # Объект: принято
+               :votingResult ?voting .    # Результат голосования (blank node)
     
-    # Извлечь результаты голосования из blank node
-    ?result :inFavor ?inFavor ;
-            :against ?against ;
-            :abstain ?abstain ;
-            :totalVoters ?totalVoters .
+    ?voting :votesFor ?votesFor ;      # Голосов "за"
+            :votesAgainst ?votesAgainst . # Голосов "против"
     
-    ?adr rdfs:label ?adrLabel ;
-         :hasStatus ?statusVal .
-    ?tech rdfs:label ?techLabel .
-    ?statusVal rdfs:label ?status .
+    ?adr rdfs:label ?adrLabel .        # Название ADR
     
-    # Вычислить процент одобрения
-    BIND((?inFavor / ?totalVoters * 100) AS ?approvalRate)
+    BIND(?votesFor + ?votesAgainst AS ?totalVotes)  # Вычислить общее количество
+    BIND(?votesFor * 100.0 / ?totalVotes AS ?approvalRate) # Вычислить процент одобрения
 }
-ORDER BY DESC(?approvalRate)
+ORDER BY DESC(?approvalRate)           # Сортировать от высшего к низшему
 
-# Результат:
-# ADR-007 | Kubernetes | 11 | 0 | 0 | 11 | 100% | Accepted
-# ADR-005 | PostgreSQL | 10 | 0 | 0 | 10 | 100% | Accepted  
-# ADR-002 | PostgreSQL |  9 | 0 | 1 | 10 |  90% | Accepted
-# ADR-001 | Kafka      |  8 | 1 | 2 | 11 |  73% | Accepted
-#
-# Можно анализировать:
-# - Консенсус vs спорные решения
-# - Корреляцию между % одобрения и confidence score
-# - Паттерны голосования по командам
-
+# Пояснение:
+# Демонстрирует сложные метаданные через reification и blank nodes.
+# ?voting - анонимный узел (blank node) с детальными данными голосования.
+# BIND создаёт вычисляемые переменные (?totalVotes, ?approvalRate).
+# Критично для демократических процессов принятия решений.
+# В SQL: таблица voting_results с подзапросами и вычисляемыми полями.
+# В Property Graph: вложенные свойства или связанные мета-узлы.
+# В RDF: естественное моделирование через reification и blank nodes.

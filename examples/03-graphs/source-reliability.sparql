@@ -1,28 +1,27 @@
 # Анализ надёжности источников данных
 #
 # Рассчитать средний уровень уверенности для каждого источника данных.
-# Помогает оценить, какие источники предоставляют данные более высокого качества.
 #
-# В SQL: SELECT source, AVG(confidence) FROM ... GROUP BY source
-# В SPARQL: агрегация по именованным графам - уникальная возможность!
-#
-# Ожидаемый результат: 3 источника с их средней уверенностью
-#   :adr-registry     ~0.94 (наивысший)
-#   :confluence       ~0.76 (средний)
-#   :interview-notes  ~0.54 (низкий)
-# Время: < 1 секунды
+# Ожидаемый результат: 3 источника (adr-registry: ~0.94, confluence: ~0.76, interview-notes: ~0.54)
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 
 SELECT ?source 
-       (AVG(?confidence) AS ?avgConfidence)
-       (COUNT(?adr) AS ?adrCount)
+       (AVG(?confidence) AS ?avgConfidence)    # Средняя уверенность по источнику
+       (COUNT(?adr) AS ?adrCount)              # Количество ADR в источнике
 WHERE {
-    GRAPH ?source {
-        ?adr a :ADR ;
-             :hasConfidence ?confidence .
+    GRAPH ?source {                    # Для каждого именованного графа
+        ?adr a :ADR ;                  # Найти все ADR
+             :hasConfidence ?confidence .  # Получить уровень уверенности
     }
 }
-GROUP BY ?source
-ORDER BY DESC(?avgConfidence)
+GROUP BY ?source                       # Группировать по источнику
+ORDER BY DESC(?avgConfidence)          # Сортировать от лучшего к худшему
 
+# Пояснение:
+# Помогает оценить, какие источники предоставляют данные более высокого качества.
+# Агрегация по именованным графам - уникальная возможность SPARQL.
+# AVG вычисляет среднее значение уверенности для каждого источника.
+# В SQL: SELECT source, AVG(confidence), COUNT(*) FROM ... GROUP BY source
+# В Property Graph: агрегация по меткам/свойствам узлов.

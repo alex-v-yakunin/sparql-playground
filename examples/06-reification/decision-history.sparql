@@ -1,62 +1,36 @@
-# История изменения решений (что было отклонено и почему)
+# История отклонённых решений
 #
-# Reification позволяет отслеживать полную историю решений:
-# - Когда было предложено
-# - Кто предложил
-# - Когда отклонено
-# - Кто отклонил
-# - Почему отклонено
+# Отследить историю изменений статуса ADR (аудит).
 #
-# В SQL: сложная временная таблица с версионированием
-# В RDF: естественная концепция через reification
-#
-# Ожидаемый результат: 1 отклонённое решение с полной историей
-# - ADR-004 (MongoDB) → отклонено → заменено на ADR-005 (PostgreSQL)
-# Время: < 1 секунды
+# Ожидаемый результат: 1 запись (ADR-004 был Accepted → Deprecated)
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?adrLabel ?techLabel 
-       ?proposedBy ?proposedDate 
-       ?rejectedBy ?rejectedDate ?rejectionReason
-       ?supersededByLabel
+SELECT ?adrLabel ?oldStatus ?newStatus ?changedBy ?changedOn ?reason
 WHERE {
-    # Найти отклонённые решения
-    ?stmt a rdf:Statement ;
-          rdf:subject ?adr ;
-          rdf:predicate :decidesTechnology ;
-          rdf:object ?tech ;
-          # Первоначальное предложение
-          :statedBy ?proposer ;
-          :statedOn ?proposedDate ;
-          # Отклонение
-          :rejectedOn ?rejectedDate ;
-          :rejectedBy ?rejecter ;
-          :rejectionReason ?rejectionReason .
+    ?statement a rdf:Statement ;       # Найти реифицированное утверждение
+               rdf:subject ?adr ;      # Субъект: о каком ADR утверждение
+               rdf:predicate :hasStatus ; # Предикат: свойство :hasStatus
+               rdf:object ?newStatus ;    # Объект: новый статус
+               :previousValue ?oldStatus ; # Предыдущее значение статуса
+               :statedBy ?person ;         # Кто изменил
+               :statedOn ?changedOn ;      # Когда изменил
+               :changeReason ?reason .     # Причина изменения
     
-    # Читаемые имена
-    ?adr rdfs:label ?adrLabel .
-    ?tech rdfs:label ?techLabel .
-    ?proposer rdfs:label ?proposedBy .
-    ?rejecter rdfs:label ?rejectedBy .
-    
-    # Чем заменено (если есть)
-    OPTIONAL {
-        ?stmt :supersededBy ?newStmt .
-        ?newStmt rdf:subject ?newAdr .
-        ?newAdr rdfs:label ?supersededByLabel .
-    }
+    ?adr rdfs:label ?adrLabel .        # Название ADR
+    ?person rdfs:label ?changedBy .    # Имя человека
 }
-ORDER BY ?rejectedDate
+ORDER BY ?changedOn                    # Сортировать по дате изменения
 
-# Результат:
-# ADR-004 | MongoDB | Иван Петров | 2024-01-10 | 
-#         Мария Сидорова | 2024-06-20 | 
-#         "Проблемы производительности в production" |
-#         ADR-005 (PostgreSQL)
-#
-# Это показывает полную audit trail решений!
-# В регулируемых индустриях (finance, healthcare) это критично
-
+# Пояснение:
+# Reification позволяет делать утверждения об утверждениях.
+# Структура: rdf:subject, rdf:predicate, rdf:object описывают исходный триплет.
+# Дополнительные свойства (:previousValue, :statedBy, :statedOn, :changeReason)
+# добавляют метаданные к изменению.
+# Критично для аудита и комплаенса: кто, когда и почему изменил статус.
+# В SQL: таблица audit_log с триггерами.
+# В Property Graph: мета-рёбра или гипергрифы.
+# В RDF: встроенная поддержка через reification.

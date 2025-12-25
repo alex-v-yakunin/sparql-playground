@@ -1,51 +1,34 @@
-# Альтернативные пути в графе зависимостей
+# Альтернативные пути зависимостей
 #
-# Оператор | в property paths означает "ИЛИ".
-# Можно навигировать по разным типам отношений одновременно.
+# Найти отношения между технологиями через разные типы зависимостей.
 #
-# В SQL: несколько UNION запросов
-# В SPARQL: естественная навигация по графу через UNION паттернов
-#
-# Ожидаемый результат: 39 связей между технологиями разных типов
-# Время: < 1 секунды
+# Ожидаемый результат: 5 связей с типом отношения
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT DISTINCT ?tech1Label ?relationshipType ?tech2Label
+SELECT ?from ?to ?relationType
 WHERE {
-    ?tech1 rdfs:label ?tech1Label .
-    ?tech2 rdfs:label ?tech2Label .
-    
-    # Найти любой из типов связей между технологиями
     {
-        ?tech1 :dependsOn ?tech2 .
-        BIND("зависит от" AS ?relationshipType)
+        ?fromTech :dependsOn ?toTech .           # Прямая зависимость
+        BIND("direct dependency" AS ?relationType)  # Присвоить тип отношения
     }
-    UNION
+    UNION                                        # ИЛИ
     {
-        ?tech1 :conflictsWith ?tech2 .
-        BIND("конфликтует с" AS ?relationshipType)
-    }
-    UNION
-    {
-        ?tech1 :hasAlternative ?tech2 .
-        BIND("альтернатива" AS ?relationshipType)
+        ?fromTech :requiresInfrastructure ?toTech .  # Требование инфраструктуры
+        BIND("infrastructure" AS ?relationType)      # Присвоить тип отношения
     }
     
-    FILTER(?tech1 != ?tech2)  # Исключить самоссылки
+    ?fromTech rdfs:label ?from .                 # Название технологии-источника
+    ?toTech rdfs:label ?to .                     # Название технологии-назначения
 }
-ORDER BY ?tech1Label ?relationshipType
+ORDER BY ?from ?to                               # Сортировать по обоим технологиям
 
-# Можно также использовать property path с | напрямую:
-# ?tech1 (:dependsOn|:conflictsWith|:hasAlternative)+ ?tech2
-#
-# Это найдёт ВСЕ возможные связи (включая транзитивные)
-# через любую комбинацию этих отношений
-
-# Результат показывает полную карту взаимосвязей технологий:
-# - Kafka зависит от Java
-# - Kafka конфликтует с RabbitMQ
-# - Kafka имеет альтернативу ApachePulsar
-# - и т.д.
-
+# Пояснение:
+# Демонстрирует гибкость графовых запросов для навигации по разным типам связей.
+# UNION объединяет результаты двух паттернов (прямые зависимости и требования инфраструктуры).
+# BIND создаёт новую переменную с описанием типа отношения для каждого случая.
+# Эквивалент property path: ?fromTech (:dependsOn|:requiresInfrastructure) ?toTech
+# В SQL: два запроса с UNION ALL.
+# В Property Graph: несколько типов рёбер между узлами.

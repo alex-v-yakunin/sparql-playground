@@ -1,27 +1,29 @@
 # Анализ внедрения технологий
 #
-# Ранжировать технологии по количеству ADR, которые их выбирают,
-# и их средней уверенности.
+# Ранжировать технологии по количеству ADR и средней уверенности.
 #
-# В SQL: SELECT tech, COUNT(*), AVG(conf) FROM ... GROUP BY tech
-# В SPARQL: агрегация с вычисляемым полем trustScore
-#
-# Ожидаемый результат: 6 технологий, ранжированных по степени внедрения
-# Время: < 1 секунды
+# Ожидаемый результат: 6 технологий с метриками внедрения
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?technology 
-       (COUNT(?adr) AS ?adrCount)
-       (AVG(?confidence) AS ?avgConfidence)
-       (COUNT(?adr) * AVG(?confidence) AS ?trustScore)
+       (COUNT(?adr) AS ?adrCount)               # Количество решений
+       (AVG(?confidence) AS ?avgConfidence)     # Средняя уверенность
+       (COUNT(?adr) * AVG(?confidence) AS ?trustScore)  # Комбинированный показатель
 WHERE {
-    ?adr :decidesTechnology ?tech ;
-         :hasConfidence ?confidence .
+    ?adr :decidesTechnology ?tech ;    # ADR решает использовать технологию
+         :hasConfidence ?confidence .  # Получить уровень уверенности
     
-    ?tech rdfs:label ?technology .
+    ?tech rdfs:label ?technology .     # Получить название технологии
 }
-GROUP BY ?technology
-ORDER BY DESC(?trustScore)
+GROUP BY ?technology                   # Группировать по технологии
+ORDER BY DESC(?trustScore)             # Сортировать по trustScore (убывание)
 
+# Пояснение:
+# trustScore = количество ADR × средняя уверенность.
+# Позволяет оценить степень внедрения технологии с учётом качества решений.
+# Вычисляем три метрики: количество решений, среднюю уверенность и комбинированный показатель.
+# В SQL: SELECT tech, COUNT(*), AVG(conf), COUNT(*) * AVG(conf) FROM ... GROUP BY tech
+# В Property Graph: агрегация по входящим рёбрам к узлам технологий.

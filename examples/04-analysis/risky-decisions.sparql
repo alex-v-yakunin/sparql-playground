@@ -1,31 +1,33 @@
 # Рискованные архитектурные решения
 #
 # Найти принятые ADR с низкой уверенностью (<0.70).
-# Эти решения в продакшене, но неопределённые - требуют проверки!
-#
-# В SQL: WHERE status = 'Accepted' AND confidence < 0.70
-# В SPARQL: комбинация фильтрации по URI и FILTER с числовым сравнением
 #
 # Ожидаемый результат: 1 ADR (ADR-008 с уверенностью 0.62 из interview-notes)
 # Примечание: Один ADR может иметь разную уверенность в разных источниках
-# Время: < 1 секунды
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?adr ?label ?technology ?confidence ?source
 WHERE {
-    GRAPH ?source {
-        ?adr a :ADR ;
-             rdfs:label ?label ;
-             :hasStatus :Accepted ;
-             :decidesTechnology ?tech ;
-             :hasConfidence ?confidence .
+    GRAPH ?source {                    # Учитываем источник данных
+        ?adr a :ADR ;                  # Найти все ADR
+             rdfs:label ?label ;       # Получить название
+             :hasStatus :Accepted ;    # Фильтр: только принятые решения
+             :decidesTechnology ?tech ;    # Получить технологию
+             :hasConfidence ?confidence .  # Получить уровень уверенности
     }
     
-    ?tech rdfs:label ?technology .
+    ?tech rdfs:label ?technology .     # Получить название технологии
     
-    FILTER(?confidence < 0.70)
+    FILTER(?confidence < 0.70)         # Фильтр: низкая уверенность
 }
-ORDER BY ?confidence
+ORDER BY ?confidence                   # Сортировать от низшей к высшей
 
+# Пояснение:
+# Эти решения в продакшене, но неопределённые - требуют проверки!
+# Комбинируем фильтрацию по статусу (:Accepted) и числовому условию (confidence < 0.70).
+# Запрос учитывает источник данных через GRAPH.
+# В SQL: WHERE status = 'Accepted' AND confidence < 0.70
+# В Property Graph: фильтрация по свойствам узлов.

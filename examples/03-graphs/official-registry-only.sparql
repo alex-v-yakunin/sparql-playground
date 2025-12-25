@@ -1,27 +1,28 @@
 # ADR только из официального реестра
 #
 # Запрос только к официальному реестру ADR (источник наивысшего качества).
-# Используем GRAPH для выборки данных из конкретного именованного графа.
-#
-# В SQL: WHERE source_id = 'official'
-# В SPARQL: GRAPH :adr-registry { ... } - явное указание источника
 #
 # Ожидаемый результат: 4 ADR (ADR-001, ADR-002, ADR-005, ADR-007)
-# Время: < 1 секунды
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?adr ?label ?technology ?confidence
 WHERE {
-    GRAPH :adr-registry {
-        ?adr a :ADR ;
-             rdfs:label ?label ;
-             :decidesTechnology ?tech ;
-             :hasConfidence ?confidence .
+    GRAPH :adr-registry {              # Ограничить поиск конкретным графом
+        ?adr a :ADR ;                  # Найти все ADR в официальном реестре
+             rdfs:label ?label ;       # Получить название
+             :decidesTechnology ?tech ;    # Получить технологию
+             :hasConfidence ?confidence .  # Получить уровень уверенности
     }
     
-    ?tech rdfs:label ?technology .
+    ?tech rdfs:label ?technology .     # Получить название технологии (вне графа)
 }
-ORDER BY ?adr
+ORDER BY ?adr                          # Сортировать по URI
 
+# Пояснение:
+# Используем GRAPH для выборки данных из конкретного именованного графа.
+# GRAPH :adr-registry { ... } ограничивает поиск только этим источником.
+# В SQL: WHERE source_id = 'official'
+# В Property Graph: фильтрация по меткам или свойствам узлов.

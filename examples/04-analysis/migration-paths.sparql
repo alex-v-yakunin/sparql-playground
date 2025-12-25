@@ -1,13 +1,9 @@
 # Пути миграции технологий
 #
 # Найти ADR, которые заменяют другие ADR, показывая изменения технологий.
-# Полезно для понимания эволюции архитектуры.
 #
-# В SQL: сложный self-JOIN с двумя подзапросами
-# В SPARQL: естественное следование связям :supersedes
-#
-# Ожидаемый результат: 1 миграция (MongoDB → PostgreSQL для истории платежей)
-# Время: < 1 секунды
+# Ожидаемый результат: 1 миграция (MongoDB → PostgreSQL для Payment History)
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -15,15 +11,21 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ?oldADR ?oldLabel ?oldTech 
        ?newADR ?newLabel ?newTech
 WHERE {
-    ?newADR :supersedes ?oldADR .
+    ?newADR :supersedes ?oldADR .      # Новое решение заменяет старое
     
-    ?oldADR rdfs:label ?oldLabel ;
-            :decidesTechnology ?oldTechnology .
+    ?oldADR rdfs:label ?oldLabel ;     # Получить название старого ADR
+            :decidesTechnology ?oldTechnology .  # Получить старую технологию
     
-    ?newADR rdfs:label ?newLabel ;
-            :decidesTechnology ?newTechnology .
+    ?newADR rdfs:label ?newLabel ;     # Получить название нового ADR
+            :decidesTechnology ?newTechnology .  # Получить новую технологию
     
-    ?oldTechnology rdfs:label ?oldTech .
-    ?newTechnology rdfs:label ?newTech .
+    ?oldTechnology rdfs:label ?oldTech .  # Название старой технологии
+    ?newTechnology rdfs:label ?newTech .  # Название новой технологии
 }
 
+# Пояснение:
+# Полезно для понимания эволюции архитектуры.
+# Свойство :supersedes связывает новое решение со старым.
+# В SQL потребовался бы сложный self-JOIN с двумя подзапросами.
+# В SPARQL: естественное следование связям.
+# В Property Graph: аналогично - следование по рёбрам :supersedes.

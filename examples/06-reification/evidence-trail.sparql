@@ -1,71 +1,55 @@
-# Цепочка доказательств для архитектурных решений
+# След доказательств для решений
 #
-# Reification хранит не только КТО и КОГДА,
-# но и источники доказательств (evidence sources)
+# Отследить источники доказательств для архитектурных решений.
 #
-# Это критично для:
-# - Audit compliance
-# - Воспроизводимости решений
-# - Обоснования перед stakeholders
-#
-# В SQL: таблица evidence_links, но без контекста
-# В RDF: метаданные связаны напрямую с утверждением
-#
-# Ожидаемый результат: Решения с их доказательной базой
-# - ADR-001 | Kafka | Иван Петров | LoadTestResults | (URL)
-# - ADR-002 | PostgreSQL | Мария Сидорова | DatabaseBenchmark
-# - ADR-005 | PostgreSQL | Мария Сидорова | ProductionIncidentAnalysis
-# Время: < 1 секунда
+# Ожидаемый результат: 7 ADR с источниками доказательств (или без них)
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?adrLabel ?techLabel ?personName ?evidenceType ?evidenceURL
+SELECT ?adrLabel ?technology ?evidenceSource ?confidence
 WHERE {
-    ?stmt a rdf:Statement ;
-          rdf:subject ?adr ;
-          rdf:predicate :decidesTechnology ;
-          rdf:object ?tech ;
-          :statedBy ?person ;
-          :evidenceSource ?evidenceType .
+    ?statement a rdf:Statement ;       # Найти реифицированное утверждение
+               rdf:subject ?adr ;      # О каком ADR
+               rdf:predicate :decidesTechnology ; # Предикат: выбор технологии
+               rdf:object ?tech ;      # Какая технология
+               :confidence ?confidence . # Уровень уверенности
     
-    ?adr rdfs:label ?adrLabel .
-    ?tech rdfs:label ?techLabel .
-    ?person rdfs:label ?personName .
+    OPTIONAL {                         # Источник может отсутствовать
+        ?statement :evidenceSource ?evidenceSource . # Источник доказательства
+    }
     
-    # URL на доказательства (если есть)
-    OPTIONAL { ?stmt :evidenceURL ?evidenceURL }
+    ?adr rdfs:label ?adrLabel .        # Название ADR
+    ?tech rdfs:label ?technology .     # Название технологии
 }
-ORDER BY ?adrLabel
+ORDER BY ?adrLabel                     # Сортировать по названию ADR
 
-# ========================================
-# ДОПОЛНИТЕЛЬНЫЙ ЗАПРОС: Red Flags для Governance
-# ========================================
-# 
-# Найти решения БЕЗ доказательств (evidenceSource)
-# Раскомментируйте для проверки качества данных:
-#
-# SELECT ?adrLabel ?techLabel ?personName
+# Пояснение:
+# Reification позволяет хранить метаданные о решениях: уверенность, источники.
+# OPTIONAL означает, что ?evidenceSource может отсутствовать (будет NULL/unbound).
+# Критично для compliance: откуда мы знаем, что это правильное решение?
+# В SQL: таблица decisions_evidence с LEFT JOIN.
+# В Property Graph: свойства на рёбрах или мета-узлы.
+# В RDF: естественное моделирование через reification.
+
+# Дополнительный запрос: найти решения БЕЗ доказательств
+# Раскомментируйте следующий запрос:
+
+# SELECT ?adrLabel ?technology ?confidence
 # WHERE {
-#     ?stmt a rdf:Statement ;
-#           rdf:subject ?adr ;
-#           rdf:predicate :decidesTechnology ;
-#           rdf:object ?tech ;
-#           :statedBy ?person .
+#     ?statement a rdf:Statement ;       # Найти реифицированное утверждение
+#                rdf:subject ?adr ;      # О каком ADR
+#                rdf:predicate :decidesTechnology ; # Предикат: выбор технологии
+#                rdf:object ?tech ;      # Какая технология
+#                :confidence ?confidence . # Уровень уверенности
 #     
-#     ?adr rdfs:label ?adrLabel .
-#     ?tech rdfs:label ?techLabel .
-#     ?person rdfs:label ?personName .
+#     FILTER NOT EXISTS {                # Проверить отсутствие
+#         ?statement :evidenceSource ?source . # Источника доказательства
+#     }
 #     
-#     # ⚠️ Решение БЕЗ доказательств
-#     FILTER NOT EXISTS { ?stmt :evidenceSource ?evidence }
+#     ?adr rdfs:label ?adrLabel .        # Название ADR
+#     ?tech rdfs:label ?technology .     # Название технологии
 # }
-#
-# Ожидаемый результат:
-# - ADR-006 | Redis | Дмитрий Волков (⚠️ решение без доказательств)
-#
-# Это критично для governance:
-# - Решения должны быть обоснованы
-# - Без evidence = архитектурный долг
-# - Требует ревью и дополнения
+# ORDER BY ?confidence                   # Сортировать по уверенности

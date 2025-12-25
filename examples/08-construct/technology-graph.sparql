@@ -1,63 +1,50 @@
-# CONSTRUCT: Граф технологических зависимостей
+# Граф технологий с метаданными (CONSTRUCT)
 #
-# Создание графа для визуализации зависимостей технологий
-# Включает категории технологий и уровень зависимости
+# Построить граф технологий с зависимостями и метаданными для визуализации.
 #
-# Результат можно экспортировать в:
-# - Gephi (визуализация графов)
-# - Neo4j (графовая БД)
-# - D3.js (веб-визуализация)
-#
-# В SQL: невозможно создать граф - только таблицы
-# В SPARQL: CONSTRUCT генерирует полноценный RDF граф
-#
-# Ожидаемый результат: RDF граф с метаданными для визуализации
-# - Связи зависимостей до 3 уровней глубины
-# - Категории технологий
-# - Метки для отображения
-# Время: < 1 секунды
+# Ожидаемый результат: Граф с 7 технологиями, их зависимостями и свойствами
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 CONSTRUCT {
-    ?tech1 :dependsOn ?tech2 .
-    ?tech1 :category ?category1 .
-    ?tech2 :category ?category2 .
-    ?tech1 rdfs:label ?label1 .
-    ?tech2 rdfs:label ?label2 .
-    ?tech1 :depthLevel ?level .
+    ?tech rdfs:label ?label ;          # Название технологии
+          :usedBy ?adr ;               # Какие ADR используют эту технологию
+          :dependsOn ?dep ;            # Прямые зависимости
+          :dependsOnIndirectly ?indirectDep .  # Косвенные зависимости (глубина 2)
 }
 WHERE {
-    # Технология должна быть в ADR
-    ?adr :decidesTechnology ?tech1 .
-    ?tech1 rdfs:label ?label1 .
+    ?tech a :Technology ;              # Найти все технологии
+          rdfs:label ?label .          # Получить название
     
-    # Её зависимости (до 3 уровней через UNION)
-    {
-        ?tech1 :dependsOn ?tech2 .
-        ?tech2 rdfs:label ?label2 .
-        BIND(1 AS ?level)
-    } UNION {
-        ?tech1 :dependsOn/:dependsOn ?tech2 .
-        ?tech2 rdfs:label ?label2 .
-        BIND(2 AS ?level)
-    } UNION {
-        ?tech1 :dependsOn/:dependsOn/:dependsOn ?tech2 .
-        ?tech2 rdfs:label ?label2 .
-        BIND(3 AS ?level)
+    OPTIONAL {                         # ADR может не быть
+        ?adr :decidesTechnology ?tech . # Найти ADR, использующие технологию
     }
     
-    # Категории технологий
-    OPTIONAL { ?tech1 a ?category1 . FILTER(?category1 != :Technology) }
-    OPTIONAL { ?tech2 a ?category2 . FILTER(?category2 != :Technology) }
+    OPTIONAL {                         # Зависимости могут отсутствовать
+        ?tech :dependsOn ?dep .        # Прямые зависимости
+    }
+    
+    OPTIONAL {                         # Косвенные зависимости
+        ?tech :dependsOn/:dependsOn ?indirectDep .  # Глубина 2
+    }
 }
 
-# Новый граф содержит:
-# - Связи между технологиями
-# - Категории (MessageBroker, Database, etc.)
-# - Метки для отображения
-# - Уровень глубины для layout
-#
-# Импортируйте в Gephi для создания красивой визуализации!
-
+# Пояснение:
+# CONSTRUCT создаёт богатый граф для инструментов визуализации.
+# Включаем несколько типов связей:
+# - :usedBy - связь с ADR
+# - :dependsOn - прямые зависимости
+# - :dependsOnIndirectly - косвенные зависимости (глубина 2)
+# 
+# OPTIONAL гарантирует включение всех технологий, даже без связей.
+# Property Path :dependsOn/:dependsOn находит зависимости глубины 2.
+# 
+# Результат можно визуализировать в инструментах типа:
+# - Graphviz, Cytoscape, Gephi
+# - D3.js, vis.js для веб-визуализации
+# 
+# В SQL: множественные LEFT JOIN для создания денормализованной таблицы.
+# В Property Graph: projection с фильтрацией типов рёбер.
+# В SPARQL: CONSTRUCT естественно создаёт новые графы!

@@ -1,24 +1,24 @@
 # Подсчёт ADR по статусам
 #
-# Сколько архитектурных решений находится в каждом статусе?
-# Используем GROUP BY и агрегатную функцию COUNT.
-#
-# В SQL: SELECT status, COUNT(*) FROM adr GROUP BY status
-# В SPARQL: те же агрегатные функции, но работаем с графом
+# Подсчитать количество архитектурных решений в каждом статусе.
 #
 # Ожидаемый результат: 3 строки (Accepted: 6, Proposed: 1, Deprecated: 1)
-# Время: < 1 секунды
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?status ?statusLabel (COUNT(?adr) AS ?count)
+SELECT ?status ?statusLabel (COUNT(?adr) AS ?count)  # Агрегация: подсчёт ADR
 WHERE {
-    ?adr a :ADR ;
-         :hasStatus ?status .
+    ?adr a :ADR ;                   # Найти все ADR
+         :hasStatus ?status .       # Получить их статус
     
-    ?status rdfs:label ?statusLabel .
+    ?status rdfs:label ?statusLabel .  # Получить название статуса
 }
-GROUP BY ?status ?statusLabel
-ORDER BY DESC(?count)
+GROUP BY ?status ?statusLabel       # Группировать по статусу
+ORDER BY DESC(?count)               # Сортировать от большего к меньшему
 
+# Пояснение:
+# Используем GROUP BY для группировки по статусу и COUNT для подсчёта.
+# В SQL: SELECT status, COUNT(*) FROM adr GROUP BY status
+# В SPARQL: те же агрегатные функции, но работаем с графом.

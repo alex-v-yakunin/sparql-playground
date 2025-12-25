@@ -1,26 +1,26 @@
 # Устаревшие ADR
 #
 # Найти архитектурные решения, которые больше не актуальны.
-# Полезно для понимания, какие подходы были отклонены.
-#
-# В SQL: WHERE status = 'Deprecated'
-# В SPARQL: фильтрация по URI статуса :Deprecated
 #
 # Ожидаемый результат: 1 ADR (ADR-004: MongoDB for Payment History)
-# Время: < 1 секунды
+# Время выполнения: < 1 секунды
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?adr ?label ?technology ?confidence
 WHERE {
-    ?adr a :ADR ;
-         rdfs:label ?label ;
-         :hasStatus :Deprecated ;
-         :decidesTechnology ?tech ;
-         :hasConfidence ?confidence .
+    ?adr a :ADR ;                      # Найти все ADR
+         rdfs:label ?label ;           # Получить название
+         :hasStatus :Deprecated ;      # Фильтр: только устаревшие
+         :decidesTechnology ?tech ;    # Получить связанную технологию
+         :hasConfidence ?confidence .  # Получить уровень уверенности
     
-    ?tech rdfs:label ?technology .
+    ?tech rdfs:label ?technology .     # Получить название технологии
 }
-ORDER BY ?adr
+ORDER BY ?adr                          # Сортировать по URI
 
+# Пояснение:
+# Полезно для понимания, какие подходы были отклонены.
+# В SQL: WHERE status = 'Deprecated'
+# В SPARQL: фильтрация по URI статуса :Deprecated.
