@@ -3,7 +3,8 @@
 # Find ADRs that don't specify which system they apply to.
 # Demonstrates Open World Assumption - absence doesn't mean false.
 #
-# Expected: 3 ADRs (ADR-006, ADR-007, and partially ADR-008)
+# Expected: 2 ADRs (ADR-006 without system, ADR-007 with 2 technologies)
+# Note: ADR-007 appears twice due to multiple technologies (Kubernetes + Docker)
 # Time: < 1 second
 
 PREFIX : <http://example.org/adr#>
