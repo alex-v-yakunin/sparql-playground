@@ -38,6 +38,15 @@
 :MongoDB :dependsOn :Linux ;
          rdfs:comment "MongoDB требует Linux" .
 
+# ----- Циклическая зависимость (демонстрация) -----
+# ⚠️ АРХИТЕКТУРНЫЙ АНТИПАТТЕРН - для демонстрации обнаружения циклов!
+
+:ServiceMesh :dependsOn :Kubernetes ;
+             rdfs:comment "ServiceMesh развертывается на Kubernetes" .
+
+:Docker :dependsOn :ServiceMesh ;
+        rdfs:comment "⚠️ Demo cycle: Docker использует ServiceMesh для networking" .
+
 # Дополнительные низкоуровневые зависимости
 :Linux :dependsOn :Kernel .
 :Java :dependsOn :JVM .
@@ -120,6 +129,11 @@
          a :NoSQL ;
          a :DistributedSystem ;
          rdfs:label "MongoDB" .
+
+:ServiceMesh a :NetworkingTool ;
+             a :CloudNative ;
+             a :Observability ;
+             rdfs:label "Service Mesh (Istio/Linkerd)" .
 
 # ----- Вспомогательные технологии -----
 
