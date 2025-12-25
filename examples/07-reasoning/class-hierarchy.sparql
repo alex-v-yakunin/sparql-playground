@@ -12,7 +12,10 @@
 # В SQL: таблицы наследования или сложные UNION'ы
 # В RDF: естественная иерархия с автоматическим выводом
 #
-# Ожидаемый результат: ADR со всеми их типами (включая выведенные)
+# Ожидаемый результат: 6 ADR со всеми их типами (включая выведенные)
+# Примеры:
+#   ADR-001 (Kubernetes) → :ADR, :ArchitecturalDecision, :TechnicalDecision, :InfrastructureDecision
+#   ADR-004 (PostgreSQL) → :ADR, :ArchitecturalDecision, :TechnicalDecision, :DatabaseDecision, :SecurityDecision
 # Время: < 1 секунда
 
 PREFIX : <http://example.org/adr#>
@@ -26,12 +29,3 @@ SELECT ?adrLabel ?type ?typeLabel WHERE {
     OPTIONAL { ?type rdfs:label ?typeLabel }
 }
 ORDER BY ?adrLabel ?type
-
-# Результат покажет:
-# ADR-001 | :ADR | (базовый тип)
-# ADR-001 | :ArchitecturalDecision | (выведено)
-# ADR-001 | :TechnicalDecision | (прямой тип)
-# ADR-001 | :InfrastructureDecision | (прямой тип)
-#
-# Все типы доступны без дополнительных запросов!
-
