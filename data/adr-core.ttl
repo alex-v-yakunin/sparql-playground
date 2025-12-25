@@ -118,3 +118,32 @@
 :TeamData a :Team ;
     rdfs:label "Data Team" .
 
+# ========================================
+# RDFS REASONING: Инфраструктурные требования
+# ========================================
+# Демонстрация автоматического вывода через rdfs:subPropertyOf
+# 
+# Иерархия свойств (определена в adr-ontology.ttl):
+# :usesMicroservices rdfs:subPropertyOf :requiresOrchestration
+# :requiresOrchestration rdfs:subPropertyOf :requiresInfrastructure
+#
+# Запросы к :requiresInfrastructure автоматически найдут
+# всё, что использует :usesMicroservices или :requiresOrchestration!
+
+# ADR-001: Kafka для Order Service - использует микросервисы
+:ADR-001 :usesMicroservices :Kubernetes .
+# ^ Автоматически выводится:
+#   :ADR-001 :requiresOrchestration :Kubernetes (через subPropertyOf)
+#   :ADR-001 :requiresInfrastructure :Kubernetes (через транзитивность)
+
+# ADR-007: Kubernetes - использует контейнеры
+:ADR-007 :usesContainers :Docker .
+# ^ Автоматически выводится:
+#   :ADR-007 :requiresOrchestration :Docker
+#   :ADR-007 :requiresInfrastructure :Docker
+
+# ADR-003: Kafka для Analytics - требует распределенную систему
+:ADR-003 :requiresDistributedSystem :Kafka .
+# ^ Автоматически выводится:
+#   :ADR-003 :requiresInfrastructure :Kafka
+

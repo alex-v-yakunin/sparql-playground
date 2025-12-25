@@ -11,6 +11,9 @@
 # включает всё, что использует микросервисы!
 #
 # Ожидаемый результат: ADR с автоматически выведенными требованиями
+# - ADR-001: Kafka (через :usesMicroservices → выводится :requiresInfrastructure)
+# - ADR-003: Kafka (через :requiresDistributedSystem → выводится :requiresInfrastructure)
+# - ADR-007: Kubernetes (через :usesContainers → выводится :requiresInfrastructure)
 # Время: < 1 секунда
 
 PREFIX : <http://example.org/adr#>
@@ -23,12 +26,3 @@ SELECT ?adrLabel ?requirement ?value WHERE {
     BIND("требует инфраструктуру" AS ?requirement)
 }
 ORDER BY ?adrLabel
-
-# Этот запрос найдёт:
-# - ADR с прямым :requiresInfrastructure
-# - ADR с :requiresOrchestration (автоматически выводится!)
-# - ADR с :usesMicroservices (тоже автоматически!)
-#
-# В SQL для этого нужен триггер на INSERT/UPDATE
-# который вручную добавляет записи в таблицу requirements
-
