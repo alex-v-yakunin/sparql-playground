@@ -245,3 +245,21 @@ GRAPH :decision-timeline {
         :decisionsAccepted ( :ADR-001 :ADR-007 ) .
 }
 
+# ----- Reified statement БЕЗ evidenceSource (RED FLAG!) -----
+
+GRAPH :decision-metadata {
+    # ⚠️ ADR-006: Redis - решение БЕЗ доказательств!
+    # Это архитектурный "red flag" для governance
+    :stmt_adr006_redis a rdf:Statement ;
+        rdf:subject :ADR-006 ;
+        rdf:predicate :decidesTechnology ;
+        rdf:object :Redis ;
+        # Метаданные есть
+        :statedBy :person_DmitryVolkov ;
+        :statedOn "2024-12-10T16:00:00"^^xsd:dateTime ;
+        :confidence 0.65 .
+        # ⚠️ НО: :evidenceSource отсутствует!
+        # ⚠️ И :evidenceURL тоже нет!
+        # Это решение принято "на глазок" без доказательств
+}
+

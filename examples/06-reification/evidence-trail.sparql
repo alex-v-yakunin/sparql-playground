@@ -12,6 +12,9 @@
 # В RDF: метаданные связаны напрямую с утверждением
 #
 # Ожидаемый результат: Решения с их доказательной базой
+# - ADR-001 | Kafka | Иван Петров | LoadTestResults | (URL)
+# - ADR-002 | PostgreSQL | Мария Сидорова | DatabaseBenchmark
+# - ADR-005 | PostgreSQL | Мария Сидорова | ProductionIncidentAnalysis
 # Время: < 1 секунда
 
 PREFIX : <http://example.org/adr#>
@@ -36,28 +39,33 @@ WHERE {
 }
 ORDER BY ?adrLabel
 
-# Дополнительный запрос: найти решения БЕЗ доказательств
-# (red flag для governance!)
-
-# SELECT ?adrLabel ?techLabel WHERE {
+# ========================================
+# ДОПОЛНИТЕЛЬНЫЙ ЗАПРОС: Red Flags для Governance
+# ========================================
+# 
+# Найти решения БЕЗ доказательств (evidenceSource)
+# Раскомментируйте для проверки качества данных:
+#
+# SELECT ?adrLabel ?techLabel ?personName
+# WHERE {
 #     ?stmt a rdf:Statement ;
 #           rdf:subject ?adr ;
 #           rdf:predicate :decidesTechnology ;
-#           rdf:object ?tech .
+#           rdf:object ?tech ;
+#           :statedBy ?person .
 #     
 #     ?adr rdfs:label ?adrLabel .
 #     ?tech rdfs:label ?techLabel .
+#     ?person rdfs:label ?personName .
 #     
+#     # ⚠️ Решение БЕЗ доказательств
 #     FILTER NOT EXISTS { ?stmt :evidenceSource ?evidence }
 # }
-
-# Результат:
-# ADR-001 | Kafka | Иван Петров | LoadTestResults | https://confluence.../load-tests/kafka-2024-12
-# ADR-002 | PostgreSQL | Мария Сидорова | DatabaseBenchmark | (нет URL)
-# ADR-005 | PostgreSQL | Мария Сидорова | ProductionIncidentAnalysis | (нет URL)
 #
-# Это позволяет:
-# - Проверить обоснованность решений
-# - Найти решения без доказательств
-# - Построить граф источников знаний
-
+# Ожидаемый результат:
+# - ADR-006 | Redis | Дмитрий Волков (⚠️ решение без доказательств)
+#
+# Это критично для governance:
+# - Решения должны быть обоснованы
+# - Без evidence = архитектурный долг
+# - Требует ревью и дополнения
