@@ -48,39 +48,64 @@ repository_exists() {
 create_repository() {
     echo -e "${YELLOW}📦 Creating repository '$REPO_ID'...${NC}"
     
-    # Create repository config
-    local config='{
-  "@context": {
-    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-    "owlim": "http://www.ontotext.com/trree/owlim#",
-    "rep": "http://www.openrdf.org/config/repository#",
-    "sail": "http://www.openrdf.org/config/sail#",
-    "sr": "http://www.openrdf.org/config/repository/sail#"
-  },
-  "@id": "rep:'$REPO_ID'",
-  "@type": "rep:Repository",
-  "rep:repositoryID": "'$REPO_ID'",
-  "rdfs:label": "SPARQL Playground",
-  "rep:repositoryImpl": {
-    "@id": "_:node1",
-    "@type": "sr:SailRepository",
-    "sr:sailImpl": {
-      "@id": "_:node2",
-      "@type": "owlim:Sail"
-    }
-  }
-}'
+    # Create repository config in Turtle format (GraphDB Free Edition)
+    cat > /tmp/repo-config.ttl << 'EOCONFIG'
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rep: <http://www.openrdf.org/config/repository#>.
+@prefix sr: <http://www.openrdf.org/config/repository/sail#>.
+@prefix sail: <http://www.openrdf.org/config/sail#>.
+@prefix graphdb: <http://www.ontotext.com/config/graphdb#>.
+
+[] a rep:Repository ;
+    rep:repositoryID "REPO_ID_PLACEHOLDER" ;
+    rdfs:label "SPARQL Playground" ;
+    rep:repositoryImpl [
+        rep:repositoryType "graphdb:SailRepository" ;
+        sr:sailImpl [
+            sail:sailType "graphdb:Sail" ;
+            graphdb:base-URL "http://example.org/adr#" ;
+            graphdb:defaultNS "" ;
+            graphdb:entity-index-size "10000000" ;
+            graphdb:entity-id-size "32" ;
+            graphdb:imports "" ;
+            graphdb:repository-type "file-repository" ;
+            graphdb:ruleset "rdfsplus-optimized" ;
+            graphdb:storage-folder "REPO_ID_PLACEHOLDER" ;
+            graphdb:enable-context-index "true" ;
+            graphdb:enablePredicateList "true" ;
+            graphdb:in-memory-literal-properties "true" ;
+            graphdb:enable-literal-index "true" ;
+            graphdb:check-for-inconsistencies "false" ;
+            graphdb:disable-sameAs "false" ;
+            graphdb:query-timeout "0" ;
+            graphdb:query-limit-results "0" ;
+            graphdb:throw-QueryEvaluationException-on-timeout "false" ;
+            graphdb:read-only "false" ;
+        ]
+    ].
+EOCONFIG
     
-    echo "$config" | curl -sf -X POST \
-        -H "Content-Type: application/json" \
-        -d @- \
-        "$GRAPHDB_URL/rest/repositories" > /dev/null
+    # Replace placeholder with actual repo ID
+    sed -i.bak "s/REPO_ID_PLACEHOLDER/$REPO_ID/g" /tmp/repo-config.ttl
     
-    if [ $? -eq 0 ]; then
+    local response=$(curl -s -w "\n%{http_code}" -X POST \
+        -F "config=@/tmp/repo-config.ttl" \
+        "$GRAPHDB_URL/rest/repositories")
+    
+    local http_code=$(echo "$response" | tail -n1)
+    local body=$(echo "$response" | sed '$d')
+    
+    # Cleanup temp file
+    rm -f /tmp/repo-config.ttl /tmp/repo-config.ttl.bak
+    
+    if [ "$http_code" = "201" ] || [ "$http_code" = "200" ]; then
         echo -e "${GREEN}✓ Repository created successfully${NC}"
         return 0
     else
-        echo -e "${RED}✗ Failed to create repository${NC}"
+        echo -e "${RED}✗ Failed to create repository (HTTP $http_code)${NC}"
+        if [ -n "$body" ]; then
+            echo -e "${RED}Response: $body${NC}"
+        fi
         return 1
     fi
 }
@@ -100,16 +125,22 @@ load_rdf_file() {
     fi
     
     # Upload file
-    curl -sf -X POST \
+    local response=$(curl -s -w "\n%{http_code}" -X POST \
         -H "Content-Type: $content_type" \
         --data-binary "@$file" \
-        "$GRAPHDB_URL/repositories/$REPO_ID/statements" > /dev/null
+        "$GRAPHDB_URL/repositories/$REPO_ID/statements")
     
-    if [ $? -eq 0 ]; then
+    local http_code=$(echo "$response" | tail -n1)
+    local body=$(echo "$response" | sed '$d')
+    
+    if [ "$http_code" = "204" ] || [ "$http_code" = "200" ]; then
         echo -e "${GREEN}✓ Loaded $filename${NC}"
         return 0
     else
-        echo -e "${RED}✗ Failed to load $filename${NC}"
+        echo -e "${RED}✗ Failed to load $filename (HTTP $http_code)${NC}"
+        if [ -n "$body" ]; then
+            echo -e "${RED}Response: $body${NC}"
+        fi
         return 1
     fi
 }
@@ -121,15 +152,20 @@ verify_data() {
     local query="PREFIX : <http://example.org/adr#>
 SELECT (COUNT(*) as ?count) WHERE { ?s a :ADR }"
     
-    local result=$(curl -sf -X POST \
+    local result=$(curl -s -X POST \
         -H "Accept: application/sparql-results+json" \
         -H "Content-Type: application/x-www-form-urlencoded" \
         --data-urlencode "query=$query" \
         "$GRAPHDB_URL/repositories/$REPO_ID")
     
-    local count=$(echo "$result" | grep -o '"value":"[0-9]*"' | head -1 | grep -o '[0-9]*')
+    # Extract count value from JSON using grep and sed
+    local count=$(echo "$result" | grep -o '"value" : "[0-9]*"' | head -1 | sed 's/[^0-9]//g')
     
-    if [ "$count" = "8" ]; then
+    if [ -z "$count" ]; then
+        echo -e "${RED}✗ Data verification failed (could not parse response)${NC}"
+        echo -e "${YELLOW}Response: $result${NC}"
+        return 1
+    elif [ "$count" = "8" ]; then
         echo -e "${GREEN}✓ Data verification passed (8 ADRs found)${NC}"
         return 0
     else
@@ -172,14 +208,20 @@ main() {
     # Check if repository exists
     if repository_exists; then
         echo -e "${YELLOW}⚠ Repository '$REPO_ID' already exists${NC}"
-        read -p "Delete and recreate? (y/N): " -n 1 -r
-        echo
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            echo -e "${YELLOW}Deleting existing repository...${NC}"
-            curl -sf -X DELETE "$GRAPHDB_URL/rest/repositories/$REPO_ID" > /dev/null
-            create_repository
+        
+        # Check if running in interactive mode
+        if [ -t 0 ]; then
+            read -p "Delete and recreate? (y/N): " -n 1 -r
+            echo
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                echo -e "${YELLOW}Deleting existing repository...${NC}"
+                curl -s -X DELETE "$GRAPHDB_URL/rest/repositories/$REPO_ID" > /dev/null
+                create_repository
+            else
+                echo -e "${YELLOW}Using existing repository${NC}"
+            fi
         else
-            echo -e "${YELLOW}Using existing repository${NC}"
+            echo -e "${YELLOW}Using existing repository (non-interactive mode)${NC}"
         fi
     else
         create_repository
