@@ -1,6 +1,6 @@
 # 📚 SPARQL Examples Catalog
 
-**32 ready-to-use queries, organized by category**
+**32 production-ready queries organized by category**
 
 ---
 
@@ -24,7 +24,7 @@ To check all 32 examples automatically:
 ./scripts/test-queries.sh
 ```
 
-The script will execute each query and show test results.
+Executes all queries and reports test results.
 
 ---
 
@@ -40,7 +40,7 @@ The script will execute each query and show test results.
 | 4 | **Systems and owners** | Systems with their teams | `systems-and-owners.sparql` |
 | 5 | **Count by status** | ADR aggregation by status | `count-by-status.sparql` |
 
-**What you learn**: Basic SELECT, triple patterns, OPTIONAL, ORDER BY, COUNT
+**Key concepts**: Basic SELECT, triple patterns, OPTIONAL, ORDER BY, COUNT
 
 ---
 
@@ -53,7 +53,7 @@ The script will execute each query and show test results.
 | 3 | **Deprecated ADRs** | Outdated decisions | `deprecated-adrs.sparql` |
 | 4 | **ADRs for technology** | Decisions for specific technology | `adrs-for-technology.sparql` |
 
-**What you learn**: FILTER, comparison operators, property filtering
+**Key concepts**: FILTER, comparison operators, property filtering
 
 ---
 
@@ -66,7 +66,7 @@ The script will execute each query and show test results.
 | 3 | **Official registry only** | Data from adr-registry | `official-registry-only.sparql` |
 | 4 | **Source reliability** | Data quality analysis | `source-reliability.sparql` |
 
-**What you learn**: Named graphs, GRAPH keyword, data provenance
+**Key concepts**: Named graphs, GRAPH keyword, data provenance
 
 ---
 
@@ -79,7 +79,7 @@ The script will execute each query and show test results.
 | 3 | **Risky decisions** | ADRs with low confidence | `risky-decisions.sparql` |
 | 4 | **Technology adoption** | Usage statistics | `technology-adoption.sparql` |
 
-**What you learn**: Complex filtering, FILTER NOT EXISTS, quality analysis
+**Key concepts**: Complex filtering, FILTER NOT EXISTS, quality analysis
 
 ---
 
@@ -87,7 +87,7 @@ The script will execute each query and show test results.
 
 ### 05-property-paths/ — Graph Navigation
 
-**💡 This is impossible in SQL without recursive CTEs!**
+**💡 SQL requires recursive CTEs for equivalent functionality**
 
 | # | Query | Description | File |
 |---|-------|-------------|------|
@@ -106,13 +106,13 @@ The script will execute each query and show test results.
 
 **Note**: Syntax `{n,m}` not supported in GraphDB. Use explicit chains via `/` or `UNION`.
 
-**Start with**: `transitive-dependencies.sparql` — the most impressive example! 🚀
+**Recommended starting point**: `transitive-dependencies.sparql`
 
 ---
 
 ### 06-reification/ — Metadata about Facts
 
-**💡 In SQL you need separate metadata tables with FK!**
+**💡 SQL requires separate metadata tables with foreign keys**
 
 | # | Query | Description | File |
 |---|-------|-------------|------|
@@ -121,30 +121,30 @@ The script will execute each query and show test results.
 | 3 | **Voting results** | Voting statistics | `voting-results.sparql` |
 | 4 | **Evidence trail** | Evidence trail for compliance | `evidence-trail.sparql` |
 
-**Reification allows**:
-- Store metadata ABOUT FACTS
-- Audit trail for compliance
-- Track decision evolution
+**Reification enables**:
+- Metadata about triples
+- Audit trails for compliance
+- Decision evolution tracking
 - Decision-making context
 
-**Start with**: `who-decided.sparql` — shows the power of reification!
+**Recommended starting point**: `who-decided.sparql`
 
 ---
 
 ### 07-reasoning/ — RDFS/OWL Automatic Inference
 
-**💡 In SQL you need triggers and stored procedures!**
+**💡 SQL requires triggers and stored procedures**
 
 | # | Query | Description | File |
 |---|-------|-------------|------|
 | 1 | **🔥 Subproperty inference** | usesMicroservices → requiresInfrastructure | `subproperty-inference.sparql` |
 | 2 | **🔥 Class hierarchy** | Automatic type inference | `class-hierarchy.sparql` |
 
-**Reasoning allows**:
-- Define rules once
-- Automatically infer new facts
-- Simplify queries
-- Avoid data duplication
+**Reasoning enables**:
+- One-time rule definitions
+- Automatic fact inference
+- Simplified queries
+- Reduced data duplication
 
 **Rules file**: `data/adr-ontology.ttl`
 
@@ -152,26 +152,26 @@ The script will execute each query and show test results.
 
 ### 08-construct/ — Generating New Graphs
 
-**💡 In SQL: only CREATE VIEW, not structure transformation!**
+**💡 SQL CREATE VIEW provides limited structural transformation**
 
 | # | Query | Description | File |
 |---|-------|-------------|------|
 | 1 | **🔥 Simplified view** | System → uses → Technology | `simplified-view.sparql` |
 | 2 | **🔥 Technology graph** | For visualization in Gephi | `technology-graph.sparql` |
 
-**CONSTRUCT allows**:
-- Create new RDF graphs
-- Transform structure
-- Export to other formats
-- Create views for visualization
+**CONSTRUCT enables**:
+- New RDF graph creation
+- Structural transformation
+- Multi-format export
+- Visualization-ready views
 
-**Start with**: `simplified-view.sparql` — you'll see a new graph!
+**Recommended starting point**: `simplified-view.sparql`
 
 ---
 
 ### 09-advanced/ — Advanced Techniques
 
-**💡 Combination of powerful SPARQL capabilities**
+**💡 Advanced SPARQL techniques combined**
 
 | # | Query | Description | File |
 |---|-------|-------------|------|
@@ -187,16 +187,16 @@ The script will execute each query and show test results.
 
 ## 🎯 Recommended Tracks
 
-### 🚀 Quick Start (30 minutes)
-For quick understanding of SPARQL uniqueness:
+### 🚀 Quick Start (~30 minutes)
+Essential queries demonstrating SPARQL's distinctive features:
 
 1. `05-property-paths/transitive-dependencies.sparql` ⚡
 2. `06-reification/who-decided.sparql` 🎯
 3. `08-construct/simplified-view.sparql` 🌟
 4. `09-advanced/federation.sparql` 🔥
 
-### 📖 Sequential Study (4 hours)
-Start with 01-basics and move in order through all categories.
+### 📖 Comprehensive Study (~4 hours)
+Progress sequentially from 01-basics through all categories.
 
 ### 🎨 Visualization and Dependency Analysis
 1. `05-property-paths/dependency-graph.sparql` — Dependency graph
@@ -246,7 +246,7 @@ GraphDB offers several modes:
 After working with examples:
 
 1. **Study [DATASET.md](DATASET.md)** — detailed data description
-2. **Create your own queries** — experiment with the dataset!
+2. **Create your own queries** — experiment with the dataset
 3. **Share knowledge** — use examples to train your team
 
 ---

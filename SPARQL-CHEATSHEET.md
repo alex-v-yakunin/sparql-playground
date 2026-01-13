@@ -392,4 +392,4 @@ LIMIT 100
 
 ---
 
-**Need more help?** See [EXAMPLES.md](EXAMPLES.md) with working examples!
+**Need more help?** See [EXAMPLES.md](EXAMPLES.md) for working examples.

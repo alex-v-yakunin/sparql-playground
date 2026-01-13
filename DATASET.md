@@ -1,12 +1,12 @@
 # 📊 Dataset Description
 
-**Synthetic ADR (Architecture Decision Records)** — synthetic dataset created to demonstrate unique RDF/SPARQL capabilities.
+**Synthetic ADR (Architecture Decision Records)** — a demonstration dataset showcasing RDF/SPARQL capabilities.
 
 ---
 
-## 🎯 What's Inside?
+## 🎯 Dataset Contents
 
-The dataset models **architectural knowledge of a technology company**:
+Models **architectural knowledge within a technology organization**:
 
 | Data Type | Quantity | Description |
 |-----------|----------|-------------|
@@ -70,7 +70,7 @@ Defines project vocabulary: classes and properties.
 
 ### 3. `adr-ontology.ttl` — Ontology (RDFS/OWL)
 
-🔥 **Demonstrates Reasoning** — automatic inference of new facts!
+🔥 **Enables Reasoning** — automatic inference of new facts
 
 Defines:
 - **Class hierarchy** (subClassOf)
@@ -92,7 +92,7 @@ Defines:
 :requiresOrchestration rdfs:subPropertyOf :requiresInfrastructure .
 ```
 
-Now query "show infrastructure requirements" **automatically** includes microservices!
+Queries for infrastructure requirements automatically include microservices.
 
 **Technology hierarchy:**
 ```turtle
@@ -108,7 +108,7 @@ Now query "show infrastructure requirements" **automatically** includes microser
 
 ### 4. `technology-dependencies.ttl` — Technology Dependencies
 
-🔥 **Demonstrates Property Paths** — graph navigation without recursion!
+🔥 **Demonstrates Property Paths** — native graph navigation without recursion
 
 Defines transitive dependencies between technologies.
 
@@ -140,13 +140,13 @@ SELECT ?dep WHERE {
 }
 ```
 
-In SQL this would require recursive CTE with 20+ lines!
+SQL equivalent requires recursive CTEs (20+ lines).
 
 ---
 
 ### 5. `adr-provenance.trig` — Named Graphs with Provenance
 
-🔥 **Demonstrates Named Graphs** — built-in data provenance!
+🔥 **Demonstrates Named Graphs** — native data provenance support
 
 Data is divided by **knowledge sources** (named graphs):
 
@@ -189,7 +189,7 @@ Data is divided by **knowledge sources** (named graphs):
         :decidesTechnology :Redis ;
         :hasStatus :Proposed ;
         :hasConfidence "0.60"^^xsd:decimal .
-    # Note: no :appliesTo - incomplete information!
+    # Note: no :appliesTo - incomplete information
 }
 ```
 
@@ -207,7 +207,7 @@ SELECT ?adr ?label WHERE {
 
 ### 6. `adr-people-reified.trig` — Reification with Metadata
 
-🔥 **Demonstrates Reification** — metadata ABOUT FACTS!
+🔥 **Demonstrates Reification** — metadata about triples
 
 This file contains:
 1. **Architect profiles** (in named graph `:people`)
@@ -248,7 +248,7 @@ Reification allows storing metadata **about a triple**:
     rdf:predicate :decidesTechnology ;
     rdf:object :Kafka ;
     
-    # Metadata ABOUT THE TRIPLE:
+    # Metadata about the triple:
     :statedBy :person_IvanPetrov ;
     :statedOn "2024-12-15"^^xsd:date ;
     :confidence "0.95"^^xsd:decimal ;
@@ -272,9 +272,9 @@ SELECT ?adr ?tech ?person ?date ?confidence WHERE {
 }
 ```
 
-Result: WHO made WHICH decision, WHEN and WITH WHAT CONFIDENCE!
+Result: Who made which decision, when, and with what confidence.
 
-In SQL you'd need separate `statement_metadata` table with multiple JOINs.
+SQL requires separate `statement_metadata` tables with multiple JOINs.
 
 ---
 

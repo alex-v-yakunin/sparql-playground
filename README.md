@@ -1,6 +1,6 @@
 # 🔥 SPARQL Playground: Unique RDF Capabilities
 
-> **Interactive playground for exploring how RDF fundamentally differs from relational and graph databases**
+> **Hands-on environment demonstrating RDF's distinctive capabilities compared to relational and graph databases**
 
 ---
 
@@ -8,7 +8,7 @@
 
 ### 🤖 Option A: Automated (recommended)
 
-**One script does everything:**
+**Single command setup:**
 
 ```bash
 ./start.sh
@@ -20,15 +20,15 @@ The script automatically:
 - ✅ Loads all 6 RDF files
 - ✅ Verifies data loaded correctly
 
-**Ready in 30 seconds!** 🎉
+**Setup completes in ~30 seconds.** 🎉
 
-Now open http://localhost:7200 → select SPARQL → start experimenting!
+Open http://localhost:7200 → select SPARQL → begin querying.
 
 ---
 
 ### 👐 Option B: Manual load via GraphDB Workbench
 
-**For those who want full control:**
+**For manual repository configuration:**
 
 <details>
 <summary>📖 Step-by-step instructions (click to expand)</summary>
@@ -89,13 +89,13 @@ Should return: **count = 8** ✅
 
 ---
 
-**Now you're ready!** Open any example from `examples/` and execute in SPARQL editor.
+**Setup complete.** Execute any query from `examples/` in the SPARQL editor.
 
 ---
 
-## 🎯 What is this?
+## 🎯 Overview
 
-This is an **interactive playground** for exploring **unique RDF/SPARQL capabilities** that are impossible or very difficult to implement in SQL.
+An **interactive environment** demonstrating **RDF/SPARQL capabilities** that are impractical or impossible in SQL.
 
 ### Dataset
 
@@ -156,17 +156,17 @@ sparql-playground/
 ## 🔥 What makes SPARQL unique?
 
 ### 1. **Property Paths** — Graph navigation in one line
-In SQL you need recursive CTE with 20+ lines. In SPARQL: `:Kubernetes :dependsOn+ ?dep` 🚀
+SQL requires recursive CTEs (20+ lines). SPARQL: `:Kubernetes :dependsOn+ ?dep` 🚀
 
 **Example**: `examples/05-property-paths/transitive-dependencies.sparql`
 
 ### 2. **Reification** — Metadata about facts
-In SQL you need a separate table with foreign keys. In RDF it's a natural concept — metadata ABOUT TRIPLES.
+SQL requires separate tables with foreign keys. RDF provides native support for metadata about triples.
 
 **Example**: `examples/06-reification/who-decided.sparql` — who made the decision, when and with what confidence
 
 ### 3. **Reasoning** — Automatic inference of new facts
-In SQL you need triggers and stored procedures. In RDF you define a rule once: `:usesMicroservices rdfs:subPropertyOf :requiresOrchestration` — and all queries automatically account for the hierarchy!
+SQL requires triggers and stored procedures. RDF uses declarative rules: `:usesMicroservices rdfs:subPropertyOf :requiresOrchestration` — queries automatically inherit the hierarchy.
 
 **File**: `data/adr-ontology.ttl`
 
@@ -283,19 +283,19 @@ Failed:        0
 
 ---
 
-## 🎯 Who is this playground for?
+## 🎯 Target Audience
 
 - **Enterprise Architects** — architectural knowledge management
 - **Data Architects** — evaluating graph technologies
 - **CTOs** — strategic knowledge management decisions
-- **Tech Leads** — alternatives to relational databases
-- **Developers** — who want to understand RDF uniqueness
+- **Tech Leads** — exploring alternatives to relational databases
+- **Developers** — understanding RDF's unique capabilities
 
 ---
 
-## 🏆 What will you learn?
+## 🏆 Learning Outcomes
 
-After working with the playground you'll understand:
+Working through this playground provides understanding of:
 
 ✅ **Property paths** — graph navigation without recursion  
 ✅ **Reification** — metadata about facts (audit trail)  
@@ -308,11 +308,11 @@ After working with the playground you'll understand:
 
 ---
 
-## 📈 Result
+## 📈 Key Takeaway
 
-**Understanding fundamental differences between RDF and SQL and other graph databases.**
+**Grasp the fundamental differences between RDF, SQL, and other graph databases.**
 
-This is not just "another database" — it's a **knowledge graph** with machine-readable semantics, reasoning, and integration with external sources.
+RDF represents a distinct paradigm: a **knowledge graph** with machine-readable semantics, reasoning capabilities, and seamless external integration.
 
 ---
 
@@ -327,4 +327,4 @@ This is not just "another database" — it's a **knowledge graph** with machine-
 
 ---
 
-**Start right now** → `./start.sh` 🚀
+**Get started** → `./start.sh` 🚀

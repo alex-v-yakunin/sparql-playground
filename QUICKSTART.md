@@ -1,12 +1,12 @@
-# 🚀 Quick Start: 30 minutes to first results
+# 🚀 Quick Start Guide
 
-**Step-by-step guide for quick start with SPARQL Playground**
+**Get hands-on with SPARQL Playground in ~30 minutes**
 
 ---
 
 ## Step 1: Launch
 
-### 🤖 Way A: Automatic (recommended, 2 minutes)
+### 🤖 Option A: Automated Setup (recommended, ~2 minutes)
 
 ```bash
 # Navigate to project directory
@@ -16,7 +16,7 @@ cd /path/to/sparql-playground
 ./start.sh
 ```
 
-You'll see:
+Output:
 ```
 🚀 Starting SPARQL Playground...
 ✓ GraphDB is running
@@ -25,14 +25,14 @@ You'll see:
 🎉 Playground ready at http://localhost:7200
 ```
 
-Done! Proceed to **Step 2**.
+Setup complete. Proceed to **Step 2**.
 
 ---
 
-### 👐 Way B: Manual load via GraphDB Workbench (10 minutes)
+### 👐 Option B: Manual Setup via GraphDB Workbench (~10 minutes)
 
 <details>
-<summary>📖 Full control over the process (click to expand)</summary>
+<summary>📖 Manual repository configuration (click to expand)</summary>
 
 #### 1.1 Start Docker container
 
@@ -91,7 +91,7 @@ Should return: `count = 8` ✅
 2. Select **SPARQL** in left menu
 3. Select repository in dropdown: **sparql-playground**
 
-You'll see SPARQL editor with three panels:
+The SPARQL editor displays three panels:
 - **Left** — query
 - **Right** — result
 - **Bottom** — saved queries
@@ -118,7 +118,7 @@ ORDER BY ?adr
 
 ✅ Result: 8 architectural decisions
 
-**What happened?**
+**Query breakdown:**
 - `?adr a :ADR` — find all resources of type ADR
 - `rdfs:label ?label` — get their labels
 - `ORDER BY ?adr` — sort
@@ -146,7 +146,7 @@ ORDER BY DESC(?confidence)
 
 ✅ Result: 3-4 ADRs with confidence > 0.9
 
-**What's new?**
+**New concepts:**
 - `FILTER(?confidence > 0.9)` — filtering condition
 - `DESC(?confidence)` — sort descending
 
@@ -172,7 +172,7 @@ ORDER BY DESC(?count)
 
 ✅ Result: Statistics by status (Accepted, Deprecated, etc.)
 
-**What's new?**
+**New concepts:**
 - `COUNT(?adr)` — counting
 - `GROUP BY` — grouping
 - `AS ?count` — variable renaming
@@ -181,7 +181,7 @@ ORDER BY DESC(?count)
 
 ## 🔥 Step 6: SPARQL Uniqueness — Property Paths (5 minutes)
 
-**Now you'll see what's impossible in SQL without recursion!**
+**Demonstrating capabilities that require recursive CTEs in SQL:**
 
 Find ALL transitive dependencies of Kubernetes:
 
@@ -192,7 +192,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ?dependency ?depLabel
 WHERE {
     # Operator + means "one or more steps"
-    # Automatically finds transitive dependencies!
+    # Automatically finds transitive dependencies
     :Kubernetes :dependsOn+ ?dependency .
     
     OPTIONAL { ?dependency rdfs:label ?depLabel }
@@ -202,7 +202,7 @@ ORDER BY ?depLabel
 
 ✅ Result: Docker, Linux, etcd, Go, Kernel, ContainerRuntime...
 
-**🔥 In SQL this would require a recursive CTE with 20+ lines!**
+**🔥 SQL equivalent requires recursive CTEs (20+ lines):**
 
 ```sql
 -- SQL equivalent (complex!)
@@ -217,13 +217,13 @@ WITH RECURSIVE deps AS (
 SELECT * FROM deps;
 ```
 
-**In SPARQL: 1 line with `+` operator** 🚀
+**SPARQL achieves this in one line using the `+` operator** 🚀
 
 ---
 
 ## 🔥 Step 7: Reification — Metadata about Facts (5 minutes)
 
-**Unique RDF capability: metadata ABOUT FACTS**
+**Unique RDF capability: metadata about triples**
 
 Find out WHO made the decision, WHEN and WITH WHAT CONFIDENCE:
 
@@ -253,9 +253,9 @@ ORDER BY DESC(?date)
 
 ✅ Result: Who, when and with what confidence made each decision
 
-**🔥 In SQL you need a separate statement_metadata table with FK!**
+**🔥 SQL requires separate statement_metadata tables with foreign keys**
 
-In RDF it's a **natural concept** — metadata about triples!
+RDF provides native support for metadata about triples.
 
 ---
 
@@ -283,16 +283,16 @@ WHERE {
 
 ✅ Result: **New RDF graph** (not a table!)
 
-**Switch view to "Raw Response"** — you'll see RDF triples:
+**Switch view to "Raw Response"** to see RDF triples:
 ```turtle
 :OrderService :uses :Kafka .
 :OrderService rdfs:label "Order Processing Service" .
 :Kafka rdfs:label "Apache Kafka" .
 ```
 
-**🔥 In SQL: CREATE VIEW, but it's not structure transformation!**
+**🔥 SQL CREATE VIEW provides limited structural transformation**
 
-CONSTRUCT creates **completely new graph** with different structure!
+CONSTRUCT generates entirely new graphs with arbitrary structure.
 
 ---
 
@@ -319,7 +319,7 @@ ORDER BY ?graph ?adr
 
 **What's new?**
 - `GRAPH ?graph { ... }` — query to named graph
-- Data provenance built into RDF!
+- Data provenance built into RDF
 
 ---
 
@@ -351,7 +351,7 @@ Open **[EXAMPLES.md](EXAMPLES.md)** and choose examples by category:
 Open **[EXAMPLES.md](EXAMPLES.md)** and go through examples sequentially from 01-basics to 09-advanced.
 
 ### Option 3: Create your own queries
-Use examples as templates and experiment with data!
+Use examples as templates to experiment with the dataset.
 
 ---
 
@@ -419,7 +419,7 @@ A: Run `./scripts/test-queries.sh` — script will execute all 32 queries and sh
 
 ---
 
-## 🎉 Congratulations!
+## 🎉 Completion
 
 You completed quick start in SPARQL Playground and saw **unique capabilities** not found in SQL:
 
@@ -432,4 +432,4 @@ You completed quick start in SPARQL Playground and saw **unique capabilities** n
 
 ---
 
-**Need help?** Read comments in examples — they explain each query in detail!
+**Need help?** Read comments in examples — they provide detailed explanations.
