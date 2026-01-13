@@ -119,31 +119,31 @@
     rdfs:label "Data Team" .
 
 # ========================================
-# RDFS REASONING: Инфраструктурные требования
+# RDFS REASONING: Infrastructure Requirements
 # ========================================
-# Демонстрация автоматического вывода через rdfs:subPropertyOf
+# Demonstration of automatic inference through rdfs:subPropertyOf
 # 
-# Иерархия свойств (определена в adr-ontology.ttl):
+# Property hierarchy (defined in adr-ontology.ttl):
 # :usesMicroservices rdfs:subPropertyOf :requiresOrchestration
 # :requiresOrchestration rdfs:subPropertyOf :requiresInfrastructure
 #
-# Запросы к :requiresInfrastructure автоматически найдут
-# всё, что использует :usesMicroservices или :requiresOrchestration!
+# Queries to :requiresInfrastructure automatically find
+# everything that uses :usesMicroservices or :requiresOrchestration!
 
-# ADR-001: Kafka для Order Service - использует микросервисы
+# ADR-001: Kafka for Order Service - uses microservices
 :ADR-001 :usesMicroservices :Kubernetes .
-# ^ Автоматически выводится:
-#   :ADR-001 :requiresOrchestration :Kubernetes (через subPropertyOf)
-#   :ADR-001 :requiresInfrastructure :Kubernetes (через транзитивность)
+# ^ Automatically inferred:
+#   :ADR-001 :requiresOrchestration :Kubernetes (via subPropertyOf)
+#   :ADR-001 :requiresInfrastructure :Kubernetes (via transitivity)
 
-# ADR-007: Kubernetes - использует контейнеры
+# ADR-007: Kubernetes - uses containers
 :ADR-007 :usesContainers :Docker .
-# ^ Автоматически выводится:
+# ^ Automatically inferred:
 #   :ADR-007 :requiresOrchestration :Docker
 #   :ADR-007 :requiresInfrastructure :Docker
 
-# ADR-003: Kafka для Analytics - требует распределенную систему
+# ADR-003: Kafka for Analytics - requires distributed system
 :ADR-003 :requiresDistributedSystem :Kafka .
-# ^ Автоматически выводится:
+# ^ Automatically inferred:
 #   :ADR-003 :requiresInfrastructure :Kafka
 

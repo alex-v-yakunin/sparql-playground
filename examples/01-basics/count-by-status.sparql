@@ -1,24 +1,24 @@
-# Подсчёт ADR по статусам
+# Count ADRs by Status
 #
-# Подсчитать количество архитектурных решений в каждом статусе.
+# Count number of architectural decisions in each status.
 #
-# Ожидаемый результат: 3 строки (Accepted: 6, Proposed: 1, Deprecated: 1)
-# Время выполнения: < 1 секунды
+# Expected result: 3 rows (Accepted: 6, Proposed: 1, Deprecated: 1)
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?status ?statusLabel (COUNT(?adr) AS ?count)  # Агрегация: подсчёт ADR
+SELECT ?status ?statusLabel (COUNT(?adr) AS ?count)  # Aggregation: count ADRs
 WHERE {
-    ?adr a :ADR ;                   # Найти все ADR
-         :hasStatus ?status .       # Получить их статус
+    ?adr a :ADR ;                   # Find all ADRs
+         :hasStatus ?status .       # Get their status
     
-    ?status rdfs:label ?statusLabel .  # Получить название статуса
+    ?status rdfs:label ?statusLabel .  # Get status label
 }
-GROUP BY ?status ?statusLabel       # Группировать по статусу
-ORDER BY DESC(?count)               # Сортировать от большего к меньшему
+GROUP BY ?status ?statusLabel       # Group by status
+ORDER BY DESC(?count)               # Sort from highest to lowest
 
-# Пояснение:
-# Используем GROUP BY для группировки по статусу и COUNT для подсчёта.
-# В SQL: SELECT status, COUNT(*) FROM adr GROUP BY status
-# В SPARQL: те же агрегатные функции, но работаем с графом.
+# Explanation:
+# Use GROUP BY to group by status and COUNT to count.
+# In SQL: SELECT status, COUNT(*) FROM adr GROUP BY status
+# In SPARQL: same aggregate functions, but working with a graph.

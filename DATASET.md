@@ -1,31 +1,31 @@
-# 📊 Описание Dataset
+# 📊 Dataset Description
 
-**Synthetic ADR (Architecture Decision Records)** — синтетический датасет, созданный для демонстрации уникальных возможностей RDF/SPARQL.
-
----
-
-## 🎯 Что внутри?
-
-Датасет моделирует **архитектурное знание технологической компании**:
-
-| Тип данных | Количество | Описание |
-|------------|------------|----------|
-| **ADR** | 8 решений | Архитектурные решения о технологиях |
-| **Технологии** | 7 | Kafka, PostgreSQL, MongoDB, Redis, Kubernetes, Docker, etcd |
-| **Системы** | 5 сервисов | OrderService, PaymentService, AnalyticsService и др. |
-| **Архитекторы** | 5 человек | С профилями, ролями и экспертизой |
-| **Named Graphs** | 7 источников | Разные источники знаний с провенансом и метаданными |
-| **Зависимости** | 20+ связей | Транзитивные зависимости технологий |
-| **Реификация** | 8 утверждений | Метаданные о том, КТО принял решение и КОГДА |
+**Synthetic ADR (Architecture Decision Records)** — synthetic dataset created to demonstrate unique RDF/SPARQL capabilities.
 
 ---
 
-## 📁 Структура файлов
+## 🎯 What's Inside?
 
-Dataset состоит из **6 RDF файлов**, которые должны загружаться **в строгом порядке**:
+The dataset models **architectural knowledge of a technology company**:
 
-### 1. `prefixes.ttl` — Префиксы
-Определяет общие префиксы для всех файлов.
+| Data Type | Quantity | Description |
+|-----------|----------|-------------|
+| **ADRs** | 8 decisions | Architectural decisions about technologies |
+| **Technologies** | 7 | Kafka, PostgreSQL, MongoDB, Redis, Kubernetes, Docker, etcd |
+| **Systems** | 5 services | OrderService, PaymentService, AnalyticsService, etc. |
+| **Architects** | 5 people | With profiles, roles, and expertise |
+| **Named Graphs** | 7 sources | Different knowledge sources with provenance and metadata |
+| **Dependencies** | 20+ links | Transitive technology dependencies |
+| **Reification** | 8 statements | Metadata about WHO made decision and WHEN |
+
+---
+
+## 📁 File Structure
+
+Dataset consists of **6 RDF files** that must be loaded **in strict order**:
+
+### 1. `prefixes.ttl` — Prefixes
+Defines common prefixes for all files.
 
 ```turtle
 @prefix : <http://example.org/adr#> .
@@ -36,26 +36,26 @@ Dataset состоит из **6 RDF файлов**, которые должны 
 
 ---
 
-### 2. `adr-core.ttl` — Базовые концепции
-Определяет словарь (vocabulary) проекта: классы и свойства.
+### 2. `adr-core.ttl` — Core Concepts
+Defines project vocabulary: classes and properties.
 
-**Классы:**
+**Classes:**
 - `:ADR` — Architecture Decision Record
-- `:System` — Программная система/сервис
-- `:Technology` — Технология (Kafka, PostgreSQL, etc.)
-- `:Team` — Команда разработки
-- `:Person` — Человек (архитектор)
+- `:System` — Software system/service
+- `:Technology` — Technology (Kafka, PostgreSQL, etc.)
+- `:Team` — Development team
+- `:Person` — Person (architect)
 
-**Свойства:**
-- `:decidesTechnology` — ADR решает использовать технологию
-- `:appliesTo` — ADR применяется к системе
-- `:uses` — Система использует технологию
-- `:supersedes` — ADR заменяет другой ADR
-- `:ownedBy` — Владелец (команда)
-- `:hasStatus` — Статус решения (Accepted, Deprecated, etc.)
-- `:hasConfidence` — Уверенность в решении (0.0-1.0)
+**Properties:**
+- `:decidesTechnology` — ADR decides to use technology
+- `:appliesTo` — ADR applies to system
+- `:uses` — System uses technology
+- `:supersedes` — ADR replaces another ADR
+- `:ownedBy` — Owner (team)
+- `:hasStatus` — Decision status (Accepted, Deprecated, etc.)
+- `:hasConfidence` — Decision confidence (0.0-1.0)
 
-**Пример:**
+**Example:**
 ```turtle
 :ADR a rdfs:Class ;
     rdfs:label "Architecture Decision Record" .
@@ -68,17 +68,17 @@ Dataset состоит из **6 RDF файлов**, которые должны 
 
 ---
 
-### 3. `adr-ontology.ttl` — Онтология (RDFS/OWL)
+### 3. `adr-ontology.ttl` — Ontology (RDFS/OWL)
 
-🔥 **Демонстрирует Reasoning** — автоматический вывод новых фактов!
+🔥 **Demonstrates Reasoning** — automatic inference of new facts!
 
-Определяет:
-- **Иерархию классов** (subClassOf)
-- **Иерархию свойств** (subPropertyOf)
-- **Транзитивные свойства**
-- **Обратные свойства** (inverseOf)
+Defines:
+- **Class hierarchy** (subClassOf)
+- **Property hierarchy** (subPropertyOf)
+- **Transitive properties**
+- **Inverse properties** (inverseOf)
 
-**Пример иерархии классов:**
+**Example class hierarchy:**
 ```turtle
 :ArchitecturalDecision rdfs:subClassOf :Decision .
 :TechnicalDecision rdfs:subClassOf :ArchitecturalDecision .
@@ -86,15 +86,15 @@ Dataset состоит из **6 RDF файлов**, которые должны 
 :InfrastructureDecision rdfs:subClassOf :TechnicalDecision .
 ```
 
-**Пример иерархии свойств:**
+**Example property hierarchy:**
 ```turtle
 :usesMicroservices rdfs:subPropertyOf :requiresOrchestration .
 :requiresOrchestration rdfs:subPropertyOf :requiresInfrastructure .
 ```
 
-Теперь запрос "покажи инфраструктурные требования" **автоматически** включает микросервисы!
+Now query "show infrastructure requirements" **automatically** includes microservices!
 
-**Иерархия технологий:**
+**Technology hierarchy:**
 ```turtle
 :Technology rdfs:subClassOf rdfs:Resource .
 :Database rdfs:subClassOf :Technology .
@@ -106,13 +106,13 @@ Dataset состоит из **6 RDF файлов**, которые должны 
 
 ---
 
-### 4. `technology-dependencies.ttl` — Зависимости технологий
+### 4. `technology-dependencies.ttl` — Technology Dependencies
 
-🔥 **Демонстрирует Property Paths** — навигация по графу без рекурсии!
+🔥 **Demonstrates Property Paths** — graph navigation without recursion!
 
-Определяет транзитивные зависимости между технологиями.
+Defines transitive dependencies between technologies.
 
-**Примеры зависимостей:**
+**Dependency examples:**
 ```turtle
 :Kafka :dependsOn :Java ;
        :dependsOn :Zookeeper .
@@ -127,31 +127,31 @@ Dataset состоит из **6 RDF файлов**, которые должны 
             :dependsOn :FileSystem .
 ```
 
-**Транзитивная цепочка:**
+**Transitive chain:**
 ```
 Kubernetes → Docker → Linux → Kernel
 Kubernetes → etcd → Go
 ```
 
-С помощью SPARQL можно найти **все** зависимости одним запросом:
+With SPARQL you can find **all** dependencies with one query:
 ```sparql
 SELECT ?dep WHERE {
     :Kubernetes :dependsOn+ ?dep
 }
 ```
 
-В SQL это потребовало бы рекурсивный CTE на 20+ строк!
+In SQL this would require recursive CTE with 20+ lines!
 
 ---
 
-### 5. `adr-provenance.trig` — Named Graphs с провенансом
+### 5. `adr-provenance.trig` — Named Graphs with Provenance
 
-🔥 **Демонстрирует Named Graphs** — встроенный провенанс данных!
+🔥 **Demonstrates Named Graphs** — built-in data provenance!
 
-Данные разделены по **источникам знаний** (named graphs):
+Data is divided by **knowledge sources** (named graphs):
 
 #### Named Graph: `:adr-registry` 
-**Официальный реестр ADR** (высокое качество)
+**Official ADR registry** (high quality)
 
 ```turtle
 :adr-registry {
@@ -166,7 +166,7 @@ SELECT ?dep WHERE {
 ```
 
 #### Named Graph: `:confluence`
-**Confluence документация** (среднее качество)
+**Confluence documentation** (medium quality)
 
 ```turtle
 :confluence {
@@ -180,7 +180,7 @@ SELECT ?dep WHERE {
 ```
 
 #### Named Graph: `:interview-notes`
-**Заметки с интервью** (низкое качество, неполные данные)
+**Interview notes** (low quality, incomplete data)
 
 ```turtle
 :interview-notes {
@@ -189,11 +189,11 @@ SELECT ?dep WHERE {
         :decidesTechnology :Redis ;
         :hasStatus :Proposed ;
         :hasConfidence "0.60"^^xsd:decimal .
-    # Обратите внимание: нет :appliesTo - неполная информация!
+    # Note: no :appliesTo - incomplete information!
 }
 ```
 
-**Запрос по источнику:**
+**Query by source:**
 ```sparql
 SELECT ?adr ?label WHERE {
     GRAPH :adr-registry {
@@ -205,21 +205,21 @@ SELECT ?adr ?label WHERE {
 
 ---
 
-### 6. `adr-people-reified.trig` — Реификация с метаданными
+### 6. `adr-people-reified.trig` — Reification with Metadata
 
-🔥 **Демонстрирует Reification** — метаданные О ФАКТАХ!
+🔥 **Demonstrates Reification** — metadata ABOUT FACTS!
 
-Этот файл содержит:
-1. **Профили архитекторов** (в named graph `:people`)
-2. **Реифицированные утверждения** о решениях (КТО принял, КОГДА, с какой УВЕРЕННОСТЬЮ)
+This file contains:
+1. **Architect profiles** (in named graph `:people`)
+2. **Reified statements** about decisions (WHO decided, WHEN, with what CONFIDENCE)
 
-#### Профили архитекторов
+#### Architect Profiles
 
 ```turtle
 GRAPH :people {
     :person_IvanPetrov a :Person ;
-        rdfs:label "Иван Петров" ;
-        :fullName "Петров Иван Александрович" ;
+        rdfs:label "Ivan Petrov" ;
+        :fullName "Petrov Ivan Alexandrovich" ;
         :role :LeadArchitect ;
         :team :TeamPlatform ;
         :email "ivan.petrov@company.com" ;
@@ -227,37 +227,37 @@ GRAPH :people {
         :yearsOfExperience 12 .
 
     :person_MariaSidorova a :Person ;
-        rdfs:label "Мария Сидорова" ;
+        rdfs:label "Maria Sidorova" ;
         :role :DataArchitect ;
         :team :TeamData ;
         :expertise ( :Databases :DataModeling :PostgreSQL :Analytics ) ;
         :yearsOfExperience 10 .
     
-    # ... ещё 3 архитектора
+    # ... 3 more architects
 }
 ```
 
-#### Реифицированные утверждения
+#### Reified Statements
 
-Reification позволяет хранить метаданные **о триплете**:
+Reification allows storing metadata **about a triple**:
 
 ```turtle
 :statement_001 a rdf:Statement ;
-    # Базовый триплет:
+    # Base triple:
     rdf:subject :ADR-001 ;
     rdf:predicate :decidesTechnology ;
     rdf:object :Kafka ;
     
-    # Метаданные О ТРИПЛЕТЕ:
+    # Metadata ABOUT THE TRIPLE:
     :statedBy :person_IvanPetrov ;
     :statedOn "2024-12-15"^^xsd:date ;
     :confidence "0.95"^^xsd:decimal ;
-    :decisionRationale "Необходима надёжная потоковая обработка событий заказов" ;
+    :decisionRationale "Need reliable event streaming for order processing" ;
     :evidenceSource :KafkaBenchmark ;
     :votingResult :Unanimous .
 ```
 
-**Запрос реификации:**
+**Reification query:**
 ```sparql
 SELECT ?adr ?tech ?person ?date ?confidence WHERE {
     ?stmt a rdf:Statement ;
@@ -272,64 +272,64 @@ SELECT ?adr ?tech ?person ?date ?confidence WHERE {
 }
 ```
 
-Результат: КТО принял КАКОЕ решение, КОГДА и С КАКОЙ УВЕРЕННОСТЬЮ!
+Result: WHO made WHICH decision, WHEN and WITH WHAT CONFIDENCE!
 
-В SQL для этого нужна отдельная таблица `statement_metadata` с множественными JOIN'ами.
+In SQL you'd need separate `statement_metadata` table with multiple JOINs.
 
 ---
 
-## 📈 Статистика датасета
+## 📈 Dataset Statistics
 
-### Триплеты по файлам
+### Triples by File
 
-| Файл | Приблизительно триплетов | Основное содержание |
-|------|---------------------------|---------------------|
-| `prefixes.ttl` | ~5 | Определения префиксов |
-| `adr-core.ttl` | ~150 | Vocabulary + 8 ADR + системы + команды |
-| `adr-ontology.ttl` | ~80 | Иерархия классов и свойств |
-| `technology-dependencies.ttl` | ~100 | Технологии + зависимости |
-| `adr-provenance.trig` | ~60 | 8 ADR в 4 named graphs |
-| `adr-people-reified.trig` | ~150 | 5 архитекторов + 8 реификаций |
-| **ИТОГО** | **~545** | **Полный датасет** |
+| File | Approx. Triples | Main Content |
+|------|----------------|--------------|
+| `prefixes.ttl` | ~5 | Prefix definitions |
+| `adr-core.ttl` | ~150 | Vocabulary + 8 ADRs + systems + teams |
+| `adr-ontology.ttl` | ~80 | Class and property hierarchy |
+| `technology-dependencies.ttl` | ~100 | Technologies + dependencies |
+| `adr-provenance.trig` | ~60 | 8 ADRs in 4 named graphs |
+| `adr-people-reified.trig` | ~150 | 5 architects + 8 reifications |
+| **TOTAL** | **~545** | **Complete dataset** |
 
-### Сущности
+### Entities
 
-| Тип | Количество | Примеры |
-|-----|------------|---------|
-| **ADR** | 8 | ADR-001, ADR-002, ..., ADR-008 |
-| **Системы** | 5 | OrderService, PaymentService, AnalyticsService, NotificationService, InventoryService |
-| **Технологии** | 7 | Kafka, PostgreSQL, MongoDB, Redis, Kubernetes, Docker, etcd |
-| **Команды** | 5 | TeamCheckout, TeamPayments, TeamData, TeamPlatform, Security |
-| **Архитекторы** | 5 | Иван Петров, Мария Сидорова, Алексей Козлов, Елена Никитина, Дмитрий Волков |
+| Type | Quantity | Examples |
+|------|----------|----------|
+| **ADRs** | 8 | ADR-001, ADR-002, ..., ADR-008 |
+| **Systems** | 5 | OrderService, PaymentService, AnalyticsService, NotificationService, InventoryService |
+| **Technologies** | 7 | Kafka, PostgreSQL, MongoDB, Redis, Kubernetes, Docker, etcd |
+| **Teams** | 5 | TeamCheckout, TeamPayments, TeamData, TeamPlatform, Security |
+| **Architects** | 5 | Ivan Petrov, Maria Sidorova, Alexey Kozlov, Elena Nikitina, Dmitry Volkov |
 | **Named Graphs** | 7 | adr-registry, confluence, confluence-metadata, decision-metadata, decision-timeline, interview-notes, people |
-| **Реификации** | 8 | statement_001, ..., statement_008 |
+| **Reifications** | 8 | statement_001, ..., statement_008 |
 
-### Свойства (relationships)
+### Properties (relationships)
 
-- `:decidesTechnology` — 8 связей (ADR → Technology)
-- `:appliesTo` — 6 связей (ADR → System)
-- `:dependsOn` — 20+ связей (Technology → Technology)
-- `:ownedBy` — 8 связей (ADR → Team)
-- `:supersedes` — 2 связи (ADR → ADR)
-- `:statedBy` — 8 связей (Statement → Person)
+- `:decidesTechnology` — 8 links (ADR → Technology)
+- `:appliesTo` — 6 links (ADR → System)
+- `:dependsOn` — 20+ links (Technology → Technology)
+- `:ownedBy` — 8 links (ADR → Team)
+- `:supersedes` — 2 links (ADR → ADR)
+- `:statedBy` — 8 links (Statement → Person)
 
 ---
 
-## 🎓 Учебные сценарии
+## 🎓 Educational Scenarios
 
-Датасет позволяет продемонстрировать:
+The dataset demonstrates:
 
 ### 1. Property Paths
 ```sparql
-# Найти ВСЕ транзитивные зависимости Kubernetes
+# Find ALL transitive dependencies of Kubernetes
 SELECT ?dep WHERE {
     :Kubernetes :dependsOn+ ?dep
 }
 ```
 
-### 2. Named Graphs (провенанс)
+### 2. Named Graphs (provenance)
 ```sparql
-# Найти ADR только из официального реестра
+# Find ADRs only from official registry
 SELECT ?adr ?label WHERE {
     GRAPH :adr-registry {
         ?adr a :ADR ;
@@ -338,9 +338,9 @@ SELECT ?adr ?label WHERE {
 }
 ```
 
-### 3. Reification (метаданные о фактах)
+### 3. Reification (metadata about facts)
 ```sparql
-# Кто принял решение о Kafka?
+# Who decided on Kafka?
 SELECT ?person ?date ?confidence WHERE {
     ?stmt rdf:subject :ADR-001 ;
           rdf:predicate :decidesTechnology ;
@@ -351,18 +351,18 @@ SELECT ?person ?date ?confidence WHERE {
 }
 ```
 
-### 4. Reasoning (автоматический вывод)
+### 4. Reasoning (automatic inference)
 ```sparql
-# Найти ВСЕ инфраструктурные требования
-# (включая микросервисы через иерархию свойств)
+# Find ALL infrastructure requirements
+# (including microservices through property hierarchy)
 SELECT ?adr ?requirement WHERE {
     ?adr :requiresInfrastructure ?requirement .
 }
 ```
 
-### 5. CONSTRUCT (генерация новых графов)
+### 5. CONSTRUCT (generating new graphs)
 ```sparql
-# Создать упрощённый граф: System → uses → Technology
+# Create simplified graph: System → uses → Technology
 CONSTRUCT {
     ?system :uses ?tech .
 } WHERE {
@@ -371,9 +371,9 @@ CONSTRUCT {
 }
 ```
 
-### 6. Агрегация и анализ
+### 6. Aggregation and Analysis
 ```sparql
-# Популярность технологий
+# Technology popularity
 SELECT ?tech (COUNT(?adr) as ?count) WHERE {
     ?adr :decidesTechnology ?tech .
 }
@@ -381,9 +381,9 @@ GROUP BY ?tech
 ORDER BY DESC(?count)
 ```
 
-### 7. Многоисточниковость
+### 7. Multi-source
 ```sparql
-# Найти ADR, которые есть в нескольких источниках
+# Find ADRs that exist in multiple sources
 SELECT ?adr (COUNT(DISTINCT ?source) as ?sourceCount) WHERE {
     GRAPH ?source {
         ?adr a :ADR .
@@ -395,45 +395,46 @@ HAVING (?sourceCount > 1)
 
 ---
 
-## 🔍 Интересные паттерны в датасете
+## 🔍 Interesting Patterns in Dataset
 
-### Множественные решения об одной технологии
-Kafka используется в **3 разных ADR**:
-- ADR-001: Event streaming для заказов
+### Multiple Decisions about One Technology
+Kafka is used in **3 different ADRs**:
+- ADR-001: Event streaming for orders
 - ADR-003: Real-time analytics
 - ADR-004: Notification pipeline
 
-### Цепочки замен (supersedes)
+### Replacement Chains (supersedes)
 ```
-ADR-008 (Redis) supersedes ADR-004 (Kafka для нотификаций)
+ADR-008 (Redis) supersedes ADR-004 (Kafka for notifications)
 ```
 
-### Неполные данные
-ADR-006 и ADR-007 не имеют `:appliesTo` — демонстрирует Open World Assumption.
+### Incomplete Data
+ADR-006 and ADR-007 don't have `:appliesTo` — demonstrates Open World Assumption.
 
-### Разная уверенность
-- Высокая (0.95+): ADR-001, ADR-007
-- Средняя (0.85-0.92): ADR-002, ADR-003
-- Низкая (0.60-0.75): ADR-006, ADR-008
+### Different Confidence
+- High (0.95+): ADR-001, ADR-007
+- Medium (0.85-0.92): ADR-002, ADR-003
+- Low (0.60-0.75): ADR-006, ADR-008
 
 ---
 
-## 💡 Расширение датасета
+## 💡 Extending the Dataset
 
-Датасет можно легко расширить:
+Dataset can be easily extended:
 
-1. **Добавить новые ADR** в `adr-provenance.trig`
-2. **Добавить технологии** в `technology-dependencies.ttl`
-3. **Добавить архитекторов** в `adr-people-reified.trig`
-4. **Добавить новые источники** (named graphs)
-5. **Обогатить онтологию** в `adr-ontology.ttl`
+1. **Add new ADRs** in `adr-provenance.trig`
+2. **Add technologies** in `technology-dependencies.ttl`
+3. **Add architects** in `adr-people-reified.trig`
+4. **Add new sources** (named graphs)
+5. **Enrich ontology** in `adr-ontology.ttl`
 
 ---
 
-## 📚 Связанные файлы
+## 📚 Related Files
 
-- **[README.md](README.md)** — обзор проекта
-- **[QUICKSTART.md](QUICKSTART.md)** — быстрый старт
-- **[EXAMPLES.md](EXAMPLES.md)** — каталог примеров запросов
-- **[examples/](examples/)** — 32 SPARQL запроса для работы с датасетом
+- **[README.md](README.md)** — project overview
+- **[QUICKSTART.md](QUICKSTART.md)** — quick start
+- **[EXAMPLES.md](EXAMPLES.md)** — query examples catalog
+- **[examples/](examples/)** — 32 SPARQL queries for working with dataset
 
+---

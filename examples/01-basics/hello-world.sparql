@@ -1,18 +1,18 @@
-# Hello World: Первый SPARQL-запрос
+# Hello World: First SPARQL Query
 #
-# Возвращает первые 10 триплетов из базы данных для ознакомления со структурой.
+# Returns the first 10 triples from the database to explore its structure.
 #
-# Ожидаемый результат: 10 триплетов (subject, predicate, object)
-# Время выполнения: < 1 секунды
+# Expected result: 10 triples (subject, predicate, object)
+# Execution time: < 1 second
 
-SELECT ?subject ?predicate ?object  # Выбираем три переменные
+SELECT ?subject ?predicate ?object  # Select three variables
 WHERE {
-    ?subject ?predicate ?object .   # Паттерн: любой триплет (s, p, o)
+    ?subject ?predicate ?object .   # Pattern: any triple (s, p, o)
 }
-LIMIT 10                            # Ограничиваем результат 10 строками
+LIMIT 10                            # Limit result to 10 rows
 
-# Пояснение:
-# Триплет = (субъект, предикат, объект) - базовая единица данных в RDF.
-# Этот запрос похож на "SELECT * FROM table LIMIT 10" в SQL, но в SPARQL 
-# мы работаем с графом, а не с таблицами.
-# Паттерн "?subject ?predicate ?object" находит любые триплеты в графе.
+# Explanation:
+# Triple = (subject, predicate, object) - basic unit of data in RDF.
+# This query is similar to "SELECT * FROM table LIMIT 10" in SQL, but in SPARQL 
+# we work with a graph, not tables.
+# Pattern "?subject ?predicate ?object" finds any triples in the graph.

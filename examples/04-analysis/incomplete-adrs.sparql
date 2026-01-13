@@ -1,33 +1,33 @@
-# Неполные ADR (без привязки к системе)
+# Incomplete ADRs (No System Binding)
 #
-# Найти ADR, которые не указывают, к какой системе они относятся.
+# Find ADRs that don't specify which system they apply to.
 #
-# Ожидаемый результат: 3 строки (ADR-006, ADR-007 дважды)
-# Примечание: ADR-007 появляется дважды из-за двух технологий (Kubernetes + Docker)
-# Время выполнения: < 1 секунды
+# Expected result: 3 rows (ADR-006, ADR-007 twice)
+# Note: ADR-007 appears twice due to two technologies (Kubernetes + Docker)
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?adr ?label ?technology ?status
 WHERE {
-    ?adr a :ADR ;                      # Найти все ADR
-         rdfs:label ?label ;           # Получить название
-         :decidesTechnology ?tech ;    # Получить технологию
-         :hasStatus ?status .          # Получить статус
+    ?adr a :ADR ;                      # Find all ADRs
+         rdfs:label ?label ;           # Get label
+         :decidesTechnology ?tech ;    # Get technology
+         :hasStatus ?status .          # Get status
     
-    ?tech rdfs:label ?technology .     # Получить название технологии
+    ?tech rdfs:label ?technology .     # Get technology label
     
-    FILTER NOT EXISTS {                # Проверка отсутствия связи
-        GRAPH ?g {                     # Искать в любом графе
-            ?adr :appliesTo ?system .  # Проверить наличие привязки к системе
+    FILTER NOT EXISTS {                # Check absence of relationship
+        GRAPH ?g {                     # Search in any graph
+            ?adr :appliesTo ?system .  # Check for system binding
         }
     }
 }
-ORDER BY ?adr                          # Сортировать по URI
+ORDER BY ?adr                          # Sort by URI
 
-# Пояснение:
-# Демонстрирует Open World Assumption - отсутствие данных не означает ложь.
-# FILTER NOT EXISTS проверяет отсутствие паттерна :appliesTo в любом графе.
-# В SQL: LEFT JOIN с проверкой NULL.
-# В Property Graph: проверка отсутствия связи определённого типа.
+# Explanation:
+# Demonstrates Open World Assumption - absence of data doesn't mean false.
+# FILTER NOT EXISTS checks absence of :appliesTo pattern in any graph.
+# In SQL: LEFT JOIN with NULL check.
+# In Property Graph: checking absence of specific relationship type.

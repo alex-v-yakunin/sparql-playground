@@ -1,24 +1,24 @@
-# Обратные зависимости (кто зависит от Linux)
+# Reverse Dependencies (Who Depends on Linux)
 #
-# Найти все технологии, которые прямо или косвенно зависят от конкретной технологии.
+# Find all technologies that directly or indirectly depend on a specific technology.
 #
-# Ожидаемый результат: 5 технологий, зависящих от Linux
-# Время выполнения: < 1 секунды
+# Expected result: 5 technologies depending on Linux
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?dependent
 WHERE {
-    ?tech ^:dependsOn+ :Linux ;        # Обратный транзитивный путь от :Linux
-          rdfs:label ?dependent .      # Получить название зависимой технологии
+    ?tech ^:dependsOn+ :Linux ;        # Reverse transitive path from :Linux
+          rdfs:label ?dependent .      # Get dependent technology label
 }
-ORDER BY ?dependent                    # Сортировать по названию
+ORDER BY ?dependent                    # Sort by label
 
-# Пояснение:
-# Property Path ^ означает "обратное направление" (от объекта к субъекту).
-# ^:dependsOn+ читается как "один или более шагов в обратном направлении по :dependsOn".
-# Ищет все технологии, для которых есть путь зависимости до :Linux.
-# В SQL: рекурсивный CTE с обратным JOIN.
-# В Property Graph: обход по входящим рёбрам.
-# Критично для анализа влияния: если Linux недоступен, какие технологии пострадают?
+# Explanation:
+# Property Path ^ means "reverse direction" (from object to subject).
+# ^:dependsOn+ reads as "one or more steps in reverse direction through :dependsOn".
+# Searches for all technologies that have a dependency path to :Linux.
+# In SQL: recursive CTE with reverse JOIN.
+# In Property Graph: traversal via incoming edges.
+# Critical for impact analysis: if Linux is unavailable, which technologies are affected?

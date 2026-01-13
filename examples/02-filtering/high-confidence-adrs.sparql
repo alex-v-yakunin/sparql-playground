@@ -1,25 +1,25 @@
-# ADR с высокой уверенностью
+# ADRs with High Confidence
 #
-# Найти архитектурные решения с уровнем уверенности >= 0.90.
+# Find architectural decisions with confidence level >= 0.90.
 #
-# Ожидаемый результат: 4 ADR (ADR-001, ADR-002, ADR-005, ADR-007)
-# Время выполнения: < 1 секунды
+# Expected result: 4 ADRs (ADR-001, ADR-002, ADR-005, ADR-007)
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?adr ?label ?confidence ?status
 WHERE {
-    ?adr a :ADR ;                      # Найти все ADR
-         rdfs:label ?label ;           # Получить название
-         :hasConfidence ?confidence ;  # Получить уровень уверенности
-         :hasStatus ?status .          # Получить статус
+    ?adr a :ADR ;                      # Find all ADRs
+         rdfs:label ?label ;           # Get label
+         :hasConfidence ?confidence ;  # Get confidence level
+         :hasStatus ?status .          # Get status
     
-    FILTER(?confidence >= 0.90)        # Фильтр: уверенность >= 90%
+    FILTER(?confidence >= 0.90)        # Filter: confidence >= 90%
 }
-ORDER BY DESC(?confidence)             # Сортировать от высшей к низшей
+ORDER BY DESC(?confidence)             # Sort from highest to lowest
 
-# Пояснение:
-# Это хорошо проверенные и обоснованные решения.
-# В SQL: WHERE confidence >= 0.90
-# В SPARQL: FILTER с числовым сравнением.
+# Explanation:
+# These are well-validated and justified decisions.
+# In SQL: WHERE confidence >= 0.90
+# In SPARQL: FILTER with numeric comparison.

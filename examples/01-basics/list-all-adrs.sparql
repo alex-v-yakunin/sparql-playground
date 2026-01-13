@@ -1,22 +1,22 @@
-# Список всех ADR
+# List of all ADRs
 #
-# Получить все Architecture Decision Records с их названиями.
+# Get all Architecture Decision Records with their labels.
 #
-# Ожидаемый результат: 8 ADR
-# Время выполнения: < 1 секунды
+# Expected result: 8 ADRs
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?adr ?label                  # Возвращаем URI ADR и его название
+SELECT ?adr ?label                  # Return ADR URI and its label
 WHERE {
-    ?adr a :ADR ;                   # Найти все сущности типа :ADR
-         rdfs:label ?label .        # Получить их метку (название)
+    ?adr a :ADR ;                   # Find all entities of type :ADR
+         rdfs:label ?label .        # Get their label (name)
 }
-ORDER BY ?adr                       # Сортировать по URI
+ORDER BY ?adr                       # Sort by URI
 
-# Пояснение:
-# Паттерн "?adr a :ADR" находит все сущности типа ADR.
-# "a" - это сокращение для предиката rdf:type.
-# В SQL: SELECT * FROM adr ORDER BY id
-# В SPARQL: фильтрация по типу естественна для графовой модели.
+# Explanation:
+# Pattern "?adr a :ADR" finds all entities of type ADR.
+# "a" is shorthand for predicate rdf:type.
+# In SQL: SELECT * FROM adr ORDER BY id
+# In SPARQL: filtering by type is natural for the graph model.

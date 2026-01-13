@@ -5,98 +5,98 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 # ============================================
-# ОНТОЛОГИЯ ADR
+# ADR ONTOLOGY
 # ============================================
 #
-# Этот файл демонстрирует RDFS/OWL reasoning -
-# автоматический вывод новых фактов из правил
+# This file demonstrates RDFS/OWL reasoning -
+# automatic inference of new facts from rules
 #
-# В SQL для этого нужны триггеры и процедуры!
+# In SQL this requires triggers and procedures!
 # ============================================
 
-# ----- Иерархия классов решений -----
+# ----- Decision class hierarchy -----
 
 :ArchitecturalDecision a rdfs:Class ;
-    rdfs:label "Архитектурное решение" ;
-    rdfs:comment "Базовый класс для всех архитектурных решений" .
+    rdfs:label "Architectural Decision" ;
+    rdfs:comment "Base class for all architectural decisions" .
 
 :TechnicalDecision rdfs:subClassOf :ArchitecturalDecision ;
-    rdfs:label "Техническое решение" ;
-    rdfs:comment "Решения о выборе технологий и инструментов" .
+    rdfs:label "Technical Decision" ;
+    rdfs:comment "Decisions about technology and tool choices" .
 
 :BusinessDecision rdfs:subClassOf :ArchitecturalDecision ;
-    rdfs:label "Бизнес-решение" ;
-    rdfs:comment "Решения, связанные с бизнес-требованиями" .
+    rdfs:label "Business Decision" ;
+    rdfs:comment "Decisions related to business requirements" .
 
 :SecurityDecision rdfs:subClassOf :ArchitecturalDecision ;
-    rdfs:label "Решение по безопасности" ;
-    rdfs:comment "Решения, касающиеся информационной безопасности" .
+    rdfs:label "Security Decision" ;
+    rdfs:comment "Decisions concerning information security" .
 
 :ComplianceDecision rdfs:subClassOf :ArchitecturalDecision ;
-    rdfs:label "Решение по соответствию" ;
-    rdfs:comment "Решения для соответствия регуляторным требованиям" .
+    rdfs:label "Compliance Decision" ;
+    rdfs:comment "Decisions for regulatory compliance" .
 
-# Специализированные технические решения
+# Specialized technical decisions
 :DatabaseDecision rdfs:subClassOf :TechnicalDecision ;
-    rdfs:label "Решение по базе данных" .
+    rdfs:label "Database Decision" .
 
 :InfrastructureDecision rdfs:subClassOf :TechnicalDecision ;
-    rdfs:label "Инфраструктурное решение" .
+    rdfs:label "Infrastructure Decision" .
 
 :IntegrationDecision rdfs:subClassOf :TechnicalDecision ;
-    rdfs:label "Решение по интеграции" .
+    rdfs:label "Integration Decision" .
 
 :PerformanceDecision rdfs:subClassOf :TechnicalDecision ;
-    rdfs:label "Решение по производительности" .
+    rdfs:label "Performance Decision" .
 
-# ----- Иерархия свойств -----
+# ----- Property hierarchy -----
 
-# Базовое свойство инфраструктурных требований
+# Base property for infrastructure requirements
 :requiresInfrastructure a rdf:Property ;
-    rdfs:label "требует инфраструктуру" ;
+    rdfs:label "requires infrastructure" ;
     rdfs:domain :ADR ;
     rdfs:range :Technology .
 
-# Специализации инфраструктурных требований
+# Specializations of infrastructure requirements
 :requiresOrchestration rdfs:subPropertyOf :requiresInfrastructure ;
-    rdfs:label "требует оркестрацию" ;
-    rdfs:comment "Если решение требует оркестрацию, оно автоматически требует инфраструктуру" .
+    rdfs:label "requires orchestration" ;
+    rdfs:comment "If decision requires orchestration, it automatically requires infrastructure" .
 
 :usesMicroservices rdfs:subPropertyOf :requiresOrchestration ;
-    rdfs:label "использует микросервисы" ;
-    rdfs:comment "Микросервисы требуют оркестрацию (автоматически выводится)" .
+    rdfs:label "uses microservices" ;
+    rdfs:comment "Microservices require orchestration (automatically inferred)" .
 
 :usesContainers rdfs:subPropertyOf :requiresOrchestration ;
-    rdfs:label "использует контейнеры" .
+    rdfs:label "uses containers" .
 
 :requiresDistributedSystem rdfs:subPropertyOf :requiresInfrastructure ;
-    rdfs:label "требует распределенную систему" .
+    rdfs:label "requires distributed system" .
 
 # ----- Inverse properties -----
 
 :dependsOn a rdf:Property ;
-    rdfs:label "зависит от" ;
-    rdfs:comment "Технология A зависит от технологии B" .
+    rdfs:label "depends on" ;
+    rdfs:comment "Technology A depends on technology B" .
 
 :requiredBy owl:inverseOf :dependsOn ;
-    rdfs:label "требуется для" ;
-    rdfs:comment "Технология B требуется для технологии A (обратное к dependsOn)" .
+    rdfs:label "required by" ;
+    rdfs:comment "Technology B required by technology A (inverse of dependsOn)" .
 
 :supersedes a rdf:Property ;
-    rdfs:label "заменяет" .
+    rdfs:label "supersedes" .
 
 :supersededBy owl:inverseOf :supersedes ;
-    rdfs:label "заменено на" .
+    rdfs:label "superseded by" .
 
-# ----- Домены и диапазоны -----
+# ----- Domains and ranges -----
 
 :decidesTechnology rdfs:domain :ADR ;
                    rdfs:range :Technology ;
-                   rdfs:label "решает использовать технологию" .
+                   rdfs:label "decides to use technology" .
 
 :appliesTo rdfs:domain :ADR ;
            rdfs:range :System ;
-           rdfs:label "применяется к" .
+           rdfs:label "applies to" .
 
 :uses rdfs:domain :System ;
       rdfs:range :Technology ;
@@ -140,48 +140,48 @@
 :dependsOn a owl:TransitiveProperty ;
     rdfs:comment "Если A зависит от B, и B зависит от C, то A зависит от C" .
 
-# ----- Категории технологий -----
+# ----- Technology categories -----
 
 :Technology a rdfs:Class ;
-    rdfs:label "Технология" .
+    rdfs:label "Technology" .
 
 :MessageBroker rdfs:subClassOf :Technology ;
-    rdfs:label "Брокер сообщений" .
+    rdfs:label "Message Broker" .
 
 :EventStreamingPlatform rdfs:subClassOf :Technology ;
-    rdfs:label "Платформа потоковой обработки событий" .
+    rdfs:label "Event Streaming Platform" .
 
 :Database rdfs:subClassOf :Technology ;
-    rdfs:label "База данных" .
+    rdfs:label "Database" .
 
 :RelationalDatabase rdfs:subClassOf :Database ;
-    rdfs:label "Реляционная база данных" .
+    rdfs:label "Relational Database" .
 
 :NoSQLDatabase rdfs:subClassOf :Database ;
-    rdfs:label "NoSQL база данных" .
+    rdfs:label "NoSQL Database" .
 
 :DocumentDatabase rdfs:subClassOf :NoSQLDatabase ;
-    rdfs:label "Документная база данных" .
+    rdfs:label "Document Database" .
 
 :KeyValueStore rdfs:subClassOf :NoSQLDatabase ;
-    rdfs:label "Хранилище ключ-значение" .
+    rdfs:label "Key-Value Store" .
 
 :InMemoryDatabase rdfs:subClassOf :Database ;
-    rdfs:label "In-memory база данных" .
+    rdfs:label "In-Memory Database" .
 
 :ContainerOrchestrator rdfs:subClassOf :Technology ;
-    rdfs:label "Оркестратор контейнеров" .
+    rdfs:label "Container Orchestrator" .
 
 :DistributedSystem rdfs:subClassOf :Technology ;
-    rdfs:label "Распределенная система" .
+    rdfs:label "Distributed System" .
 
 :OpenSourceTechnology a rdfs:Class ;
-    rdfs:label "Open Source технология" .
+    rdfs:label "Open Source Technology" .
 
 :ACID_Compliant a rdfs:Class ;
-    rdfs:label "ACID-совместимая система" .
+    rdfs:label "ACID-Compliant System" .
 
-# ----- Аннотации для типов ADR -----
+# ----- Annotations for ADR types -----
 
 :ADR-001 a :TechnicalDecision ;
          a :InfrastructureDecision ;

@@ -1,14 +1,14 @@
 #!/bin/bash
 #
-# SPARQL Playground - Запуск одной командой
+# SPARQL Playground - One-command Startup
 #
-# Этот скрипт запускает SPARQL playground:
-# - Запускает GraphDB в Docker
-# - Создаёт repository
-# - Загружает ADR датасет
-# - Проверяет установку
+# This script starts SPARQL playground:
+# - Starts GraphDB in Docker
+# - Creates repository
+# - Loads ADR dataset
+# - Verifies installation
 #
-# Использование: ./start.sh
+# Usage: ./start.sh
 #
 
 ./scripts/setup.sh

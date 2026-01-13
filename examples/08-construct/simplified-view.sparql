@@ -1,38 +1,38 @@
-# Упрощённое представление (CONSTRUCT)
+# Simplified View (CONSTRUCT)
 #
-# Создать упрощённый граф только с ключевой информацией для визуализации.
+# Create simplified graph with only key information for visualization.
 #
-# Ожидаемый результат: Новый граф с 7 ADR и их основными свойствами
-# Время выполнения: < 1 секунды
+# Expected result: New graph with 7 ADRs and their main properties
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 CONSTRUCT {
-    ?adr rdfs:label ?label ;           # Сохранить название
-         :technology ?technologyName ; # Упрощённое свойство с названием
-         :status ?statusLabel .        # Упрощённое свойство со статусом
+    ?adr rdfs:label ?label ;           # Keep label
+         :technology ?technologyName ; # Simplified property with name
+         :status ?statusLabel .        # Simplified property with status
 }
 WHERE {
-    ?adr a :ADR ;                      # Найти все ADR
-         rdfs:label ?label ;           # Получить название
-         :hasStatus ?status ;          # Получить статус (URI)
-         :decidesTechnology ?tech .    # Получить технологию (URI)
+    ?adr a :ADR ;                      # Find all ADRs
+         rdfs:label ?label ;           # Get label
+         :hasStatus ?status ;          # Get status (URI)
+         :decidesTechnology ?tech .    # Get technology (URI)
     
-    ?tech rdfs:label ?technologyName . # Название технологии
-    ?status rdfs:label ?statusLabel .  # Название статуса
+    ?tech rdfs:label ?technologyName . # Technology label
+    ?status rdfs:label ?statusLabel .  # Status label
 }
 
-# Пояснение:
-# CONSTRUCT создаёт новый RDF граф вместо таблицы результатов.
-# Блок CONSTRUCT { ... } определяет, какие триплеты создать.
-# Блок WHERE { ... } находит данные-источники.
+# Explanation:
+# CONSTRUCT creates new RDF graph instead of result table.
+# CONSTRUCT { ... } block defines which triples to create.
+# WHERE { ... } block finds source data.
 # 
-# Упрощаем граф:
-# - Вместо URI технологий и статусов используем их названия
-# - Убираем сложные свойства, оставляя только ключевые
-# - Идеально для визуализации или экспорта
+# Simplify graph:
+# - Instead of technology and status URIs, use their labels
+# - Remove complex properties, keeping only key ones
+# - Perfect for visualization or export
 # 
-# В SQL: CREATE VIEW с упрощёнными JOIN.
-# В Property Graph: projection графа.
-# В SPARQL: CONSTRUCT - мощный инструмент трансформации!
+# In SQL: CREATE VIEW with simplified JOINs.
+# In Property Graph: graph projection.
+# In SPARQL: CONSTRUCT - powerful transformation tool!

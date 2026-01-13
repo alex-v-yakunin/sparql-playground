@@ -1,9 +1,9 @@
-# Пути миграции технологий
+# Technology Migration Paths
 #
-# Найти ADR, которые заменяют другие ADR, показывая изменения технологий.
+# Find ADRs that supersede other ADRs, showing technology changes.
 #
-# Ожидаемый результат: 1 миграция (MongoDB → PostgreSQL для Payment History)
-# Время выполнения: < 1 секунды
+# Expected result: 1 migration (MongoDB → PostgreSQL for Payment History)
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -11,21 +11,21 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ?oldADR ?oldLabel ?oldTech 
        ?newADR ?newLabel ?newTech
 WHERE {
-    ?newADR :supersedes ?oldADR .      # Новое решение заменяет старое
+    ?newADR :supersedes ?oldADR .      # New decision supersedes old
     
-    ?oldADR rdfs:label ?oldLabel ;     # Получить название старого ADR
-            :decidesTechnology ?oldTechnology .  # Получить старую технологию
+    ?oldADR rdfs:label ?oldLabel ;     # Get old ADR label
+            :decidesTechnology ?oldTechnology .  # Get old technology
     
-    ?newADR rdfs:label ?newLabel ;     # Получить название нового ADR
-            :decidesTechnology ?newTechnology .  # Получить новую технологию
+    ?newADR rdfs:label ?newLabel ;     # Get new ADR label
+            :decidesTechnology ?newTechnology .  # Get new technology
     
-    ?oldTechnology rdfs:label ?oldTech .  # Название старой технологии
-    ?newTechnology rdfs:label ?newTech .  # Название новой технологии
+    ?oldTechnology rdfs:label ?oldTech .  # Old technology label
+    ?newTechnology rdfs:label ?newTech .  # New technology label
 }
 
-# Пояснение:
-# Полезно для понимания эволюции архитектуры.
-# Свойство :supersedes связывает новое решение со старым.
-# В SQL потребовался бы сложный self-JOIN с двумя подзапросами.
-# В SPARQL: естественное следование связям.
-# В Property Graph: аналогично - следование по рёбрам :supersedes.
+# Explanation:
+# Useful for understanding architecture evolution.
+# Property :supersedes links new decision to old one.
+# In SQL would require complex self-JOIN with two subqueries.
+# In SPARQL: natural following of relationships.
+# In Property Graph: similarly - following :supersedes edges.

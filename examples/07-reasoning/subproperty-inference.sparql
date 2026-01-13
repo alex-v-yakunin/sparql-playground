@@ -1,42 +1,42 @@
-# Вывод подсвойств (RDFS Reasoning)
+# Subproperty Inference (RDFS Reasoning)
 #
-# Продемонстрировать автоматический вывод более общих свойств.
+# Demonstrate automatic inference of more general properties.
 #
-# Ожидаемый результат: 3 ADR с требованиями инфраструктуры
-# Время выполнения: < 1 секунды
+# Expected result: 3 ADRs with infrastructure requirements
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?adrLabel ?technology ?specificProperty
 WHERE {
-    ?adr rdfs:label ?adrLabel ;        # Название ADR
-         :requiresInfrastructure ?tech . # Общее свойство (выведено автоматически)
+    ?adr rdfs:label ?adrLabel ;        # ADR label
+         :requiresInfrastructure ?tech . # General property (inferred automatically)
     
-    ?tech rdfs:label ?technology .     # Название технологии
+    ?tech rdfs:label ?technology .     # Technology label
     
     BIND(
         IF(EXISTS { ?adr :usesMicroservices ?tech }, "usesMicroservices",
         IF(EXISTS { ?adr :requiresDistributedSystem ?tech }, "requiresDistributedSystem",
         IF(EXISTS { ?adr :usesContainers ?tech }, "usesContainers",
         "requiresInfrastructure")))
-        AS ?specificProperty           # Определить конкретное свойство
+        AS ?specificProperty           # Determine specific property
     )
 }
-ORDER BY ?adrLabel                     # Сортировать по названию ADR
+ORDER BY ?adrLabel                     # Sort by ADR label
 
-# Пояснение:
-# В онтологии определено:
+# Explanation:
+# In the ontology defined:
 # :usesMicroservices rdfs:subPropertyOf :requiresInfrastructure
 # :requiresDistributedSystem rdfs:subPropertyOf :requiresInfrastructure
 # :usesContainers rdfs:subPropertyOf :requiresInfrastructure
 # 
-# GraphDB автоматически выводит:
-# если (?adr :usesMicroservices ?tech), то (?adr :requiresInfrastructure ?tech)
+# GraphDB automatically infers:
+# if (?adr :usesMicroservices ?tech), then (?adr :requiresInfrastructure ?tech)
 # 
-# Мы можем запрашивать по общему свойству :requiresInfrastructure,
-# а reasoner найдёт все ADR с любыми специфичными подсвойствами!
+# We can query by general property :requiresInfrastructure,
+# and the reasoner will find all ADRs with any specific subproperties!
 # 
-# В SQL: потребовались бы триггеры или сложные UNION запросы.
-# В Property Graph: дублирование рёбер или мета-запросы.
-# В RDF с reasoning: автоматическая дедукция на основе онтологии!
+# In SQL: would require triggers or complex UNION queries.
+# In Property Graph: duplicate edges or meta-queries.
+# In RDF with reasoning: automatic deduction based on ontology!

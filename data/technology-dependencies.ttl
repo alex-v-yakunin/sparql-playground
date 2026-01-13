@@ -4,88 +4,88 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 # ============================================
-# ТЕХНОЛОГИЧЕСКИЕ ЗАВИСИМОСТИ
+# TECHNOLOGY DEPENDENCIES
 # ============================================
 # 
-# Этот файл демонстрирует Property Paths -
-# уникальную возможность SPARQL для навигации
-# по транзитивным зависимостям в графе
+# This file demonstrates Property Paths -
+# unique SPARQL capability for navigating
+# transitive dependencies in graph
 #
-# В SQL для этого нужны рекурсивные CTE!
+# In SQL this requires recursive CTEs!
 # ============================================
 
-# ----- Прямые зависимости -----
+# ----- Direct dependencies -----
 
 :Kafka :dependsOn :Java ;
        :dependsOn :Zookeeper ;
-       rdfs:comment "Kafka требует Java Runtime и Zookeeper для координации" .
+       rdfs:comment "Kafka requires Java Runtime and Zookeeper for coordination" .
 
 :Kubernetes :dependsOn :Docker ;
             :dependsOn :etcd ;
-            rdfs:comment "Kubernetes использует Docker и etcd для хранения состояния" .
+            rdfs:comment "Kubernetes uses Docker and etcd for state storage" .
 
 :Docker :dependsOn :Linux ;
         :dependsOn :ContainerRuntime ;
-        rdfs:comment "Docker работает на Linux и нуждается в container runtime" .
+        rdfs:comment "Docker runs on Linux and needs container runtime" .
 
 :PostgreSQL :dependsOn :Linux ;
             :dependsOn :FileSystem ;
-            rdfs:comment "PostgreSQL требует Linux и файловую систему" .
+            rdfs:comment "PostgreSQL requires Linux and file system" .
 
 :Redis :dependsOn :Linux ;
-       rdfs:comment "Redis работает на Linux" .
+       rdfs:comment "Redis runs on Linux" .
 
 :MongoDB :dependsOn :Linux ;
-         rdfs:comment "MongoDB требует Linux" .
+         rdfs:comment "MongoDB requires Linux" .
 
-# ----- Циклическая зависимость (демонстрация) -----
-# ⚠️ АРХИТЕКТУРНЫЙ АНТИПАТТЕРН - для демонстрации обнаружения циклов!
+# ----- Circular dependency (demonstration) -----
+# ⚠️ ARCHITECTURAL ANTI-PATTERN - for demonstrating cycle detection!
 
 :ServiceMesh :dependsOn :Kubernetes ;
-             rdfs:comment "ServiceMesh развертывается на Kubernetes" .
+             rdfs:comment "ServiceMesh deploys on Kubernetes" .
 
 :Docker :dependsOn :ServiceMesh ;
-        rdfs:comment "⚠️ Demo cycle: Docker использует ServiceMesh для networking" .
+        rdfs:comment "⚠️ Demo cycle: Docker uses ServiceMesh for networking" .
 
-# Дополнительные низкоуровневые зависимости
+# Additional low-level dependencies
 :Linux :dependsOn :Kernel .
 :Java :dependsOn :JVM .
 :Zookeeper :dependsOn :Java .
 :etcd :dependsOn :Go .
 
-# ----- Версионные требования -----
+# ----- Version requirements -----
 
 :Kafka :requiresMinVersion [
     a :VersionRequirement ;
     :technology :Java ;
     :minVersion "11" ;
     :recommendedVersion "17" ;
-    :reason "Улучшения производительности и безопасности"
+    :reason "Performance and security improvements"
 ] .
 
 :Kubernetes :requiresMinVersion [
     a :VersionRequirement ;
     :technology :Docker ;
     :minVersion "20.10" ;
-    :reason "Исправления безопасности и совместимость API"
+    :reason "Security fixes and API compatibility"
 ] .
 
 :PostgreSQL :requiresMinVersion [
     a :VersionRequirement ;
     :technology :Linux ;
     :minVersion "3.10" ;
-    :reason "Поддержка современных системных вызовов"
+    :reason "Support for modern system calls"
 ] .
 
-# ----- Конфликты технологий -----
+# ----- Technology conflicts -----
 
 :Kafka :conflictsWith :RabbitMQ ;
-       rdfs:comment "Архитектурные различия: streaming vs messaging" .
+       rdfs:comment "Architectural differences: streaming vs messaging" .
 
 :PostgreSQL :conflictsWith :MongoDB ;
-            rdfs:comment "Разные модели данных: реляционная vs документная" .
+            rdfs:comment "Different data models: relational vs document" .
 
-# ----- Альтернативы -----
+# ----- Alternatives -----
 
 :Kafka :hasAlternative :ApachePulsar ;
        :hasAlternative :AmazonKinesis ;
@@ -99,7 +99,7 @@
             :hasAlternative :Nomad ;
             :hasAlternative :AmazonECS .
 
-# ----- Категории технологий -----
+# ----- Technology categories -----
 
 :Kafka a :MessageBroker ;
        a :EventStreamingPlatform ;
@@ -135,7 +135,7 @@
              a :Observability ;
              rdfs:label "Service Mesh (Istio/Linkerd)" .
 
-# ----- Вспомогательные технологии -----
+# ----- Supporting technologies -----
 
 :Zookeeper a :CoordinationService ;
            rdfs:label "Apache Zookeeper" .
@@ -165,7 +165,7 @@
 :FileSystem a :SystemComponent ;
             rdfs:label "File System" .
 
-# ----- Лицензии -----
+# ----- Licenses -----
 
 :Kafka :hasLicense :ApacheLicense ;
        :licenseType :OpenSource .

@@ -1,25 +1,25 @@
-# Проверка на циклические зависимости
+# Circular Dependency Check
 #
-# Обнаружить циклы в графе зависимостей технологий.
+# Detect cycles in the technology dependency graph.
 #
-# Ожидаемый результат: 1 цикл (Docker → ServiceMesh → Kubernetes → Docker)
-# Время выполнения: < 1 секунды
+# Expected result: 1 cycle (Docker → ServiceMesh → Kubernetes → Docker)
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?technology ?label
 WHERE {
-    ?tech :dependsOn+ ?tech ;          # Транзитивная зависимость сама на себя
-          rdfs:label ?label .          # Получить название технологии
+    ?tech :dependsOn+ ?tech ;          # Transitive dependency on itself
+          rdfs:label ?label .          # Get technology label
     
-    BIND(STR(?tech) AS ?technology)    # Преобразовать URI в строку
+    BIND(STR(?tech) AS ?technology)    # Convert URI to string
 }
 
-# Пояснение:
-# Property Path :dependsOn+ означает "один или более шагов по :dependsOn".
-# Паттерн ?tech :dependsOn+ ?tech ищет технологии, зависящие от самих себя через цепочку.
-# Это антипаттерн в архитектуре, требующий немедленного внимания!
-# В SQL потребовались бы рекурсивные CTE (Common Table Expressions).
-# В Property Graph: аналогичный обход с проверкой на цикл.
-# В отличие от SQL, SPARQL естественно работает с транзитивными связями.
+# Explanation:
+# Property Path :dependsOn+ means "one or more steps through :dependsOn".
+# Pattern ?tech :dependsOn+ ?tech searches for technologies depending on themselves via chain.
+# This is an anti-pattern in architecture requiring immediate attention!
+# In SQL would require recursive CTEs (Common Table Expressions).
+# In Property Graph: similar traversal with cycle detection.
+# Unlike SQL, SPARQL naturally works with transitive relationships.

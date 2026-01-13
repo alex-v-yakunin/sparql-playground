@@ -1,26 +1,26 @@
-# Системы и их владельцы
+# Systems and Their Owners
 #
-# Получить список всех систем с командами, которые ими владеют.
+# Get list of all systems with the teams that own them.
 #
-# Ожидаемый результат: 5 систем
-# Время выполнения: < 1 секунды
+# Expected result: 5 systems
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?system ?systemLabel ?team ?teamLabel
 WHERE {
-    ?system a :System ;             # Найти все системы
-            rdfs:label ?systemLabel ;  # Получить название системы
-            :ownedBy ?team .        # Следовать по связи к команде-владельцу
+    ?system a :System ;             # Find all systems
+            rdfs:label ?systemLabel ;  # Get system label
+            :ownedBy ?team .        # Follow relationship to owner team
     
-    ?team rdfs:label ?teamLabel .   # Получить название команды
+    ?team rdfs:label ?teamLabel .   # Get team label
 }
-ORDER BY ?systemLabel               # Сортировать по названию системы
+ORDER BY ?systemLabel               # Sort by system label
 
-# Пояснение:
-# Демонстрирует связь между сущностями через свойство :ownedBy.
-# В SQL потребовался бы JOIN: 
+# Explanation:
+# Demonstrates relationship between entities via :ownedBy property.
+# In SQL would require JOIN: 
 #   SELECT * FROM systems JOIN teams ON systems.owner_id = teams.id
-# В SPARQL связи естественны - просто следуем по свойству :ownedBy.
-# Property Graph: аналогично естественная навигация по рёбрам.
+# In SPARQL relationships are natural - just follow the :ownedBy property.
+# Property Graph: similarly natural navigation through edges.

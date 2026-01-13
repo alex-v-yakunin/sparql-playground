@@ -1,27 +1,27 @@
-# ADR из нескольких источников
+# ADRs from Multiple Sources
 #
-# Найти ADR, задокументированные более чем в одном месте.
+# Find ADRs documented in more than one place.
 #
-# Ожидаемый результат: 2 ADR (ADR-007, ADR-008)
-# Время выполнения: < 1 секунды
+# Expected result: 2 ADRs (ADR-007, ADR-008)
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?adr ?label (COUNT(DISTINCT ?source) AS ?sourceCount)  # Подсчёт уникальных источников
+SELECT ?adr ?label (COUNT(DISTINCT ?source) AS ?sourceCount)  # Count unique sources
 WHERE {
-    GRAPH ?source {                    # Искать во всех графах
-        ?adr a :ADR ;                  # Найти ADR
-             rdfs:label ?label .       # Получить название
+    GRAPH ?source {                    # Search across all graphs
+        ?adr a :ADR ;                  # Find ADRs
+             rdfs:label ?label .       # Get label
     }
 }
-GROUP BY ?adr ?label                   # Группировать по ADR
-HAVING (?sourceCount > 1)              # Оставить только с >1 источником
-ORDER BY DESC(?sourceCount)            # Сортировать от большего к меньшему
+GROUP BY ?adr ?label                   # Group by ADR
+HAVING (?sourceCount > 1)              # Keep only those with >1 source
+ORDER BY DESC(?sourceCount)            # Sort from highest to lowest
 
-# Пояснение:
-# Может указывать на хорошо задокументированные решения ИЛИ на противоречивую информацию.
-# COUNT(DISTINCT ?source) подсчитывает количество уникальных источников для каждого ADR.
-# HAVING фильтрует группы, оставляя только те, где источников больше одного.
-# В SQL потребовался бы сложный GROUP BY с подзапросами.
-# В Property Graph: подсчёт связей с узлами-источниками.
+# Explanation:
+# May indicate well-documented decisions OR conflicting information.
+# COUNT(DISTINCT ?source) counts number of unique sources for each ADR.
+# HAVING filters groups, keeping only those with more than one source.
+# In SQL would require complex GROUP BY with subqueries.
+# In Property Graph: count relationships to source nodes.

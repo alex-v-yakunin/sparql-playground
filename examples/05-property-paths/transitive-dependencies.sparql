@@ -1,25 +1,25 @@
-# Транзитивные зависимости Kubernetes
+# Transitive Dependencies of Kubernetes
 #
-# Найти все прямые и косвенные зависимости конкретной технологии.
+# Find all direct and indirect dependencies of a specific technology.
 #
-# Ожидаемый результат: 5 зависимостей Kubernetes
-# Время выполнения: < 1 секунды
+# Expected result: 5 dependencies of Kubernetes
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?dependency
 WHERE {
-    :Kubernetes :dependsOn+ ?tech ;    # Транзитивное замыкание от :Kubernetes
-                rdfs:label ?label .    # (игнорируется, для полноты)
+    :Kubernetes :dependsOn+ ?tech ;    # Transitive closure from :Kubernetes
+                rdfs:label ?label .    # (ignored, for completeness)
     
-    ?tech rdfs:label ?dependency .     # Получить название зависимости
+    ?tech rdfs:label ?dependency .     # Get dependency label
 }
-ORDER BY ?dependency                   # Сортировать по названию
+ORDER BY ?dependency                   # Sort by label
 
-# Пояснение:
-# Property Path :dependsOn+ означает "один или более шагов по :dependsOn".
-# Находит все технологии, от которых Kubernetes зависит напрямую или косвенно.
-# В SQL потребовался бы рекурсивный CTE (WITH RECURSIVE).
-# В Property Graph: обход в глубину/ширину.
-# SPARQL делает это естественно и лаконично - мощь графовых баз данных!
+# Explanation:
+# Property Path :dependsOn+ means "one or more steps through :dependsOn".
+# Finds all technologies that Kubernetes depends on directly or indirectly.
+# In SQL would require recursive CTE (WITH RECURSIVE).
+# In Property Graph: depth-first/breadth-first traversal.
+# SPARQL does this naturally and concisely - the power of graph databases!

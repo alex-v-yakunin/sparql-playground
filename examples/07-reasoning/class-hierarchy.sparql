@@ -1,30 +1,30 @@
-# Иерархия классов (RDFS Reasoning)
+# Class Hierarchy (RDFS Reasoning)
 #
-# Продемонстрировать автоматический вывод типов через rdfs:subClassOf.
+# Demonstrate automatic type inference through rdfs:subClassOf.
 #
-# Ожидаемый результат: 7 пар (тип, супертип) для каждого ADR
-# Примечание: Каждый ADR является и :ADR, и :ArchitecturalDecision
-# Время выполнения: < 1 секунды
+# Expected result: 7 pairs (type, supertype) for each ADR
+# Note: Each ADR is both :ADR and :ArchitecturalDecision
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?adr ?type
 WHERE {
-    ?adr a :ArchitecturalDecision ;    # Искать экземпляры родительского класса
-         a ?type .                     # Получить все типы (включая выведенные)
+    ?adr a :ArchitecturalDecision ;    # Search for instances of parent class
+         a ?type .                     # Get all types (including inferred)
 }
-ORDER BY ?adr ?type                    # Сортировать по ADR и типу
+ORDER BY ?adr ?type                    # Sort by ADR and type
 
-# Пояснение:
-# В онтологии определено: :ADR rdfs:subClassOf :ArchitecturalDecision
-# GraphDB с включённым RDFS reasoning автоматически выводит:
-# если (?x a :ADR), то (?x a :ArchitecturalDecision)
+# Explanation:
+# In the ontology defined: :ADR rdfs:subClassOf :ArchitecturalDecision
+# GraphDB with RDFS reasoning enabled automatically infers:
+# if (?x a :ADR), then (?x a :ArchitecturalDecision)
 # 
-# Каждый ADR имеет оба типа:
-# - Явно заявленный: :ADR
-# - Автоматически выведенный: :ArchitecturalDecision
+# Each ADR has both types:
+# - Explicitly stated: :ADR
+# - Automatically inferred: :ArchitecturalDecision
 # 
-# В SQL: потребовались бы триггеры, представления или сложная нормализация.
-# В Property Graph: дублирование меток или отдельные узлы.
-# В RDF с reasoning: автоматическая дедукция на основе онтологии!
+# In SQL: would require triggers, views or complex normalization.
+# In Property Graph: duplicate labels or separate nodes.
+# In RDF with reasoning: automatic deduction based on ontology!

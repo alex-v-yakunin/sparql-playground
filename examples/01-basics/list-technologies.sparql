@@ -1,21 +1,21 @@
-# Список всех технологий
+# List of All Technologies
 #
-# Получить все уникальные технологии из набора данных.
+# Get all unique technologies from the dataset.
 #
-# Ожидаемый результат: 7 технологий (Kafka, PostgreSQL, Redis, MongoDB, Kubernetes, Docker, ServiceMesh)
-# Время выполнения: < 1 секунды
+# Expected result: 7 technologies (Kafka, PostgreSQL, Redis, MongoDB, Kubernetes, Docker, ServiceMesh)
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT DISTINCT ?technology ?label  # DISTINCT исключает дубликаты
+SELECT DISTINCT ?technology ?label  # DISTINCT excludes duplicates
 WHERE {
-    ?technology a :Technology ;     # Найти все сущности типа :Technology
-                rdfs:label ?label . # Получить их названия
+    ?technology a :Technology ;     # Find all entities of type :Technology
+                rdfs:label ?label . # Get their labels
 }
-ORDER BY ?label                     # Сортировать по алфавиту
+ORDER BY ?label                     # Sort alphabetically
 
-# Пояснение:
-# DISTINCT исключает дубликаты из результата.
-# В SQL: SELECT DISTINCT technology FROM technologies
-# В SPARQL: DISTINCT работает аналогично.
+# Explanation:
+# DISTINCT excludes duplicates from results.
+# In SQL: SELECT DISTINCT technology FROM technologies
+# In SPARQL: DISTINCT works similarly.

@@ -1,9 +1,9 @@
-# След доказательств для решений
+# Evidence Trail for Decisions
 #
-# Отследить источники доказательств для архитектурных решений.
+# Track evidence sources for architectural decisions.
 #
-# Ожидаемый результат: 7 ADR с источниками доказательств (или без них)
-# Время выполнения: < 1 секунды
+# Expected result: 7 ADRs with evidence sources (or without them)
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -11,45 +11,45 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT ?adrLabel ?technology ?evidenceSource ?confidence
 WHERE {
-    ?statement a rdf:Statement ;       # Найти реифицированное утверждение
-               rdf:subject ?adr ;      # О каком ADR
-               rdf:predicate :decidesTechnology ; # Предикат: выбор технологии
-               rdf:object ?tech ;      # Какая технология
-               :confidence ?confidence . # Уровень уверенности
+    ?statement a rdf:Statement ;       # Find reified statement
+               rdf:subject ?adr ;      # About which ADR
+               rdf:predicate :decidesTechnology ; # Predicate: technology choice
+               rdf:object ?tech ;      # Which technology
+               :confidence ?confidence . # Confidence level
     
-    OPTIONAL {                         # Источник может отсутствовать
-        ?statement :evidenceSource ?evidenceSource . # Источник доказательства
+    OPTIONAL {                         # Source may be absent
+        ?statement :evidenceSource ?evidenceSource . # Evidence source
     }
     
-    ?adr rdfs:label ?adrLabel .        # Название ADR
-    ?tech rdfs:label ?technology .     # Название технологии
+    ?adr rdfs:label ?adrLabel .        # ADR label
+    ?tech rdfs:label ?technology .     # Technology label
 }
-ORDER BY ?adrLabel                     # Сортировать по названию ADR
+ORDER BY ?adrLabel                     # Sort by ADR label
 
-# Пояснение:
-# Reification позволяет хранить метаданные о решениях: уверенность, источники.
-# OPTIONAL означает, что ?evidenceSource может отсутствовать (будет NULL/unbound).
-# Критично для compliance: откуда мы знаем, что это правильное решение?
-# В SQL: таблица decisions_evidence с LEFT JOIN.
-# В Property Graph: свойства на рёбрах или мета-узлы.
-# В RDF: естественное моделирование через reification.
+# Explanation:
+# Reification allows storing metadata about decisions: confidence, sources.
+# OPTIONAL means ?evidenceSource may be absent (will be NULL/unbound).
+# Critical for compliance: how do we know this is the right decision?
+# In SQL: decisions_evidence table with LEFT JOIN.
+# In Property Graph: properties on edges or meta-nodes.
+# In RDF: natural modeling through reification.
 
-# Дополнительный запрос: найти решения БЕЗ доказательств
-# Раскомментируйте следующий запрос:
+# Additional query: find decisions WITHOUT evidence
+# Uncomment the following query:
 
 # SELECT ?adrLabel ?technology ?confidence
 # WHERE {
-#     ?statement a rdf:Statement ;       # Найти реифицированное утверждение
-#                rdf:subject ?adr ;      # О каком ADR
-#                rdf:predicate :decidesTechnology ; # Предикат: выбор технологии
-#                rdf:object ?tech ;      # Какая технология
-#                :confidence ?confidence . # Уровень уверенности
+#     ?statement a rdf:Statement ;       # Find reified statement
+#                rdf:subject ?adr ;      # About which ADR
+#                rdf:predicate :decidesTechnology ; # Predicate: technology choice
+#                rdf:object ?tech ;      # Which technology
+#                :confidence ?confidence . # Confidence level
 #     
-#     FILTER NOT EXISTS {                # Проверить отсутствие
-#         ?statement :evidenceSource ?source . # Источника доказательства
+#     FILTER NOT EXISTS {                # Check absence
+#         ?statement :evidenceSource ?source . # Of evidence source
 #     }
 #     
-#     ?adr rdfs:label ?adrLabel .        # Название ADR
-#     ?tech rdfs:label ?technology .     # Название технологии
+#     ?adr rdfs:label ?adrLabel .        # ADR label
+#     ?tech rdfs:label ?technology .     # Technology label
 # }
-# ORDER BY ?confidence                   # Сортировать по уверенности
+# ORDER BY ?confidence                   # Sort by confidence

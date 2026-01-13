@@ -4,95 +4,100 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 # ============================================
-# REIFICATION: МЕТАДАННЫЕ О РЕШЕНИЯХ
+# REIFICATION: METADATA ABOUT DECISIONS
 # ============================================
 #
-# Этот файл демонстрирует reification -
-# возможность хранить метаданные о триплетах:
-# КТО сказал, КОГДА, с какой УВЕРЕННОСТЬЮ
+# This file demonstrates reification -
+# ability to store metadata about triples:
+# WHO said, WHEN, with what CONFIDENCE
 #
-# В SQL нужны отдельные таблицы metadata!
+# In SQL separate metadata tables are needed!
 # ============================================
 
-# ----- Люди (архитекторы) -----
+# ----- People (architects) -----
 
 GRAPH :people {
     :person_IvanPetrov a :Person ;
-        rdfs:label "Иван Петров" ;
-        :fullName "Петров Иван Александрович" ;
+        rdfs:label "Ivan Petrov" ;
+        :fullName "Ivan Petrov" ;
         :role :LeadArchitect ;
         :team :TeamPlatform ;
         :email "ivan.petrov@company.com" ;
+        :nationality "Russia" ;
         :expertise ( :Microservices :EventDriven :Kafka :Kubernetes ) ;
         :yearsOfExperience 12 .
 
-    :person_MariaSidorova a :Person ;
-        rdfs:label "Мария Сидорова" ;
-        :fullName "Сидорова Мария Владимировна" ;
+    :person_JohnSmith a :Person ;
+        rdfs:label "John Smith" ;
+        :fullName "John Michael Smith" ;
         :role :DataArchitect ;
         :team :TeamData ;
-        :email "maria.sidorova@company.com" ;
+        :email "john.smith@company.com" ;
+        :nationality "USA" ;
         :expertise ( :Databases :DataModeling :PostgreSQL :Analytics ) ;
         :yearsOfExperience 10 .
 
-    :person_AlexKozlov a :Person ;
-        rdfs:label "Алексей Козлов" ;
-        :fullName "Козлов Алексей Сергеевич" ;
+    :person_HansMueller a :Person ;
+        rdfs:label "Hans Müller" ;
+        :fullName "Hans Friedrich Müller" ;
         :role :CTO ;
         :team :Leadership ;
-        :email "alex.kozlov@company.com" ;
+        :email "hans.mueller@company.com" ;
+        :nationality "Germany" ;
         :expertise ( :Strategy :Architecture :CloudNative ) ;
         :yearsOfExperience 15 .
 
-    :person_ElenaNikitina a :Person ;
-        rdfs:label "Елена Никитина" ;
-        :fullName "Никитина Елена Дмитриевна" ;
+    :person_ElenaIonescu a :Person ;
+        rdfs:label "Elena Ionescu" ;
+        :fullName "Elena Maria Ionescu" ;
         :role :SecurityArchitect ;
         :team :Security ;
-        :email "elena.nikitina@company.com" ;
+        :email "elena.ionescu@company.com" ;
+        :nationality "Romania" ;
         :expertise ( :Security :Compliance :GDPR ) ;
         :yearsOfExperience 8 .
 
-    :person_DmitryVolkov a :Person ;
-        rdfs:label "Дмитрий Волков" ;
-        :fullName "Волков Дмитрий Николаевич" ;
+    :person_MarkoKovacic a :Person ;
+        rdfs:label "Marko Kovačić" ;
+        :fullName "Marko Kovačić" ;
         :role :DevOpsLead ;
         :team :TeamPlatform ;
-        :email "dmitry.volkov@company.com" ;
+        :email "marko.kovacic@company.com" ;
+        :nationality "Croatia" ;
         :expertise ( :Kubernetes :Docker :Monitoring ) ;
         :yearsOfExperience 9 .
 }
 
-# ----- Reified statements для ADR-001 -----
+# ----- Reified statements for ADR-001 -----
 
 GRAPH :decision-metadata {
-    # Основное решение: ADR-001 использует Kafka
+    # Main decision: ADR-001 uses Kafka
     :stmt_adr001_kafka a rdf:Statement ;
         rdf:subject :ADR-001 ;
         rdf:predicate :decidesTechnology ;
         rdf:object :Kafka ;
-        # Метаданные о решении
+        # Decision metadata
         :statedBy :person_IvanPetrov ;
         :statedOn "2024-12-15T14:30:00"^^xsd:dateTime ;
         :confidence 0.95 ;
         :evidenceSource :LoadTestResults ;
         :evidenceURL "https://confluence.company.com/load-tests/kafka-2024-12" ;
-        # Процесс принятия решения
+        # Decision making process
         :discussionThread "https://confluence.company.com/ADR-001-discussion" ;
-        :reviewDuration "P14D"^^xsd:duration ;  # 14 дней обсуждения
-        :approvedBy ( :person_IvanPetrov :person_MariaSidorova :person_AlexKozlov ) ;
-        # Результаты голосования
+        :reviewDuration "P14D"^^xsd:duration ;  # 14 days of discussion
+        :approvedBy ( :person_IvanPetrov :person_JohnSmith :person_HansMueller ) ;
+        # Voting results
         :votingResult [
             :inFavor 8 ;
             :against 1 ;
             :abstain 2 ;
             :totalVoters 11
         ] ;
-        # Дополнительный контекст
-        :decisionRationale "Необходима потоковая обработка событий для Order Service" ;
-        :expectedImpact "Снижение latency с 500ms до 50ms" .
+        # Additional context
+        :decisionRationale "Event streaming needed for Order Service" ;
+        :expectedImpact "Latency reduction from 500ms to 50ms" .
 
-    # Решение: ADR-001 применяется к OrderService
+    # Decision: ADR-001 applies to OrderService
     :stmt_adr001_orderservice a rdf:Statement ;
         rdf:subject :ADR-001 ;
         rdf:predicate :appliesTo ;
@@ -103,120 +108,120 @@ GRAPH :decision-metadata {
         :evidenceSource :SystemArchitectureDocument .
 }
 
-# ----- Reified statements для ADR-002 -----
+# ----- Reified statements for ADR-002 -----
 
 GRAPH :decision-metadata {
     :stmt_adr002_postgresql a rdf:Statement ;
         rdf:subject :ADR-002 ;
         rdf:predicate :decidesTechnology ;
         rdf:object :PostgreSQL ;
-        :statedBy :person_MariaSidorova ;
+        :statedBy :person_JohnSmith ;
         :statedOn "2024-11-20T10:15:00"^^xsd:dateTime ;
         :confidence 0.92 ;
         :evidenceSource :DatabaseBenchmark ;
         :discussionThread "https://confluence.company.com/ADR-002-discussion" ;
-        :approvedBy ( :person_MariaSidorova :person_ElenaNikitina :person_AlexKozlov ) ;
+        :approvedBy ( :person_JohnSmith :person_ElenaIonescu :person_HansMueller ) ;
         :votingResult [
             :inFavor 9 ;
             :against 0 ;
             :abstain 1 ;
             :totalVoters 10
         ] ;
-        :decisionRationale "ACID compliance критичен для платежных транзакций" ;
+        :decisionRationale "ACID compliance critical for payment transactions" ;
         :complianceRequirements ( "PCI DSS" "GDPR" "SOC2" ) .
 }
 
-# ----- Reified statements для ADR-004 (отклоненное) -----
+# ----- Reified statements for ADR-004 (rejected) -----
 
 GRAPH :decision-metadata {
     :stmt_adr004_mongodb a rdf:Statement ;
         rdf:subject :ADR-004 ;
         rdf:predicate :decidesTechnology ;
         rdf:object :MongoDB ;
-        # Первоначальное предложение
+        # Initial proposal
         :statedBy :person_IvanPetrov ;
         :statedOn "2024-01-10T10:00:00"^^xsd:dateTime ;
         :confidence 0.45 ;
         :evidenceSource :InterviewNotes ;
-        :decisionRationale "Гибкость схемы для истории платежей" ;
-        # Отклонение решения
+        :decisionRationale "Schema flexibility for payment history" ;
+        # Decision rejection
         :rejectedOn "2024-06-20T15:00:00"^^xsd:dateTime ;
-        :rejectedBy :person_MariaSidorova ;
-        :rejectionReason "Проблемы производительности в production, отсутствие ACID" ;
+        :rejectedBy :person_JohnSmith ;
+        :rejectionReason "Performance issues in production, lack of ACID" ;
         :supersededBy :stmt_adr005_postgresql ;
-        # Детали провала
+        # Failure details
         :productionIssues [
             :issueType "Performance" ;
-            :description "Медленные аггрегационные запросы" ;
+            :description "Slow aggregation queries" ;
             :discoveredOn "2024-05-15"^^xsd:date
         ] ;
         :productionIssues [
             :issueType "DataConsistency" ;
-            :description "Потеря транзакций при сбоях" ;
+            :description "Transaction loss during failures" ;
             :discoveredOn "2024-06-01"^^xsd:date
         ] .
 }
 
-# ----- Reified statements для ADR-005 (замена ADR-004) -----
+# ----- Reified statements for ADR-005 (replaces ADR-004) -----
 
 GRAPH :decision-metadata {
     :stmt_adr005_postgresql a rdf:Statement ;
         rdf:subject :ADR-005 ;
         rdf:predicate :decidesTechnology ;
         rdf:object :PostgreSQL ;
-        :statedBy :person_MariaSidorova ;
+        :statedBy :person_JohnSmith ;
         :statedOn "2024-06-25T11:00:00"^^xsd:dateTime ;
         :confidence 0.90 ;
         :evidenceSource :ProductionIncidentAnalysis ;
         :supersedes :stmt_adr004_mongodb ;
-        :approvedBy ( :person_MariaSidorova :person_AlexKozlov ) ;
+        :approvedBy ( :person_JohnSmith :person_HansMueller ) ;
         :votingResult [
             :inFavor 10 ;
             :against 0 ;
             :abstain 0 ;
             :totalVoters 10
         ] ;
-        :decisionRationale "ACID гарантии критичны для истории платежей, унификация с ADR-002" ;
+        :decisionRationale "ACID guarantees critical for payment history, unification with ADR-002" ;
         :migrationCompleted "2024-07-15"^^xsd:date ;
         :migrationDuration "P20D"^^xsd:duration .
 }
 
-# ----- Reified statements для ADR-007 (множественные источники) -----
+# ----- Reified statements for ADR-007 (multiple sources) -----
 
-# Основное решение из registry
+# Main decision from registry
 GRAPH :decision-metadata {
     :stmt_adr007_kubernetes a rdf:Statement ;
         rdf:subject :ADR-007 ;
         rdf:predicate :decidesTechnology ;
         rdf:object :Kubernetes ;
-        :statedBy :person_DmitryVolkov ;
+        :statedBy :person_MarkoKovacic ;
         :statedOn "2024-10-01T09:00:00"^^xsd:dateTime ;
         :confidence 0.98 ;
         :evidenceSource :PlatformStrategy ;
-        :approvedBy ( :person_DmitryVolkov :person_IvanPetrov :person_AlexKozlov ) ;
+        :approvedBy ( :person_MarkoKovacic :person_IvanPetrov :person_HansMueller ) ;
         :votingResult [
             :inFavor 11 ;
             :against 0 ;
             :abstain 0 ;
             :totalVoters 11
         ] ;
-        :decisionRationale "Стандарт индустрии для оркестрации контейнеров" .
+        :decisionRationale "Industry standard for container orchestration" .
 }
 
-# Дополнительная информация из confluence
+# Additional information from confluence
 GRAPH :confluence-metadata {
     :stmt_adr007_docker a rdf:Statement ;
         rdf:subject :ADR-007 ;
         rdf:predicate :decidesTechnology ;
         rdf:object :Docker ;
-        :statedBy :person_DmitryVolkov ;
+        :statedBy :person_MarkoKovacic ;
         :statedOn "2024-10-01T09:30:00"^^xsd:dateTime ;
         :confidence 0.75 ;
         :evidenceSource :TechnicalDocumentation ;
-        :decisionRationale "Docker как базовый runtime для Kubernetes" .
+        :decisionRationale "Docker as base runtime for Kubernetes" .
 }
 
-# ----- Временная линия решений -----
+# ----- Decision timeline -----
 
 GRAPH :decision-timeline {
     :timeline_2024_q1 a :DecisionPeriod ;
@@ -245,21 +250,21 @@ GRAPH :decision-timeline {
         :decisionsAccepted ( :ADR-001 :ADR-007 ) .
 }
 
-# ----- Reified statement БЕЗ evidenceSource (RED FLAG!) -----
+# ----- Reified statement WITHOUT evidenceSource (RED FLAG!) -----
 
 GRAPH :decision-metadata {
-    # ⚠️ ADR-006: Redis - решение БЕЗ доказательств!
-    # Это архитектурный "red flag" для governance
+    # ⚠️ ADR-006: Redis - decision WITHOUT evidence!
+    # This is architectural "red flag" for governance
     :stmt_adr006_redis a rdf:Statement ;
         rdf:subject :ADR-006 ;
         rdf:predicate :decidesTechnology ;
         rdf:object :Redis ;
-        # Метаданные есть
-        :statedBy :person_DmitryVolkov ;
+        # Metadata exists
+        :statedBy :person_MarkoKovacic ;
         :statedOn "2024-12-10T16:00:00"^^xsd:dateTime ;
         :confidence 0.65 .
-        # ⚠️ НО: :evidenceSource отсутствует!
-        # ⚠️ И :evidenceURL тоже нет!
-        # Это решение принято "на глазок" без доказательств
+        # ⚠️ BUT: :evidenceSource is missing!
+        # ⚠️ And :evidenceURL too!
+        # This decision made "by gut feel" without evidence
 }
 

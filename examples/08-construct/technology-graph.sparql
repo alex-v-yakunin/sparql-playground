@@ -1,50 +1,50 @@
-# Граф технологий с метаданными (CONSTRUCT)
+# Technology Graph with Metadata (CONSTRUCT)
 #
-# Построить граф технологий с зависимостями и метаданными для визуализации.
+# Build technology graph with dependencies and metadata for visualization.
 #
-# Ожидаемый результат: Граф с 7 технологиями, их зависимостями и свойствами
-# Время выполнения: < 1 секунды
+# Expected result: Graph with 7 technologies, their dependencies and properties
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 CONSTRUCT {
-    ?tech rdfs:label ?label ;          # Название технологии
-          :usedBy ?adr ;               # Какие ADR используют эту технологию
-          :dependsOn ?dep ;            # Прямые зависимости
-          :dependsOnIndirectly ?indirectDep .  # Косвенные зависимости (глубина 2)
+    ?tech rdfs:label ?label ;          # Technology label
+          :usedBy ?adr ;               # Which ADRs use this technology
+          :dependsOn ?dep ;            # Direct dependencies
+          :dependsOnIndirectly ?indirectDep .  # Indirect dependencies (depth 2)
 }
 WHERE {
-    ?tech a :Technology ;              # Найти все технологии
-          rdfs:label ?label .          # Получить название
+    ?tech a :Technology ;              # Find all technologies
+          rdfs:label ?label .          # Get label
     
-    OPTIONAL {                         # ADR может не быть
-        ?adr :decidesTechnology ?tech . # Найти ADR, использующие технологию
+    OPTIONAL {                         # ADR may not exist
+        ?adr :decidesTechnology ?tech . # Find ADRs using technology
     }
     
-    OPTIONAL {                         # Зависимости могут отсутствовать
-        ?tech :dependsOn ?dep .        # Прямые зависимости
+    OPTIONAL {                         # Dependencies may be absent
+        ?tech :dependsOn ?dep .        # Direct dependencies
     }
     
-    OPTIONAL {                         # Косвенные зависимости
-        ?tech :dependsOn/:dependsOn ?indirectDep .  # Глубина 2
+    OPTIONAL {                         # Indirect dependencies
+        ?tech :dependsOn/:dependsOn ?indirectDep .  # Depth 2
     }
 }
 
-# Пояснение:
-# CONSTRUCT создаёт богатый граф для инструментов визуализации.
-# Включаем несколько типов связей:
-# - :usedBy - связь с ADR
-# - :dependsOn - прямые зависимости
-# - :dependsOnIndirectly - косвенные зависимости (глубина 2)
+# Explanation:
+# CONSTRUCT creates rich graph for visualization tools.
+# Include several relationship types:
+# - :usedBy - relationship with ADRs
+# - :dependsOn - direct dependencies
+# - :dependsOnIndirectly - indirect dependencies (depth 2)
 # 
-# OPTIONAL гарантирует включение всех технологий, даже без связей.
-# Property Path :dependsOn/:dependsOn находит зависимости глубины 2.
+# OPTIONAL ensures all technologies are included, even without relationships.
+# Property Path :dependsOn/:dependsOn finds dependencies at depth 2.
 # 
-# Результат можно визуализировать в инструментах типа:
+# Result can be visualized in tools like:
 # - Graphviz, Cytoscape, Gephi
-# - D3.js, vis.js для веб-визуализации
+# - D3.js, vis.js for web visualization
 # 
-# В SQL: множественные LEFT JOIN для создания денормализованной таблицы.
-# В Property Graph: projection с фильтрацией типов рёбер.
-# В SPARQL: CONSTRUCT естественно создаёт новые графы!
+# In SQL: multiple LEFT JOINs to create denormalized table.
+# In Property Graph: projection with edge type filtering.
+# In SPARQL: CONSTRUCT naturally creates new graphs!

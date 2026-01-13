@@ -1,24 +1,24 @@
-# ADR по источникам данных
+# ADRs by Data Source
 #
-# Показать, какие ADR из каких именованных графов (источников данных).
+# Show which ADRs come from which named graphs (data sources).
 #
-# Ожидаемый результат: 10 строк (ADR из разных источников)
-# Время выполнения: < 1 секунды
+# Expected result: 10 rows (ADRs from different sources)
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?source ?adr ?label
 WHERE {
-    GRAPH ?source {                    # Запрос внутри именованного графа
-        ?adr a :ADR ;                  # Найти все ADR в этом графе
-             rdfs:label ?label .       # Получить их названия
+    GRAPH ?source {                    # Query inside named graph
+        ?adr a :ADR ;                  # Find all ADRs in this graph
+             rdfs:label ?label .       # Get their labels
     }
 }
-ORDER BY ?source ?adr                  # Сортировать по источнику, затем по ADR
+ORDER BY ?source ?adr                  # Sort by source, then by ADR
 
-# Пояснение:
-# Демонстрирует отслеживание происхождения данных (data provenance).
-# Named Graphs в SPARQL - встроенная возможность для хранения провенанса.
-# В SQL потребовалась бы отдельная таблица sources с JOIN.
-# В Property Graph: теги/метки на узлах или метаданные на рёбрах.
+# Explanation:
+# Demonstrates data provenance tracking.
+# Named Graphs in SPARQL - built-in capability for storing provenance.
+# In SQL would require separate sources table with JOIN.
+# In Property Graph: tags/labels on nodes or metadata on edges.

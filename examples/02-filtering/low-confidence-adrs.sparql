@@ -1,25 +1,25 @@
-# ADR с низкой уверенностью
+# ADRs with Low Confidence
 #
-# Найти архитектурные решения с уровнем уверенности < 0.70.
+# Find architectural decisions with confidence level < 0.70.
 #
-# Ожидаемый результат: 3 ADR (ADR-004: 0.45, ADR-006: 0.65, ADR-008: 0.62)
-# Время выполнения: < 1 секунды
+# Expected result: 3 ADRs (ADR-004: 0.45, ADR-006: 0.65, ADR-008: 0.62)
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?adr ?label ?confidence ?status
 WHERE {
-    ?adr a :ADR ;                      # Найти все ADR
-         rdfs:label ?label ;           # Получить название
-         :hasConfidence ?confidence ;  # Получить уровень уверенности
-         :hasStatus ?status .          # Получить статус
+    ?adr a :ADR ;                      # Find all ADRs
+         rdfs:label ?label ;           # Get label
+         :hasConfidence ?confidence ;  # Get confidence level
+         :hasStatus ?status .          # Get status
     
-    FILTER(?confidence < 0.70)         # Фильтр: уверенность < 70%
+    FILTER(?confidence < 0.70)         # Filter: confidence < 70%
 }
-ORDER BY ?confidence                   # Сортировать от низшей к высшей
+ORDER BY ?confidence                   # Sort from lowest to highest
 
-# Пояснение:
-# Эти решения могут требовать дополнительной проверки или пересмотра.
-# В SQL: WHERE confidence < 0.70
-# В SPARQL: FILTER с числовым сравнением.
+# Explanation:
+# These decisions may require additional validation or review.
+# In SQL: WHERE confidence < 0.70
+# In SPARQL: FILTER with numeric comparison.

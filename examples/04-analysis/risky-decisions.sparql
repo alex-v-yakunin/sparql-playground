@@ -1,33 +1,33 @@
-# Рискованные архитектурные решения
+# Risky Architectural Decisions
 #
-# Найти принятые ADR с низкой уверенностью (<0.70).
+# Find accepted ADRs with low confidence (<0.70).
 #
-# Ожидаемый результат: 1 ADR (ADR-008 с уверенностью 0.62 из interview-notes)
-# Примечание: Один ADR может иметь разную уверенность в разных источниках
-# Время выполнения: < 1 секунды
+# Expected result: 1 ADR (ADR-008 with confidence 0.62 from interview-notes)
+# Note: One ADR can have different confidence in different sources
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?adr ?label ?technology ?confidence ?source
 WHERE {
-    GRAPH ?source {                    # Учитываем источник данных
-        ?adr a :ADR ;                  # Найти все ADR
-             rdfs:label ?label ;       # Получить название
-             :hasStatus :Accepted ;    # Фильтр: только принятые решения
-             :decidesTechnology ?tech ;    # Получить технологию
-             :hasConfidence ?confidence .  # Получить уровень уверенности
+    GRAPH ?source {                    # Track data source
+        ?adr a :ADR ;                  # Find all ADRs
+             rdfs:label ?label ;       # Get label
+             :hasStatus :Accepted ;    # Filter: only accepted decisions
+             :decidesTechnology ?tech ;    # Get technology
+             :hasConfidence ?confidence .  # Get confidence level
     }
     
-    ?tech rdfs:label ?technology .     # Получить название технологии
+    ?tech rdfs:label ?technology .     # Get technology label
     
-    FILTER(?confidence < 0.70)         # Фильтр: низкая уверенность
+    FILTER(?confidence < 0.70)         # Filter: low confidence
 }
-ORDER BY ?confidence                   # Сортировать от низшей к высшей
+ORDER BY ?confidence                   # Sort from lowest to highest
 
-# Пояснение:
-# Эти решения в продакшене, но неопределённые - требуют проверки!
-# Комбинируем фильтрацию по статусу (:Accepted) и числовому условию (confidence < 0.70).
-# Запрос учитывает источник данных через GRAPH.
-# В SQL: WHERE status = 'Accepted' AND confidence < 0.70
-# В Property Graph: фильтрация по свойствам узлов.
+# Explanation:
+# These decisions are in production but uncertain - need review!
+# Combines filtering by status (:Accepted) and numeric condition (confidence < 0.70).
+# Query tracks data source through GRAPH.
+# In SQL: WHERE status = 'Accepted' AND confidence < 0.70
+# In Property Graph: filtering by node properties.

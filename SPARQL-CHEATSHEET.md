@@ -1,10 +1,10 @@
-# Краткий справочник по SPARQL
+# SPARQL Quick Reference
 
-Быстрый поиск синтаксиса SPARQL и распространённых паттернов.
+Quick lookup for SPARQL syntax and common patterns.
 
 ---
 
-## Структура запроса
+## Query Structure
 
 ```sparql
 PREFIX : <http://example.org/adr#>
@@ -12,7 +12,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?variable1 ?variable2
 WHERE {
-    # Поиск паттернов здесь
+    # Pattern matching here
     ?subject :predicate ?object .
 }
 ORDER BY ?variable1
@@ -21,32 +21,32 @@ LIMIT 10
 
 ---
 
-## SELECT-клаузы
+## SELECT Clauses
 
-| Клауза | Назначение | Пример |
-|--------|------------|--------|
-| `SELECT *` | Все переменные | `SELECT *` |
-| `SELECT ?var` | Конкретная переменная | `SELECT ?adr ?label` |
-| `SELECT DISTINCT` | Уникальные результаты | `SELECT DISTINCT ?tech` |
-| `SELECT (COUNT(*) as ?count)` | Агрегация | Подсчёт результатов |
+| Clause | Purpose | Example |
+|--------|---------|---------|
+| `SELECT *` | All variables | `SELECT *` |
+| `SELECT ?var` | Specific variable | `SELECT ?adr ?label` |
+| `SELECT DISTINCT` | Unique results | `SELECT DISTINCT ?tech` |
+| `SELECT (COUNT(*) as ?count)` | Aggregation | Count results |
 
 ---
 
-## Паттерны триплетов
+## Triple Patterns
 
-### Базовый паттерн
+### Basic Pattern
 ```sparql
 ?subject :predicate :Object .
 ```
 
-### Связывание (один субъект)
+### Chaining (one subject)
 ```sparql
 ?adr a :ADR ;
      :hasStatus :Accepted ;
      rdfs:label ?label .
 ```
 
-### Множественные паттерны
+### Multiple Patterns
 ```sparql
 ?adr :decidesTechnology ?tech .
 ?tech rdfs:label ?label .
@@ -54,7 +54,7 @@ LIMIT 10
 
 ---
 
-## OPTIONAL (Обработка отсутствующих данных)
+## OPTIONAL (Handling Missing Data)
 
 ```sparql
 ?adr :decidesTechnology ?tech .
@@ -64,38 +64,38 @@ OPTIONAL {
 }
 ```
 
-**Используется когда**: У некоторых сущностей может не быть свойства
+**Use when**: Some entities may not have the property
 
 ---
 
 ## FILTER
 
-### Сравнения
+### Comparisons
 ```sparql
 FILTER(?confidence >= 0.90)
 FILTER(?status = :Accepted)
 FILTER(?status != :Deprecated)
 ```
 
-### Логические операторы
+### Logical Operators
 ```sparql
 FILTER(?confidence >= 0.80 && ?status = :Accepted)
 FILTER(?status = :Proposed || ?status = :Deprecated)
-FILTER(!BOUND(?system))  # Проверка, что переменная не связана
+FILTER(!BOUND(?system))  # Check variable is not bound
 ```
 
-### Поиск по строке
+### String Search
 ```sparql
 FILTER(CONTAINS(?label, "Kafka"))
-FILTER(REGEX(?label, "^ADR", "i"))  # Регистронезависимый
+FILTER(REGEX(?label, "^ADR", "i"))  # Case insensitive
 ```
 
 ---
 
-## FILTER NOT EXISTS (Поиск отсутствия)
+## FILTER NOT EXISTS (Finding Absence)
 
 ```sparql
-# Найти ADR без контекста системы
+# Find ADRs without system context
 ?adr a :ADR .
 
 FILTER NOT EXISTS {
@@ -103,27 +103,27 @@ FILTER NOT EXISTS {
 }
 ```
 
-**Используется когда**: Нужно найти то, чего НЕТ в графе
+**Use when**: Need to find what's NOT in the graph
 
 ---
 
-## Named Graphs (Именованные графы)
+## Named Graphs
 
-### Запрос к конкретному графу
+### Query Specific Graph
 ```sparql
 GRAPH :adr-registry {
     ?adr a :ADR .
 }
 ```
 
-### Переменный граф (захват источника)
+### Variable Graph (Capture Source)
 ```sparql
 GRAPH ?source {
     ?adr a :ADR .
 }
 ```
 
-### Несколько графов
+### Multiple Graphs
 ```sparql
 {
     GRAPH :adr-registry { ?adr a :ADR }
@@ -136,16 +136,16 @@ UNION
 
 ---
 
-## Агрегация
+## Aggregation
 
-| Функция | Назначение | Пример |
-|---------|------------|--------|
-| `COUNT` | Подсчёт результатов | `COUNT(?adr)` |
-| `COUNT(DISTINCT ?var)` | Подсчёт уникальных | `COUNT(DISTINCT ?tech)` |
-| `AVG` | Среднее | `AVG(?confidence)` |
-| `SUM` | Сумма | `SUM(?amount)` |
-| `MIN` / `MAX` | Минимум/Максимум | `MAX(?confidence)` |
-| `GROUP_CONCAT` | Конкатенация | `GROUP_CONCAT(?label; separator=", ")` |
+| Function | Purpose | Example |
+|----------|---------|---------|
+| `COUNT` | Count results | `COUNT(?adr)` |
+| `COUNT(DISTINCT ?var)` | Count unique | `COUNT(DISTINCT ?tech)` |
+| `AVG` | Average | `AVG(?confidence)` |
+| `SUM` | Sum | `SUM(?amount)` |
+| `MIN` / `MAX` | Minimum/Maximum | `MAX(?confidence)` |
+| `GROUP_CONCAT` | Concatenation | `GROUP_CONCAT(?label; separator=", ")` |
 
 ### GROUP BY
 ```sparql
@@ -157,7 +157,7 @@ GROUP BY ?tech
 ORDER BY DESC(?count)
 ```
 
-### HAVING (Фильтр после группировки)
+### HAVING (Filter After Grouping)
 ```sparql
 SELECT ?adr (COUNT(?source) AS ?sourceCount)
 WHERE {
@@ -169,22 +169,22 @@ HAVING (?sourceCount > 1)
 
 ---
 
-## Сортировка и ограничения
+## Sorting and Limits
 
 ```sparql
-ORDER BY ?variable           # По возрастанию
-ORDER BY DESC(?variable)     # По убыванию
-ORDER BY ?var1 DESC(?var2)   # Несколько полей
+ORDER BY ?variable           # Ascending
+ORDER BY DESC(?variable)     # Descending
+ORDER BY ?var1 DESC(?var2)   # Multiple fields
 
-LIMIT 10                     # Первые 10 результатов
-OFFSET 20                    # Пропустить первые 20
+LIMIT 10                     # First 10 results
+OFFSET 20                    # Skip first 20
 ```
 
 ---
 
-## Распространённые паттерны
+## Common Patterns
 
-### Подсчёт всех объектов типа
+### Count All Objects of Type
 ```sparql
 SELECT (COUNT(?adr) AS ?count)
 WHERE {
@@ -192,7 +192,7 @@ WHERE {
 }
 ```
 
-### Получение с опциональной информацией
+### Get with Optional Information
 ```sparql
 ?adr a :ADR ;
      rdfs:label ?label .
@@ -201,7 +201,7 @@ OPTIONAL { ?adr :hasConfidence ?conf }
 OPTIONAL { ?adr :appliesTo ?system }
 ```
 
-### Поиск по нескольким критериям
+### Search by Multiple Criteria
 ```sparql
 ?adr :hasStatus :Accepted ;
      :hasConfidence ?conf .
@@ -209,7 +209,7 @@ OPTIONAL { ?adr :appliesTo ?system }
 FILTER(?conf >= 0.80)
 ```
 
-### Ранжирование по баллам
+### Rank by Score
 ```sparql
 SELECT ?tech (COUNT(?adr) * AVG(?conf) AS ?score)
 WHERE {
@@ -220,7 +220,7 @@ GROUP BY ?tech
 ORDER BY DESC(?score)
 ```
 
-### Поиск того, чего НЕТ
+### Find What's NOT There
 ```sparql
 ?system a :System .
 
@@ -229,7 +229,7 @@ FILTER NOT EXISTS {
 }
 ```
 
-### Следование связям
+### Follow Relationships
 ```sparql
 ?newADR :supersedes ?oldADR .
 ?oldADR :decidesTechnology ?oldTech .
@@ -238,7 +238,7 @@ FILTER NOT EXISTS {
 
 ---
 
-## Префиксы (Наш датасет)
+## Prefixes (Our Dataset)
 
 ```sparql
 PREFIX : <http://example.org/adr#>
@@ -249,85 +249,85 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 ---
 
-## Наши классы
+## Our Classes
 
-- `:ADR` — Architecture Decision Record (запись архитектурного решения)
-- `:System` — Программная система
-- `:Technology` — Технология/инструмент
-- `:Team` — Команда разработки
-- `:Status` — Статус ADR
-
----
-
-## Наши свойства
-
-| Свойство | От | К | Значение |
-|----------|-----|-----|----------|
-| `:decidesTechnology` | ADR | Technology | ADR выбирает технологию |
-| `:appliesTo` | ADR | System | ADR применяется к системе |
-| `:uses` | System | Technology | Система использует технологию |
-| `:supersedes` | ADR | ADR | Новый ADR заменяет старый |
-| `:ownedBy` | ADR/System | Team | Владение |
-| `:hasStatus` | ADR | Status | Текущий статус |
-| `:hasConfidence` | ADR | decimal | Уровень уверенности (0-1) |
+- `:ADR` — Architecture Decision Record
+- `:System` — Software system
+- `:Technology` — Technology/tool
+- `:Team` — Development team
+- `:Status` — ADR status
 
 ---
 
-## Наши именованные графы
+## Our Properties
 
-- `:adr-registry` — Официальный реестр ADR (высшее качество)
-- `:confluence` — Документация Confluence
-- `:confluence-metadata` — Метаданные из Confluence
-- `:decision-metadata` — Метаданные о решениях
-- `:decision-timeline` — Временная шкала решений
-- `:interview-notes` — Заметки интервью (низшее качество)
-- `:people` — Профили архитекторов и команд
+| Property | From | To | Meaning |
+|----------|------|-----|---------|
+| `:decidesTechnology` | ADR | Technology | ADR chooses technology |
+| `:appliesTo` | ADR | System | ADR applies to system |
+| `:uses` | System | Technology | System uses technology |
+| `:supersedes` | ADR | ADR | New ADR replaces old |
+| `:ownedBy` | ADR/System | Team | Ownership |
+| `:hasStatus` | ADR | Status | Current status |
+| `:hasConfidence` | ADR | decimal | Confidence level (0-1) |
 
 ---
 
-## Частые ошибки
+## Our Named Graphs
 
-### Отсутствующая точка
+- `:adr-registry` — Official ADR registry (highest quality)
+- `:confluence` — Confluence documentation
+- `:confluence-metadata` — Metadata from Confluence
+- `:decision-metadata` — Decision metadata
+- `:decision-timeline` — Decision timeline
+- `:interview-notes` — Interview notes (lowest quality)
+- `:people` — Architect and team profiles
+
+---
+
+## Common Mistakes
+
+### Missing Period
 ```sparql
-# Неправильно
+# Wrong
 ?adr a :ADR
 ?adr rdfs:label ?label
 
-# Правильно
+# Correct
 ?adr a :ADR .
 ?adr rdfs:label ?label .
 ```
 
-### Неправильный PREFIX
+### Incorrect PREFIX
 ```sparql
-# Неправильно - отсутствует двоеточие
+# Wrong - missing colon
 PREFIX adr <http://example.org/adr#>
 
-# Правильно
+# Correct
 PREFIX : <http://example.org/adr#>
 ```
 
-### FILTER не на месте
+### FILTER in Wrong Place
 ```sparql
-# Неправильно - FILTER перед паттерном
+# Wrong - FILTER before pattern
 WHERE {
     FILTER(?conf >= 0.90)
     ?adr :hasConfidence ?conf .
 }
 
-# Правильно - FILTER после паттерна
+# Correct - FILTER after pattern
 WHERE {
     ?adr :hasConfidence ?conf .
     FILTER(?conf >= 0.90)
 }
 ```
 
-### Забыли DISTINCT
+### Forgot DISTINCT
 ```sparql
-# Возвращает дубликаты
+# Returns duplicates
 SELECT ?tech WHERE { ?adr :decidesTechnology ?tech }
 
-# Возвращает уникальные
+# Returns unique
 SELECT DISTINCT ?tech WHERE { ?adr :decidesTechnology ?tech }
 ```
 
@@ -335,55 +335,55 @@ SELECT DISTINCT ?tech WHERE { ?adr :decidesTechnology ?tech }
 
 ## SPARQL vs SQL
 
-| SPARQL | SQL | Значение |
-|--------|-----|----------|
-| `?variable` | имя столбца | Переменная/заполнитель |
-| Паттерн триплета | JOIN | Связывание таблиц/сущностей |
-| `OPTIONAL` | LEFT JOIN | Опциональные данные |
-| `FILTER` | WHERE | Фильтрация результатов |
-| `FILTER NOT EXISTS` | NOT EXISTS подзапрос | Проверка отсутствия |
-| `GRAPH` | База данных/схема | Раздел данных |
-| `.` | Конец выражения | Разделитель паттернов |
+| SPARQL | SQL | Meaning |
+|--------|-----|---------|
+| `?variable` | column name | Variable/placeholder |
+| Triple pattern | JOIN | Link tables/entities |
+| `OPTIONAL` | LEFT JOIN | Optional data |
+| `FILTER` | WHERE | Filter results |
+| `FILTER NOT EXISTS` | NOT EXISTS subquery | Check absence |
+| `GRAPH` | Database/schema | Data partition |
+| `.` | End of statement | Pattern separator |
 
-**Ключевое отличие**: SPARQL сопоставляет **паттерны в графах**, SQL запрашивает **таблицы со строками**.
-
----
-
-## Быстрые советы
-
-✅ **Начинайте просто**: Сначала базовый паттерн, затем добавляйте сложность  
-✅ **Используйте OPTIONAL**: Для неполных данных (Open World Assumption)  
-✅ **Проверяйте BOUND()**: Чтобы узнать, сопоставились ли опциональные переменные  
-✅ **FILTER после паттерна**: Определяйте переменные перед фильтрацией  
-✅ **Используйте DISTINCT**: Для уникальных результатов  
-✅ **Именуйте агрегации**: `(COUNT(?x) AS ?count)` а не просто `COUNT(?x)`  
-
-❌ **Не предполагайте логику SQL**: Графы работают иначе  
-❌ **Не забывайте префиксы**: Они нужны для сокращённой записи  
-❌ **Не усложняйте**: Простые паттерны часто работают лучше  
+**Key difference**: SPARQL matches **patterns in graphs**, SQL queries **tables with rows**.
 
 ---
 
-## Шаблон запроса
+## Quick Tips
+
+✅ **Start simple**: Basic pattern first, then add complexity  
+✅ **Use OPTIONAL**: For incomplete data (Open World Assumption)  
+✅ **Check BOUND()**: To know if optional variables matched  
+✅ **FILTER after pattern**: Define variables before filtering  
+✅ **Use DISTINCT**: For unique results  
+✅ **Name aggregations**: `(COUNT(?x) AS ?count)` not just `COUNT(?x)`  
+
+❌ **Don't assume SQL logic**: Graphs work differently  
+❌ **Don't forget prefixes**: Needed for short notation  
+❌ **Don't overcomplicate**: Simple patterns often work best  
+
+---
+
+## Query Template
 
 ```sparql
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-# Описание того, что делает запрос
+# Description of what the query does
 
 SELECT ?result1 ?result2
 WHERE {
-    # Обязательные паттерны
+    # Required patterns
     ?entity a :Type ;
             :property ?value .
     
-    # Опциональные паттерны
+    # Optional patterns
     OPTIONAL {
         ?entity :optionalProperty ?optional .
     }
     
-    # Фильтры
+    # Filters
     FILTER(?value >= threshold)
 }
 ORDER BY ?result1
@@ -392,4 +392,4 @@ LIMIT 100
 
 ---
 
-**Нужна дополнительная помощь?** Смотрите [EXAMPLES.md](EXAMPLES.md) с рабочими примерами!
+**Need more help?** See [EXAMPLES.md](EXAMPLES.md) with working examples!

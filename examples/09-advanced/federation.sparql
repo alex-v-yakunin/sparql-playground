@@ -1,12 +1,12 @@
-# Федеративные запросы (SPARQL Federation)
+# Federated Queries (SPARQL Federation)
 #
-# Интеграция данных из внешнего SPARQL endpoint (DBpedia).
+# Integration of data from external SPARQL endpoint (DBpedia).
 #
-# Ожидаемый результат: 6 технологий (всегда), описания из DBpedia (если доступен)
-# Примечание: SERVICE блок обернут в OPTIONAL, поэтому запрос работает всегда.
-#             Если DBpedia доступен - вы увидите описания.
-#             Если недоступен - просто список технологий с количеством ADR.
-# Время выполнения: < 1 секунда (локально), +2-5 секунд (если DBpedia отвечает)
+# Expected result: 6 technologies (always), descriptions from DBpedia (if available)
+# Note: SERVICE block wrapped in OPTIONAL, so query always works.
+#       If DBpedia available - you'll see descriptions.
+#       If unavailable - just technology list with ADR count.
+# Execution time: < 1 second (local), +2-5 seconds (if DBpedia responds)
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -16,15 +16,15 @@ PREFIX dbr: <http://dbpedia.org/resource/>
 SELECT ?technology ?adrCount ?dbpediaDescription
 WHERE {
     {
-        SELECT ?technology (COUNT(?adr) AS ?adrCount)  # Локальные данные: подсчёт ADR
+        SELECT ?technology (COUNT(?adr) AS ?adrCount)  # Local data: count ADRs
         WHERE {
-            ?adr :decidesTechnology ?tech .   # Найти ADR с технологией
-            ?tech rdfs:label ?technology .    # Название технологии
+            ?adr :decidesTechnology ?tech .   # Find ADRs with technology
+            ?tech rdfs:label ?technology .    # Technology label
         }
-        GROUP BY ?technology               # Группировать по технологии
+        GROUP BY ?technology               # Group by technology
     }
     
-    VALUES (?technology ?dbpediaResource) {  # Маппинг локальных названий на DBpedia URI
+    VALUES (?technology ?dbpediaResource) {  # Mapping local names to DBpedia URIs
         ("Apache Kafka" dbr:Apache_Kafka)
         ("PostgreSQL"  dbr:PostgreSQL)
         ("Redis"       dbr:Redis)
@@ -33,34 +33,34 @@ WHERE {
         ("Docker"      <http://dbpedia.org/resource/Docker_(software)>)
     }
     
-    OPTIONAL {                               # OPTIONAL: работает даже если DBpedia недоступен
-        SERVICE <https://dbpedia.org/sparql> {   # Запрос к внешнему endpoint
-            ?dbpediaResource dbo:abstract ?desc . # Получить описание из DBpedia
-            FILTER(LANG(?desc) = "en")            # Только английские описания
+    OPTIONAL {                               # OPTIONAL: works even if DBpedia unavailable
+        SERVICE <https://dbpedia.org/sparql> {   # Query to external endpoint
+            ?dbpediaResource dbo:abstract ?desc . # Get description from DBpedia
+            FILTER(LANG(?desc) = "en")            # Only English descriptions
         }
-        BIND(STR(?desc) AS ?dbpediaDescription)  # Преобразовать в строку
+        BIND(STR(?desc) AS ?dbpediaDescription)  # Convert to string
     }
 }
-ORDER BY DESC(?adrCount)                     # Сортировать по популярности
+ORDER BY DESC(?adrCount)                     # Sort by popularity
 
-# Пояснение:
-# SPARQL Federation позволяет запрашивать удалённые SPARQL endpoints.
+# Explanation:
+# SPARQL Federation allows querying remote SPARQL endpoints.
 # 
-# SERVICE <URL> { ... } отправляет подзапрос внешнему серверу.
-# OPTIONAL { SERVICE ... } делает запрос устойчивым к недоступности внешних сервисов.
-# VALUES создаёт маппинг между нашими технологиями и DBpedia URI.
-# FILTER(LANG(?desc) = "en") выбирает описания на английском.
+# SERVICE <URL> { ... } sends subquery to external server.
+# OPTIONAL { SERVICE ... } makes query resilient to external service unavailability.
+# VALUES creates mapping between our technologies and DBpedia URIs.
+# FILTER(LANG(?desc) = "en") selects English descriptions.
 # 
-# Это избавляет от необходимости ETL для интеграции внешних данных!
-# Данные запрашиваются в реальном времени при выполнении запроса.
+# This eliminates need for ETL to integrate external data!
+# Data is queried in real-time when executing the query.
 # 
-# ВАЖНО: Обернув SERVICE в OPTIONAL, мы делаем запрос устойчивым:
-# - Если DBpedia доступен → получаем описания (dbpediaDescription заполнен)
-# - Если недоступен → все равно получаем локальные данные (dbpediaDescription пустой)
+# IMPORTANT: Wrapping SERVICE in OPTIONAL makes query resilient:
+# - If DBpedia available → get descriptions (dbpediaDescription filled)
+# - If unavailable → still get local data (dbpediaDescription empty)
 # 
-# Без OPTIONAL, недоступность DBpedia привела бы к пустому результату всего запроса.
-# С OPTIONAL запрос ВСЕГДА возвращает локальные данные (6 технологий).
+# Without OPTIONAL, DBpedia unavailability would result in empty result for entire query.
+# With OPTIONAL query ALWAYS returns local data (6 technologies).
 # 
-# В SQL: потребовалась бы отдельная таблица с ETL-процессом.
-# В Property Graph: загрузка внешних данных в граф.
-# В SPARQL: встроенная федерация - мощь семантического веба!
+# In SQL: would require separate table with ETL process.
+# In Property Graph: loading external data into graph.
+# In SPARQL: built-in federation - power of semantic web!

@@ -1,9 +1,9 @@
-# Альтернативные пути зависимостей
+# Alternative Dependency Paths
 #
-# Найти отношения между технологиями через разные типы зависимостей.
+# Find relationships between technologies through different dependency types.
 #
-# Ожидаемый результат: 5 связей с типом отношения
-# Время выполнения: < 1 секунды
+# Expected result: 5 relationships with type
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -11,24 +11,24 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ?from ?to ?relationType
 WHERE {
     {
-        ?fromTech :dependsOn ?toTech .           # Прямая зависимость
-        BIND("direct dependency" AS ?relationType)  # Присвоить тип отношения
+        ?fromTech :dependsOn ?toTech .           # Direct dependency
+        BIND("direct dependency" AS ?relationType)  # Assign relationship type
     }
-    UNION                                        # ИЛИ
+    UNION                                        # OR
     {
-        ?fromTech :requiresInfrastructure ?toTech .  # Требование инфраструктуры
-        BIND("infrastructure" AS ?relationType)      # Присвоить тип отношения
+        ?fromTech :requiresInfrastructure ?toTech .  # Infrastructure requirement
+        BIND("infrastructure" AS ?relationType)      # Assign relationship type
     }
     
-    ?fromTech rdfs:label ?from .                 # Название технологии-источника
-    ?toTech rdfs:label ?to .                     # Название технологии-назначения
+    ?fromTech rdfs:label ?from .                 # Source technology label
+    ?toTech rdfs:label ?to .                     # Target technology label
 }
-ORDER BY ?from ?to                               # Сортировать по обоим технологиям
+ORDER BY ?from ?to                               # Sort by both technologies
 
-# Пояснение:
-# Демонстрирует гибкость графовых запросов для навигации по разным типам связей.
-# UNION объединяет результаты двух паттернов (прямые зависимости и требования инфраструктуры).
-# BIND создаёт новую переменную с описанием типа отношения для каждого случая.
-# Эквивалент property path: ?fromTech (:dependsOn|:requiresInfrastructure) ?toTech
-# В SQL: два запроса с UNION ALL.
-# В Property Graph: несколько типов рёбер между узлами.
+# Explanation:
+# Demonstrates flexibility of graph queries for navigating different relationship types.
+# UNION combines results of two patterns (direct dependencies and infrastructure requirements).
+# BIND creates new variable with relationship type description for each case.
+# Property path equivalent: ?fromTech (:dependsOn|:requiresInfrastructure) ?toTech
+# In SQL: two queries with UNION ALL.
+# In Property Graph: multiple edge types between nodes.

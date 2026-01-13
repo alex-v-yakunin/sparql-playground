@@ -1,22 +1,22 @@
-# 🚀 Quick Start: 30 минут до первых результатов
+# 🚀 Quick Start: 30 minutes to first results
 
-**Пошаговый гайд для быстрого старта с SPARQL Playground**
+**Step-by-step guide for quick start with SPARQL Playground**
 
 ---
 
-## Шаг 1: Запуск
+## Step 1: Launch
 
-### 🤖 Способ А: Автоматический (рекомендуется, 2 минуты)
+### 🤖 Way A: Automatic (recommended, 2 minutes)
 
 ```bash
-# Перейти в директорию проекта
-cd /путь/к/sparql-playground
+# Navigate to project directory
+cd /path/to/sparql-playground
 
-# Запустить playground
+# Start playground
 ./start.sh
 ```
 
-Вы увидите:
+You'll see:
 ```
 🚀 Starting SPARQL Playground...
 ✓ GraphDB is running
@@ -25,39 +25,39 @@ cd /путь/к/sparql-playground
 🎉 Playground ready at http://localhost:7200
 ```
 
-Готово! Переходите к **Шагу 2**.
+Done! Proceed to **Step 2**.
 
 ---
 
-### 👐 Способ Б: Ручная загрузка через GraphDB Workbench (10 минут)
+### 👐 Way B: Manual load via GraphDB Workbench (10 minutes)
 
 <details>
-<summary>📖 Полный контроль над процессом (нажмите для раскрытия)</summary>
+<summary>📖 Full control over the process (click to expand)</summary>
 
-#### 1.1 Запустить Docker контейнер
+#### 1.1 Start Docker container
 
 ```bash
-cd /путь/к/sparql-playground/infra
+cd /path/to/sparql-playground/infra
 docker compose up -d
 ```
 
-Дождитесь запуска GraphDB (30-60 секунд).
+Wait for GraphDB to start (30-60 seconds).
 
-#### 1.2 Создать Repository в GraphDB Workbench
+#### 1.2 Create Repository in GraphDB Workbench
 
-1. Откройте GraphDB Workbench: http://localhost:7200
-2. В меню слева: **Setup** → **Repositories** → **Create new repository**
-3. Заполните:
+1. Open GraphDB Workbench: http://localhost:7200
+2. Left menu: **Setup** → **Repositories** → **Create new repository**
+3. Fill in:
    - Repository ID: `sparql-playground`
    - Repository title: `SPARQL Playground`
    - Ruleset: `RDFS-Plus (Optimized)`
-4. Нажмите **Create**
+4. Click **Create**
 
-#### 1.3 Загрузить dataset через GraphDB Workbench
+#### 1.3 Load dataset via GraphDB Workbench
 
-1. Выберите `sparql-playground` в выпадающем списке (справа сверху)
-2. В меню слева: **Import** → **RDF** → **Upload RDF files**
-3. Загрузите файлы из папки `data/` **строго по порядку**:
+1. Select `sparql-playground` in dropdown (top right)
+2. Left menu: **Import** → **RDF** → **Upload RDF files**
+3. Upload files from `data/` folder **strictly in order**:
 
 ```
 1. prefixes.ttl
@@ -68,39 +68,39 @@ docker compose up -d
 6. adr-people-reified.trig
 ```
 
-Для каждого файла нажимайте **Import** и дожидайтесь "Imported successfully".
+For each file click **Import** and wait for "Imported successfully".
 
-#### 1.4 Проверить
+#### 1.4 Verify
 
-Выполните на вкладке **SPARQL**:
+Execute on **SPARQL** tab:
 
 ```sparql
 PREFIX : <http://example.org/adr#>
 SELECT (COUNT(*) as ?count) WHERE { ?s a :ADR }
 ```
 
-Должно вернуться: `count = 8` ✅
+Should return: `count = 8` ✅
 
 </details>
 
 ---
 
-## Шаг 2: Открыть GraphDB (1 минута)
+## Step 2: Open GraphDB (1 minute)
 
-1. Откройте браузер: **http://localhost:7200**
-2. В левом меню выберите **SPARQL**
-3. В выпадающем списке выберите repository: **sparql-playground**
+1. Open browser: **http://localhost:7200**
+2. Select **SPARQL** in left menu
+3. Select repository in dropdown: **sparql-playground**
 
-Вы увидите SPARQL редактор с тремя панелями:
-- **Слева** — запрос
-- **Справа** — результат
-- **Внизу** — saved queries
+You'll see SPARQL editor with three panels:
+- **Left** — query
+- **Right** — result
+- **Bottom** — saved queries
 
 ---
 
-## Шаг 3: Hello World (2 минуты)
+## Step 3: Hello World (2 minutes)
 
-Скопируйте и выполните первый запрос:
+Copy and execute the first query:
 
 ```sparql
 PREFIX : <http://example.org/adr#>
@@ -114,20 +114,20 @@ WHERE {
 ORDER BY ?adr
 ```
 
-**Нажмите Execute** (или Ctrl+Enter)
+**Click Execute** (or Ctrl+Enter)
 
-✅ Результат: 8 архитектурных решений
+✅ Result: 8 architectural decisions
 
-**Что произошло?**
-- `?adr a :ADR` — найти все ресурсы типа ADR
-- `rdfs:label ?label` — получить их названия
-- `ORDER BY ?adr` — отсортировать
+**What happened?**
+- `?adr a :ADR` — find all resources of type ADR
+- `rdfs:label ?label` — get their labels
+- `ORDER BY ?adr` — sort
 
 ---
 
-## Шаг 4: Первый фильтр (3 минуты)
+## Step 4: First Filter (3 minutes)
 
-Найдём решения с высокой уверенностью (> 0.9):
+Find decisions with high confidence (> 0.9):
 
 ```sparql
 PREFIX : <http://example.org/adr#>
@@ -144,17 +144,17 @@ WHERE {
 ORDER BY DESC(?confidence)
 ```
 
-✅ Результат: 3-4 ADR с confidence > 0.9
+✅ Result: 3-4 ADRs with confidence > 0.9
 
-**Что нового?**
-- `FILTER(?confidence > 0.9)` — условие фильтрации
-- `DESC(?confidence)` — сортировка по убыванию
+**What's new?**
+- `FILTER(?confidence > 0.9)` — filtering condition
+- `DESC(?confidence)` — sort descending
 
 ---
 
-## Шаг 5: Агрегация (3 минуты)
+## Step 5: Aggregation (3 minutes)
 
-Посчитаем количество ADR по статусам:
+Count ADRs by status:
 
 ```sparql
 PREFIX : <http://example.org/adr#>
@@ -170,20 +170,20 @@ GROUP BY ?statusLabel
 ORDER BY DESC(?count)
 ```
 
-✅ Результат: Статистика по статусам (Accepted, Deprecated, etc.)
+✅ Result: Statistics by status (Accepted, Deprecated, etc.)
 
-**Что нового?**
-- `COUNT(?adr)` — подсчёт
-- `GROUP BY` — группировка
-- `AS ?count` — переименование переменной
+**What's new?**
+- `COUNT(?adr)` — counting
+- `GROUP BY` — grouping
+- `AS ?count` — variable renaming
 
 ---
 
-## 🔥 Шаг 6: Уникальность SPARQL — Property Paths (5 минут)
+## 🔥 Step 6: SPARQL Uniqueness — Property Paths (5 minutes)
 
-**Сейчас вы увидите то, что невозможно в SQL без рекурсии!**
+**Now you'll see what's impossible in SQL without recursion!**
 
-Найдём ВСЕ транзитивные зависимости Kubernetes:
+Find ALL transitive dependencies of Kubernetes:
 
 ```sparql
 PREFIX : <http://example.org/adr#>
@@ -191,8 +191,8 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?dependency ?depLabel
 WHERE {
-    # Оператор + означает "один или более шагов"
-    # Автоматически находит транзитивные зависимости!
+    # Operator + means "one or more steps"
+    # Automatically finds transitive dependencies!
     :Kubernetes :dependsOn+ ?dependency .
     
     OPTIONAL { ?dependency rdfs:label ?depLabel }
@@ -200,12 +200,12 @@ WHERE {
 ORDER BY ?depLabel
 ```
 
-✅ Результат: Docker, Linux, etcd, Go, Kernel, ContainerRuntime...
+✅ Result: Docker, Linux, etcd, Go, Kernel, ContainerRuntime...
 
-**🔥 В SQL это потребовало бы рекурсивный CTE на 20+ строк!**
+**🔥 In SQL this would require a recursive CTE with 20+ lines!**
 
 ```sql
--- SQL эквивалент (сложно!)
+-- SQL equivalent (complex!)
 WITH RECURSIVE deps AS (
   SELECT tech_id, depends_on_id, 1 as level
   FROM dependencies WHERE tech_id = 'kubernetes'
@@ -217,15 +217,15 @@ WITH RECURSIVE deps AS (
 SELECT * FROM deps;
 ```
 
-**В SPARQL: 1 строка с оператором `+`** 🚀
+**In SPARQL: 1 line with `+` operator** 🚀
 
 ---
 
-## 🔥 Шаг 7: Reification — Метаданные о фактах (5 минут)
+## 🔥 Step 7: Reification — Metadata about Facts (5 minutes)
 
-**Уникальная возможность RDF: метаданные О ФАКТАХ**
+**Unique RDF capability: metadata ABOUT FACTS**
 
-Узнаем КТО принял решение, КОГДА и С КАКОЙ УВЕРЕННОСТЬЮ:
+Find out WHO made the decision, WHEN and WITH WHAT CONFIDENCE:
 
 ```sparql
 PREFIX : <http://example.org/adr#>
@@ -234,12 +234,12 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?adrLabel ?techLabel ?personName ?date ?confidence
 WHERE {
-    # Reified statement - утверждение о решении
+    # Reified statement - statement about decision
     ?stmt a rdf:Statement ;
           rdf:subject ?adr ;
           rdf:predicate :decidesTechnology ;
           rdf:object ?tech ;
-          # Метаданные об утверждении
+          # Metadata about the statement
           :statedBy ?person ;
           :statedOn ?date ;
           :confidence ?confidence .
@@ -251,17 +251,17 @@ WHERE {
 ORDER BY DESC(?date)
 ```
 
-✅ Результат: Кто, когда и с какой уверенностью принял каждое решение
+✅ Result: Who, when and with what confidence made each decision
 
-**🔥 В SQL нужна отдельная таблица statement_metadata с FK!**
+**🔥 In SQL you need a separate statement_metadata table with FK!**
 
-В RDF это **естественная концепция** — метаданные о триплетах!
+In RDF it's a **natural concept** — metadata about triples!
 
 ---
 
-## 🔥 Шаг 8: CONSTRUCT — Генерация нового графа (5 минут)
+## 🔥 Step 8: CONSTRUCT — Generating New Graph (5 minutes)
 
-**Создадим новый RDF граф из существующих данных**
+**Create a new RDF graph from existing data**
 
 ```sparql
 PREFIX : <http://example.org/adr#>
@@ -281,24 +281,24 @@ WHERE {
 }
 ```
 
-✅ Результат: **Новый RDF граф** (не таблица!)
+✅ Result: **New RDF graph** (not a table!)
 
-**Переключите вид на "Raw Response"** — увидите RDF триплеты:
+**Switch view to "Raw Response"** — you'll see RDF triples:
 ```turtle
 :OrderService :uses :Kafka .
 :OrderService rdfs:label "Order Processing Service" .
 :Kafka rdfs:label "Apache Kafka" .
 ```
 
-**🔥 В SQL: CREATE VIEW, но это не преобразование структуры!**
+**🔥 In SQL: CREATE VIEW, but it's not structure transformation!**
 
-CONSTRUCT создаёт **совершенно новый граф** с другой структурой!
+CONSTRUCT creates **completely new graph** with different structure!
 
 ---
 
-## 🔥 Шаг 9: Named Graphs — Провенанс данных (4 минуты)
+## 🔥 Step 9: Named Graphs — Data Provenance (4 minutes)
 
-**Откуда пришли данные? Named graphs знают ответ!**
+**Where did the data come from? Named graphs know the answer!**
 
 ```sparql
 PREFIX : <http://example.org/adr#>
@@ -306,7 +306,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?graph ?adr ?label
 WHERE {
-    # Указываем, из какого named graph брать данные
+    # Specify which named graph to query
     GRAPH ?graph {
         ?adr a :ADR ;
              rdfs:label ?label .
@@ -315,121 +315,121 @@ WHERE {
 ORDER BY ?graph ?adr
 ```
 
-✅ Результат: ADR с указанием источника (adr-registry, confluence, interview-notes)
+✅ Result: ADRs with source indication (adr-registry, confluence, interview-notes)
 
-**Что нового?**
-- `GRAPH ?graph { ... }` — запрос к named graph
-- Провенанс данных встроен в RDF!
-
----
-
-## 📊 Что вы изучили за 30 минут
-
-| Возможность | Сложность в SQL | В SPARQL |
-|-------------|-----------------|----------|
-| ✅ Базовый SELECT | Простой SELECT | Паттерны троек |
-| ✅ Фильтрация | WHERE clause | FILTER |
-| ✅ Агрегация | GROUP BY | GROUP BY |
-| 🔥 **Транзитивные запросы** | **Рекурсивный CTE (20+ строк)** | **`:dependsOn+` (1 строка)** |
-| 🔥 **Метаданные о фактах** | **Отдельная таблица + FK** | **Reification (естественно)** |
-| 🔥 **Генерация графов** | **CREATE VIEW (ограниченно)** | **CONSTRUCT (новая структура)** |
-| 🔥 **Провенанс** | **Отдельные таблицы** | **Named graphs (встроенно)** |
+**What's new?**
+- `GRAPH ?graph { ... }` — query to named graph
+- Data provenance built into RDF!
 
 ---
 
-## 🎯 Следующие шаги
+## 📊 What you learned in 30 minutes
 
-### Вариант 1: Быстрый старт с ключевыми примерами (рекомендуется)
-Откройте **[EXAMPLES.md](EXAMPLES.md)** и выбирайте примеры по категориям:
-- 05-property-paths/ — навигация по графу
-- 06-reification/ — метаданные о фактах
-- 07-reasoning/ — автоматический вывод
-- 08-construct/ — генерация графов
-- 09-advanced/ — федеративные запросы
-
-### Вариант 2: Систематическое изучение (2-3 часа)
-Откройте **[EXAMPLES.md](EXAMPLES.md)** и проходите примеры последовательно от 01-basics до 09-advanced.
-
-### Вариант 3: Создать свои запросы
-Используйте примеры как шаблон и экспериментируйте с данными!
+| Capability | SQL Complexity | In SPARQL |
+|------------|----------------|-----------|
+| ✅ Basic SELECT | Simple SELECT | Triple patterns |
+| ✅ Filtering | WHERE clause | FILTER |
+| ✅ Aggregation | GROUP BY | GROUP BY |
+| 🔥 **Transitive queries** | **Recursive CTE (20+ lines)** | **`:dependsOn+` (1 line)** |
+| 🔥 **Metadata about facts** | **Separate table + FK** | **Reification (natural)** |
+| 🔥 **Graph generation** | **CREATE VIEW (limited)** | **CONSTRUCT (new structure)** |
+| 🔥 **Provenance** | **Separate tables** | **Named graphs (built-in)** |
 
 ---
 
-## 💡 Полезные советы
+## 🎯 Next Steps
 
-### Keyboard shortcuts в GraphDB
-- `Ctrl+Enter` — выполнить запрос
-- `Ctrl+/` — закомментировать строку
-- `Ctrl+Space` — автодополнение префиксов
+### Option 1: Quick start with key examples (recommended)
+Open **[EXAMPLES.md](EXAMPLES.md)** and choose examples by category:
+- 05-property-paths/ — graph navigation
+- 06-reification/ — metadata about facts
+- 07-reasoning/ — automatic inference
+- 08-construct/ — graph generation
+- 09-advanced/ — federated queries
 
-### Режимы отображения результатов
-- **Table** — табличное представление (по умолчанию)
-- **Raw Response** — RDF формат (для CONSTRUCT)
-- **Pivot Table** — сводная таблица
-- **Google Charts** — графики (для COUNT/AVG)
+### Option 2: Systematic study (2-3 hours)
+Open **[EXAMPLES.md](EXAMPLES.md)** and go through examples sequentially from 01-basics to 09-advanced.
 
-### Отладка запросов
-1. Начните с простого паттерна
-2. Добавляйте условия постепенно
-3. Используйте LIMIT 10 для больших результатов
-4. Проверяйте промежуточные результаты
-
-### Шпаргалка
-Откройте **[SPARQL-CHEATSHEET.md](SPARQL-CHEATSHEET.md)** — быстрый справочник по синтаксису.
+### Option 3: Create your own queries
+Use examples as templates and experiment with data!
 
 ---
 
-## 🛠 Управление playground
+## 💡 Useful Tips
+
+### Keyboard shortcuts in GraphDB
+- `Ctrl+Enter` — execute query
+- `Ctrl+/` — comment line
+- `Ctrl+Space` — prefix autocomplete
+
+### Result display modes
+- **Table** — tabular view (default)
+- **Raw Response** — RDF format (for CONSTRUCT)
+- **Pivot Table** — pivot table
+- **Google Charts** — charts (for COUNT/AVG)
+
+### Query debugging
+1. Start with simple pattern
+2. Add conditions gradually
+3. Use LIMIT 10 for large results
+4. Check intermediate results
+
+### Cheat Sheet
+Open **[SPARQL-CHEATSHEET.md](SPARQL-CHEATSHEET.md)** — quick syntax reference.
+
+---
+
+## 🛠 Playground Management
 
 ```bash
-# Остановить GraphDB (данные сохраняются)
+# Stop GraphDB (data preserved)
 ./scripts/stop.sh
 
-# Запустить снова
+# Start again
 ./start.sh
 
-# Полный сброс (удалить все данные)
+# Full reset (delete all data)
 ./scripts/reset.sh
 
-# Проверка состояния
+# Status check
 ./scripts/health-check.sh
 ```
 
 ---
 
-## ❓ Частые вопросы
+## ❓ FAQ
 
-**Q: Как проверить, что все работает правильно?**
-A: Запустите `./scripts/health-check.sh` для проверки системы и `./scripts/test-queries.sh` для тестирования всех 32 SPARQL запросов
+**Q: How to check everything works correctly?**
+A: Run `./scripts/health-check.sh` to check system and `./scripts/test-queries.sh` to test all 32 SPARQL queries
 
-**Q: Запрос не возвращает результатов**
-A: Проверьте, что выбран repository **sparql-playground** в выпадающем списке
+**Q: Query returns no results**
+A: Check that repository **sparql-playground** is selected in dropdown
 
-**Q: GraphDB не запускается**
-A: Проверьте, что Docker запущен: `docker ps`
+**Q: GraphDB doesn't start**
+A: Check Docker is running: `docker ps`
 
-**Q: Ошибка "repository not found"**
-A: Запустите `./scripts/setup.sh` для создания repository
+**Q: Error "repository not found"**
+A: Run `./scripts/setup.sh` to create repository
 
-**Q: Хочу начать с чистого листа**
-A: Выполните `./scripts/reset.sh`, затем `./start.sh`
+**Q: Want to start from scratch**
+A: Execute `./scripts/reset.sh`, then `./start.sh`
 
-**Q: Как протестировать все примеры автоматически?**
-A: Запустите `./scripts/test-queries.sh` — скрипт выполнит все 32 запроса и покажет результаты
-
----
-
-## 🎉 Поздравляем!
-
-Вы прошли быстрый старт в SPARQL Playground и увидели **уникальные возможности**, которых нет в SQL:
-
-✅ Property paths для навигации по графу  
-✅ Reification для метаданных о фактах  
-✅ CONSTRUCT для генерации новых графов  
-✅ Named graphs для провенанса  
-
-**Продолжайте изучение** → [EXAMPLES.md](EXAMPLES.md) 🚀
+**Q: How to test all examples automatically?**
+A: Run `./scripts/test-queries.sh` — script will execute all 32 queries and show results
 
 ---
 
-**Нужна помощь?** Читайте комментарии в примерах — они детально объясняют каждый запрос!
+## 🎉 Congratulations!
+
+You completed quick start in SPARQL Playground and saw **unique capabilities** not found in SQL:
+
+✅ Property paths for graph navigation  
+✅ Reification for metadata about facts  
+✅ CONSTRUCT for generating new graphs  
+✅ Named graphs for provenance  
+
+**Continue learning** → [EXAMPLES.md](EXAMPLES.md) 🚀
+
+---
+
+**Need help?** Read comments in examples — they explain each query in detail!

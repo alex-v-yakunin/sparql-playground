@@ -1,52 +1,52 @@
-# Скрипты автоматизации
+# Automation Scripts
 
-Набор bash-скриптов для управления SPARQL Playground.
+Set of bash scripts for managing SPARQL Playground.
 
 ---
 
-## 📋 Список скриптов
+## 📋 Script List
 
 ### 🚀 setup.sh
 
-**Назначение**: Полная настройка GraphDB и загрузка данных.
+**Purpose**: Complete GraphDB setup and data loading.
 
-**Использование**:
+**Usage**:
 ```bash
 ./scripts/setup.sh
 ```
 
-**Что делает**:
-1. Запускает GraphDB контейнер в Docker
-2. Ожидает готовности GraphDB (до 60 секунд)
-3. Создает repository `sparql-playground`
-4. Загружает 6 RDF файлов из `data/`
-5. Проверяет корректность загрузки (8 ADRs)
+**What it does**:
+1. Starts GraphDB container in Docker
+2. Waits for GraphDB ready (up to 60 seconds)
+3. Creates repository `sparql-playground`
+4. Loads 6 RDF files from `data/`
+5. Verifies loading correctness (8 ADRs)
 
-**Режимы**:
-- Интерактивный: запрашивает подтверждение при существующем repository
-- Неинтерактивный: автоматически использует существующий repository
+**Modes**:
+- Interactive: asks for confirmation if repository exists
+- Non-interactive: automatically uses existing repository
 
 **Exit codes**:
-- `0` — успешная настройка
-- `1` — ошибка (Docker не запущен, GraphDB недоступен, и т.д.)
+- `0` — successful setup
+- `1` — error (Docker not running, GraphDB unavailable, etc.)
 
 ---
 
 ### ✅ health-check.sh
 
-**Назначение**: Проверка состояния системы и данных.
+**Purpose**: Check system and data status.
 
-**Использование**:
+**Usage**:
 ```bash
 ./scripts/health-check.sh
 ```
 
-**Что проверяет**:
-1. Docker daemon запущен
-2. GraphDB контейнер работает
-3. GraphDB HTTP endpoint доступен
-4. Repository существует
-5. Данные загружены корректно:
+**What it checks**:
+1. Docker daemon running
+2. GraphDB container running
+3. GraphDB HTTP endpoint accessible
+4. Repository exists
+5. Data loaded correctly:
    - 8 ADRs
    - 5 Systems
    - 7 Technologies
@@ -54,10 +54,10 @@
    - 7 Named Graphs
 
 **Exit codes**:
-- `0` — все проверки пройдены
-- `1` — одна или более проверок провалилась
+- `0` — all checks passed
+- `1` — one or more checks failed
 
-**Пример вывода**:
+**Example output**:
 ```
 Entity Type          Expected   Actual     Status    
 ────────────────────────────────────────────────────
@@ -74,31 +74,31 @@ Named Graphs         7          7          ✓
 
 ### 🧪 test-queries.sh
 
-**Назначение**: Автоматическое тестирование всех SPARQL запросов.
+**Purpose**: Automated testing of all SPARQL queries.
 
-**Использование**:
+**Usage**:
 ```bash
 ./scripts/test-queries.sh
 ```
 
-**Что делает**:
-1. Находит все `.sparql` файлы в `examples/`
-2. Выполняет каждый запрос через HTTP API
-3. Проверяет корректность ответа:
-   - SELECT: валидный JSON с `"head"` и `"bindings"`
-   - CONSTRUCT: валидный RDF/Turtle
-4. Подсчитывает количество результатов
-5. Показывает сводку: passed/failed
+**What it does**:
+1. Finds all `.sparql` files in `examples/`
+2. Executes each query via HTTP API
+3. Checks response correctness:
+   - SELECT: valid JSON with `"head"` and `"bindings"`
+   - CONSTRUCT: valid RDF/Turtle
+4. Counts results
+5. Shows summary: passed/failed
 
-**Поддерживаемые типы запросов**:
+**Supported query types**:
 - SELECT — Accept: `application/sparql-results+json`
 - CONSTRUCT — Accept: `text/turtle`
 
 **Exit codes**:
-- `0` — все тесты пройдены
-- `1` — один или более тестов провалился
+- `0` — all tests passed
+- `1` — one or more tests failed
 
-**Пример вывода**:
+**Example output**:
 ```
 ═══ 01-basics ═══
 [01-basics] Testing: hello-world ... ✓
@@ -114,7 +114,7 @@ Failed:        0
 ✓ All queries passed! 🎉
 ```
 
-**Использование в CI/CD**:
+**Using in CI/CD**:
 ```bash
 #!/bin/bash
 ./start.sh
@@ -127,115 +127,115 @@ Failed:        0
 
 ### ⏹️ stop.sh
 
-**Назначение**: Остановка GraphDB контейнера.
+**Purpose**: Stop GraphDB container.
 
-**Использование**:
+**Usage**:
 ```bash
 ./scripts/stop.sh
 ```
 
-**Что делает**:
-- Останавливает и удаляет контейнер
-- Удаляет Docker сеть
-- **Сохраняет данные** в Docker volume
+**What it does**:
+- Stops and removes container
+- Removes Docker network
+- **Preserves data** in Docker volume
 
-**Примечание**: Данные не удаляются! Для полного сброса используйте `reset.sh`.
+**Note**: Data is not deleted! For full reset use `reset.sh`.
 
 **Exit codes**:
-- `0` — успешная остановка
+- `0` — successful stop
 
 ---
 
 ### 🔄 reset.sh
 
-**Назначение**: Полный сброс и перезагрузка данных.
+**Purpose**: Full reset and data reload.
 
-**Использование**:
+**Usage**:
 ```bash
 ./scripts/reset.sh
 ```
 
-**Что делает**:
-1. Запрашивает подтверждение пользователя
-2. Удаляет repository `sparql-playground`
-3. Запускает `setup.sh` для полной перезагрузки
+**What it does**:
+1. Asks for user confirmation
+2. Deletes repository `sparql-playground`
+3. Runs `setup.sh` for full reload
 
-**Предупреждение**: Удаляет ВСЕ данные! Операция необратима.
+**Warning**: Deletes ALL data! Operation is irreversible.
 
 **Exit codes**:
-- `0` — успешный сброс и перезагрузка
-- `1` — ошибка при сбросе
+- `0` — successful reset and reload
+- `1` — error during reset
 
 ---
 
-## 🔧 Конфигурация
+## 🔧 Configuration
 
-Все скрипты используют общие переменные:
+All scripts use common variables:
 
 ```bash
 GRAPHDB_URL="http://localhost:7200"
 REPO_ID="sparql-playground"
 ```
 
-Для изменения порта или repository ID отредактируйте соответствующие скрипты.
+To change port or repository ID, edit the respective scripts.
 
 ---
 
-## 🚨 Устранение неполадок
+## 🚨 Troubleshooting
 
-### Docker не запущен
+### Docker not running
 
-**Ошибка**: `Docker is not running`
+**Error**: `Docker is not running`
 
-**Решение**: Запустите Docker Desktop или docker daemon
+**Solution**: Start Docker Desktop or docker daemon
 
-### GraphDB недоступен
+### GraphDB unavailable
 
-**Ошибка**: `GraphDB is not responding`
+**Error**: `GraphDB is not responding`
 
-**Решение**:
+**Solution**:
 ```bash
-# Проверьте статус контейнера
+# Check container status
 docker ps
 
-# Посмотрите логи
+# View logs
 cd infra && docker compose logs
 
-# Перезапустите
+# Restart
 ./scripts/stop.sh
 ./start.sh
 ```
 
-### Repository уже существует
+### Repository already exists
 
-**Ошибка**: `Repository 'sparql-playground' already exists`
+**Error**: `Repository 'sparql-playground' already exists`
 
-**Решение**:
-- В интерактивном режиме: ответьте `y` для пересоздания
-- В неинтерактивном: скрипт автоматически использует существующий
-- Или выполните: `./scripts/reset.sh`
+**Solution**:
+- In interactive mode: answer `y` to recreate
+- In non-interactive: script automatically uses existing
+- Or execute: `./scripts/reset.sh`
 
-### Тесты провалились
+### Tests failed
 
-**Ошибка**: `Some queries failed!`
+**Error**: `Some queries failed!`
 
-**Решение**:
-1. Проверьте, что все данные загружены: `./scripts/health-check.sh`
-2. Посмотрите детали ошибки в выводе `test-queries.sh`
-3. Попробуйте перезагрузить данные: `./scripts/reset.sh`
+**Solution**:
+1. Check all data loaded: `./scripts/health-check.sh`
+2. View error details in `test-queries.sh` output
+3. Try reloading data: `./scripts/reset.sh`
 
 ---
 
-## 📝 Разработка
+## 📝 Development
 
-### Добавление нового скрипта
+### Adding New Script
 
-1. Создайте файл в `scripts/`
-2. Сделайте исполняемым: `chmod +x scripts/new-script.sh`
-3. Используйте общие переменные и цветной вывод
-4. Добавьте документацию в этот README
+1. Create file in `scripts/`
+2. Make executable: `chmod +x scripts/new-script.sh`
+3. Use common variables and colored output
+4. Add documentation to this README
 
-### Структура скрипта
+### Script Structure
 
 ```bash
 #!/bin/bash
@@ -258,23 +258,22 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 ---
 
-## 🧪 Тестирование скриптов
+## 🧪 Testing Scripts
 
-Для проверки всех скриптов:
+To check all scripts:
 
 ```bash
-# Полный цикл
+# Full cycle
 ./start.sh
 ./scripts/health-check.sh
 ./scripts/test-queries.sh
 ./scripts/stop.sh
 
-# Проверка reset
-./scripts/reset.sh  # Подтвердите 'y'
+# Check reset
+./scripts/reset.sh  # Confirm 'y'
 ./scripts/health-check.sh
 ```
 
 ---
 
-**Все скрипты протестированы и готовы к использованию!** ✅
-
+**All scripts tested and ready to use!** ✅

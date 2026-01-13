@@ -1,254 +1,254 @@
-# 📚 Каталог примеров SPARQL
+# 📚 SPARQL Examples Catalog
 
-**32 готовых запроса, организованных по категориям**
+**32 ready-to-use queries, organized by category**
 
 ---
 
-## 🚀 Как использовать
+## 🚀 How to Use
 
-1. Запустите playground: `./start.sh`
-2. Откройте GraphDB: http://localhost:7200
-3. Выберите repository: **sparql-playground**
-4. Перейдите на вкладку **SPARQL**
-5. Выберите пример ниже
-6. Откройте файл, скопируйте запрос
-7. Вставьте в SPARQL редактор
-8. Нажмите **Execute** (Ctrl+Enter)
-9. Изучите результат и комментарии
+1. Start playground: `./start.sh`
+2. Open GraphDB: http://localhost:7200
+3. Select repository: **sparql-playground**
+4. Go to **SPARQL** tab
+5. Choose an example below
+6. Open the file, copy the query
+7. Paste into SPARQL editor
+8. Click **Execute** (Ctrl+Enter)
+9. Study the result and comments
 
-### 🧪 Автоматическое тестирование
+### 🧪 Automated Testing
 
-Чтобы проверить все 32 примера автоматически:
+To check all 32 examples automatically:
 
 ```bash
 ./scripts/test-queries.sh
 ```
 
-Скрипт выполнит каждый запрос и покажет результаты тестирования.
+The script will execute each query and show test results.
 
 ---
 
-## 📚 Базовый уровень
+## 📚 Basic Level
 
-### 01-basics/ — Основы SELECT
+### 01-basics/ — SELECT Basics
 
-| # | Запрос | Описание | Файл |
-|---|--------|----------|------|
-| 1 | **Hello World** | Первые 10 триплетов из базы | `hello-world.sparql` |
-| 2 | **Список всех ADR** | Все решения с названиями | `list-all-adrs.sparql` |
-| 3 | **Список технологий** | Каталог всех технологий | `list-technologies.sparql` |
-| 4 | **Системы и владельцы** | Системы с их командами | `systems-and-owners.sparql` |
-| 5 | **Количество по статусам** | Агрегация ADR по статусам | `count-by-status.sparql` |
+| # | Query | Description | File |
+|---|-------|-------------|------|
+| 1 | **Hello World** | First 10 triples from database | `hello-world.sparql` |
+| 2 | **List all ADRs** | All decisions with labels | `list-all-adrs.sparql` |
+| 3 | **List technologies** | Catalog of all technologies | `list-technologies.sparql` |
+| 4 | **Systems and owners** | Systems with their teams | `systems-and-owners.sparql` |
+| 5 | **Count by status** | ADR aggregation by status | `count-by-status.sparql` |
 
-**Что изучаешь**: Базовый SELECT, паттерны троек, OPTIONAL, ORDER BY, COUNT
-
----
-
-### 02-filtering/ — Фильтрация данных
-
-| # | Запрос | Описание | Файл |
-|---|--------|----------|------|
-| 1 | **Высокая уверенность** | ADR с confidence > 0.9 | `high-confidence-adrs.sparql` |
-| 2 | **Низкая уверенность** | ADR с confidence < 0.7 | `low-confidence-adrs.sparql` |
-| 3 | **Deprecated ADR** | Устаревшие решения | `deprecated-adrs.sparql` |
-| 4 | **ADR для технологии** | Решения по конкретной технологии | `adrs-for-technology.sparql` |
-
-**Что изучаешь**: FILTER, операторы сравнения, фильтрация по свойствам
+**What you learn**: Basic SELECT, triple patterns, OPTIONAL, ORDER BY, COUNT
 
 ---
 
-### 03-graphs/ — Named Graphs и провенанс
+### 02-filtering/ — Data Filtering
 
-| # | Запрос | Описание | Файл |
-|---|--------|----------|------|
-| 1 | **ADR по источникам** | Группировка по named graph | `adrs-by-source.sparql` |
-| 2 | **Мульти-источники** | ADR из нескольких источников | `multi-source-adrs.sparql` |
-| 3 | **Только официальный реестр** | Данные из adr-registry | `official-registry-only.sparql` |
-| 4 | **Надёжность источников** | Анализ качества данных | `source-reliability.sparql` |
+| # | Query | Description | File |
+|---|-------|-------------|------|
+| 1 | **High confidence** | ADRs with confidence > 0.9 | `high-confidence-adrs.sparql` |
+| 2 | **Low confidence** | ADRs with confidence < 0.7 | `low-confidence-adrs.sparql` |
+| 3 | **Deprecated ADRs** | Outdated decisions | `deprecated-adrs.sparql` |
+| 4 | **ADRs for technology** | Decisions for specific technology | `adrs-for-technology.sparql` |
 
-**Что изучаешь**: Named graphs, GRAPH keyword, провенанс данных
-
----
-
-### 04-analysis/ — Анализ и качество данных
-
-| # | Запрос | Описание | Файл |
-|---|--------|----------|------|
-| 1 | **Неполные ADR** | Решения без важных атрибутов | `incomplete-adrs.sparql` |
-| 2 | **Пути миграции** | Цепочки замен технологий | `migration-paths.sparql` |
-| 3 | **Рискованные решения** | ADR с низкой уверенностью | `risky-decisions.sparql` |
-| 4 | **Внедрение технологий** | Статистика использования | `technology-adoption.sparql` |
-
-**Что изучаешь**: Сложная фильтрация, FILTER NOT EXISTS, анализ качества
+**What you learn**: FILTER, comparison operators, property filtering
 
 ---
 
-## 🔥 Продвинутый уровень — Уникальные возможности SPARQL
+### 03-graphs/ — Named Graphs and Provenance
 
-### 05-property-paths/ — Навигация по графу
+| # | Query | Description | File |
+|---|-------|-------------|------|
+| 1 | **ADRs by source** | Grouping by named graph | `adrs-by-source.sparql` |
+| 2 | **Multi-source** | ADRs from multiple sources | `multi-source-adrs.sparql` |
+| 3 | **Official registry only** | Data from adr-registry | `official-registry-only.sparql` |
+| 4 | **Source reliability** | Data quality analysis | `source-reliability.sparql` |
 
-**💡 Это невозможно в SQL без рекурсивных CTE!**
-
-| # | Запрос | Описание | Файл |
-|---|--------|----------|------|
-| 1 | **🔥 Транзитивные зависимости** | ВСЕ зависимости Kubernetes | `transitive-dependencies.sparql` |
-| 2 | **🔥 Обратные зависимости** | Что зависит от Linux? | `reverse-dependencies.sparql` |
-| 3 | **Граф зависимостей** | Карта зависимостей до 3 уровней | `dependency-graph.sparql` |
-| 4 | **Проверка циклов** | Циклические зависимости | `circular-check.sparql` |
-| 5 | **Альтернативные пути** | Разные типы связей | `alternative-paths.sparql` |
-
-**Property path операторы**:
-- `+` — один или более шагов (транзитивность)
-- `*` — ноль или более шагов
-- `/` — последовательность шагов (цепочка)
-- `|` — альтернативные пути
-- `^` — обратное направление
-
-**Примечание**: Синтаксис `{n,m}` не поддерживается в GraphDB. Используйте явные цепочки через `/` или `UNION`.
-
-**Начните с**: `transitive-dependencies.sparql` — самый впечатляющий пример! 🚀
+**What you learn**: Named graphs, GRAPH keyword, data provenance
 
 ---
 
-### 06-reification/ — Метаданные о фактах
+### 04-analysis/ — Analysis and Data Quality
 
-**💡 В SQL нужны отдельные таблицы metadata с FK!**
+| # | Query | Description | File |
+|---|-------|-------------|------|
+| 1 | **Incomplete ADRs** | Decisions without important attributes | `incomplete-adrs.sparql` |
+| 2 | **Migration paths** | Technology replacement chains | `migration-paths.sparql` |
+| 3 | **Risky decisions** | ADRs with low confidence | `risky-decisions.sparql` |
+| 4 | **Technology adoption** | Usage statistics | `technology-adoption.sparql` |
 
-| # | Запрос | Описание | Файл |
-|---|--------|----------|------|
-| 1 | **🔥 Кто принял решение** | КТО, КОГДА, с какой уверенностью | `who-decided.sparql` |
-| 2 | **🔥 История решений** | Что было отклонено и почему | `decision-history.sparql` |
-| 3 | **Результаты голосования** | Статистика голосований | `voting-results.sparql` |
-| 4 | **Цепочка доказательств** | Evidence trail для compliance | `evidence-trail.sparql` |
-
-**Reification позволяет**:
-- Хранить метаданные О ФАКТАХ
-- Audit trail для compliance
-- Отслеживание эволюции решений
-- Контекст принятия решений
-
-**Начните с**: `who-decided.sparql` — покажет силу reification!
+**What you learn**: Complex filtering, FILTER NOT EXISTS, quality analysis
 
 ---
 
-### 07-reasoning/ — RDFS/OWL автоматический вывод
+## 🔥 Advanced Level — Unique SPARQL Capabilities
 
-**💡 В SQL нужны триггеры и хранимые процедуры!**
+### 05-property-paths/ — Graph Navigation
 
-| # | Запрос | Описание | Файл |
-|---|--------|----------|------|
-| 1 | **🔥 Вывод через подсвойства** | usesMicroservices → requiresInfrastructure | `subproperty-inference.sparql` |
-| 2 | **🔥 Иерархия классов** | Автоматический вывод типов | `class-hierarchy.sparql` |
+**💡 This is impossible in SQL without recursive CTEs!**
 
-**Reasoning позволяет**:
-- Определить правила один раз
-- Автоматически выводить новые факты
-- Упростить запросы
-- Избежать дублирования данных
+| # | Query | Description | File |
+|---|-------|-------------|------|
+| 1 | **🔥 Transitive dependencies** | ALL dependencies of Kubernetes | `transitive-dependencies.sparql` |
+| 2 | **🔥 Reverse dependencies** | What depends on Linux? | `reverse-dependencies.sparql` |
+| 3 | **Dependency graph** | Dependency map up to 3 levels | `dependency-graph.sparql` |
+| 4 | **Circular check** | Circular dependencies | `circular-check.sparql` |
+| 5 | **Alternative paths** | Different relationship types | `alternative-paths.sparql` |
 
-**Файл правил**: `data/adr-ontology.ttl`
+**Property path operators**:
+- `+` — one or more steps (transitivity)
+- `*` — zero or more steps
+- `/` — sequence of steps (chain)
+- `|` — alternative paths
+- `^` — reverse direction
 
----
+**Note**: Syntax `{n,m}` not supported in GraphDB. Use explicit chains via `/` or `UNION`.
 
-### 08-construct/ — Генерация новых графов
-
-**💡 В SQL: только CREATE VIEW, но не преобразование структуры!**
-
-| # | Запрос | Описание | Файл |
-|---|--------|----------|------|
-| 1 | **🔥 Упрощённое представление** | System → uses → Technology | `simplified-view.sparql` |
-| 2 | **🔥 Граф технологий** | Для визуализации в Gephi | `technology-graph.sparql` |
-
-**CONSTRUCT позволяет**:
-- Создавать новые RDF графы
-- Преобразовывать структуру
-- Экспортировать в другие форматы
-- Создавать представления для визуализации
-
-**Начните с**: `simplified-view.sparql` — увидите новый граф!
+**Start with**: `transitive-dependencies.sparql` — the most impressive example! 🚀
 
 ---
 
-### 09-advanced/ — Продвинутые техники
+### 06-reification/ — Metadata about Facts
 
-**💡 Комбинация мощных возможностей SPARQL**
+**💡 In SQL you need separate metadata tables with FK!**
 
-| # | Запрос | Описание | Файл |
-|---|--------|----------|------|
-| 1 | **🔥 Федеративные запросы** | Интеграция с DBpedia | `federation.sparql` |
-| 2 | **Сложные паттерны** | BIND, VALUES, MINUS, EXISTS | `complex-patterns.sparql` |
+| # | Query | Description | File |
+|---|-------|-------------|------|
+| 1 | **🔥 Who decided** | WHO, WHEN, with what confidence | `who-decided.sparql` |
+| 2 | **🔥 Decision history** | What was rejected and why | `decision-history.sparql` |
+| 3 | **Voting results** | Voting statistics | `voting-results.sparql` |
+| 4 | **Evidence trail** | Evidence trail for compliance | `evidence-trail.sparql` |
 
-**Федеративные запросы**:
-- Запрос к внешним SPARQL endpoints
-- Без ETL и импорта данных
-- Real-time интеграция
+**Reification allows**:
+- Store metadata ABOUT FACTS
+- Audit trail for compliance
+- Track decision evolution
+- Decision-making context
+
+**Start with**: `who-decided.sparql` — shows the power of reification!
 
 ---
 
-## 🎯 Рекомендуемые треки
+### 07-reasoning/ — RDFS/OWL Automatic Inference
 
-### 🚀 Quick Start (30 минут)
-Для быстрого понимания уникальности SPARQL:
+**💡 In SQL you need triggers and stored procedures!**
+
+| # | Query | Description | File |
+|---|-------|-------------|------|
+| 1 | **🔥 Subproperty inference** | usesMicroservices → requiresInfrastructure | `subproperty-inference.sparql` |
+| 2 | **🔥 Class hierarchy** | Automatic type inference | `class-hierarchy.sparql` |
+
+**Reasoning allows**:
+- Define rules once
+- Automatically infer new facts
+- Simplify queries
+- Avoid data duplication
+
+**Rules file**: `data/adr-ontology.ttl`
+
+---
+
+### 08-construct/ — Generating New Graphs
+
+**💡 In SQL: only CREATE VIEW, not structure transformation!**
+
+| # | Query | Description | File |
+|---|-------|-------------|------|
+| 1 | **🔥 Simplified view** | System → uses → Technology | `simplified-view.sparql` |
+| 2 | **🔥 Technology graph** | For visualization in Gephi | `technology-graph.sparql` |
+
+**CONSTRUCT allows**:
+- Create new RDF graphs
+- Transform structure
+- Export to other formats
+- Create views for visualization
+
+**Start with**: `simplified-view.sparql` — you'll see a new graph!
+
+---
+
+### 09-advanced/ — Advanced Techniques
+
+**💡 Combination of powerful SPARQL capabilities**
+
+| # | Query | Description | File |
+|---|-------|-------------|------|
+| 1 | **🔥 Federated queries** | Integration with DBpedia | `federation.sparql` |
+| 2 | **Complex patterns** | BIND, VALUES, MINUS, EXISTS | `complex-patterns.sparql` |
+
+**Federated queries**:
+- Query external SPARQL endpoints
+- Without ETL and data import
+- Real-time integration
+
+---
+
+## 🎯 Recommended Tracks
+
+### 🚀 Quick Start (30 minutes)
+For quick understanding of SPARQL uniqueness:
 
 1. `05-property-paths/transitive-dependencies.sparql` ⚡
 2. `06-reification/who-decided.sparql` 🎯
 3. `08-construct/simplified-view.sparql` 🌟
 4. `09-advanced/federation.sparql` 🔥
 
-### 📖 Последовательное изучение (4 часа)
-Начните с 01-basics и двигайтесь по порядку через все категории.
+### 📖 Sequential Study (4 hours)
+Start with 01-basics and move in order through all categories.
 
-### 🎨 Визуализация и анализ зависимостей
-1. `05-property-paths/dependency-graph.sparql` — Граф зависимостей
-2. `05-property-paths/transitive-dependencies.sparql` — Транзитивные связи
-3. `08-construct/technology-graph.sparql` — Экспорт для визуализации
+### 🎨 Visualization and Dependency Analysis
+1. `05-property-paths/dependency-graph.sparql` — Dependency graph
+2. `05-property-paths/transitive-dependencies.sparql` — Transitive connections
+3. `08-construct/technology-graph.sparql` — Export for visualization
 
-### 🏢 Enterprise Architecture и Governance
+### 🏢 Enterprise Architecture and Governance
 1. `06-reification/evidence-trail.sparql` — Audit trail
-2. `06-reification/who-decided.sparql` — Ответственные за решения
-3. `04-analysis/risky-decisions.sparql` — Анализ рисков
+2. `06-reification/who-decided.sparql` — Decision makers
+3. `04-analysis/risky-decisions.sparql` — Risk analysis
 
 ---
 
-## 💡 Советы
+## 💡 Tips
 
-### Работа с примерами
-- **Читайте комментарии** — они объясняют логику
-- **Сравнивайте с SQL** — видите разницу
-- **Модифицируйте запросы** — экспериментируйте
-- **Смотрите результаты** — понимайте что происходит
+### Working with Examples
+- **Read comments** — they explain the logic
+- **Compare with SQL** — see the difference
+- **Modify queries** — experiment
+- **Look at results** — understand what happens
 
-### Keyboard shortcuts в GraphDB
-- `Ctrl+Enter` — выполнить запрос
-- `Ctrl+/` — закомментировать строку
-- `Ctrl+Space` — автодополнение
+### Keyboard shortcuts in GraphDB
+- `Ctrl+Enter` — execute query
+- `Ctrl+/` — comment line
+- `Ctrl+Space` — autocomplete
 
-### Визуализация результатов
-GraphDB предлагает несколько режимов:
-- **Table** — табличное представление
-- **Raw Response** — RDF формат
-- **Pivot Table** — сводная таблица (для агрегаций)
-- **Google Charts** — графики (для COUNT/AVG)
-
----
-
-## 📚 Другие документы
-
-- **[README.md](README.md)** — обзор проекта и быстрый старт
-- **[DATASET.md](DATASET.md)** — описание датасета
-- **[QUICKSTART.md](QUICKSTART.md)** — пошаговый гайд (30 минут)
-- **[SPARQL-CHEATSHEET.md](SPARQL-CHEATSHEET.md)** — справочник по синтаксису
+### Result Visualization
+GraphDB offers several modes:
+- **Table** — tabular view
+- **Raw Response** — RDF format
+- **Pivot Table** — pivot table (for aggregations)
+- **Google Charts** — charts (for COUNT/AVG)
 
 ---
 
-## 🎓 Следующие шаги
+## 📚 Other Documents
 
-После работы с примерами:
-
-1. **Изучите [DATASET.md](DATASET.md)** — детальное описание данных
-2. **Создайте свои запросы** — экспериментируйте с датасетом!
-3. **Делитесь знаниями** — используйте примеры для обучения команды
+- **[README.md](README.md)** — project overview and quick start
+- **[DATASET.md](DATASET.md)** — dataset description
+- **[QUICKSTART.md](QUICKSTART.md)** — step-by-step guide (30 minutes)
+- **[SPARQL-CHEATSHEET.md](SPARQL-CHEATSHEET.md)** — syntax reference
 
 ---
 
-**Начните с категории 05-property-paths/** — она покажет настоящую силу SPARQL! 🔥
+## 🎓 Next Steps
+
+After working with examples:
+
+1. **Study [DATASET.md](DATASET.md)** — detailed data description
+2. **Create your own queries** — experiment with the dataset!
+3. **Share knowledge** — use examples to train your team
+
+---
+
+**Start with category 05-property-paths/** — it shows the real power of SPARQL! 🔥

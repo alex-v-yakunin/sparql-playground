@@ -1,9 +1,9 @@
-# Результаты голосования по ADR
+# Voting Results on ADRs
 #
-# Проанализировать, как команда голосовала за архитектурные решения.
+# Analyze how the team voted on architectural decisions.
 #
-# Ожидаемый результат: 1 ADR с результатами голосования (ADR-001: 75% за)
-# Время выполнения: < 1 секунды
+# Expected result: 1 ADR with voting results (ADR-001: 75% for)
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -11,27 +11,27 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT ?adrLabel ?votesFor ?votesAgainst ?totalVotes ?approvalRate
 WHERE {
-    ?statement a rdf:Statement ;       # Найти реифицированное утверждение
-               rdf:subject ?adr ;      # О каком ADR
-               rdf:predicate :hasStatus ; # Предикат: статус
-               rdf:object :Accepted ;     # Объект: принято
-               :votingResult ?voting .    # Результат голосования (blank node)
+    ?statement a rdf:Statement ;       # Find reified statement
+               rdf:subject ?adr ;      # About which ADR
+               rdf:predicate :hasStatus ; # Predicate: status
+               rdf:object :Accepted ;     # Object: accepted
+               :votingResult ?voting .    # Voting result (blank node)
     
-    ?voting :votesFor ?votesFor ;      # Голосов "за"
-            :votesAgainst ?votesAgainst . # Голосов "против"
+    ?voting :votesFor ?votesFor ;      # Votes "for"
+            :votesAgainst ?votesAgainst . # Votes "against"
     
-    ?adr rdfs:label ?adrLabel .        # Название ADR
+    ?adr rdfs:label ?adrLabel .        # ADR label
     
-    BIND(?votesFor + ?votesAgainst AS ?totalVotes)  # Вычислить общее количество
-    BIND(?votesFor * 100.0 / ?totalVotes AS ?approvalRate) # Вычислить процент одобрения
+    BIND(?votesFor + ?votesAgainst AS ?totalVotes)  # Calculate total count
+    BIND(?votesFor * 100.0 / ?totalVotes AS ?approvalRate) # Calculate approval percentage
 }
-ORDER BY DESC(?approvalRate)           # Сортировать от высшего к низшему
+ORDER BY DESC(?approvalRate)           # Sort from highest to lowest
 
-# Пояснение:
-# Демонстрирует сложные метаданные через reification и blank nodes.
-# ?voting - анонимный узел (blank node) с детальными данными голосования.
-# BIND создаёт вычисляемые переменные (?totalVotes, ?approvalRate).
-# Критично для демократических процессов принятия решений.
-# В SQL: таблица voting_results с подзапросами и вычисляемыми полями.
-# В Property Graph: вложенные свойства или связанные мета-узлы.
-# В RDF: естественное моделирование через reification и blank nodes.
+# Explanation:
+# Demonstrates complex metadata through reification and blank nodes.
+# ?voting - anonymous node (blank node) with detailed voting data.
+# BIND creates computed variables (?totalVotes, ?approvalRate).
+# Critical for democratic decision-making processes.
+# In SQL: voting_results table with subqueries and computed fields.
+# In Property Graph: nested properties or linked meta-nodes.
+# In RDF: natural modeling through reification and blank nodes.

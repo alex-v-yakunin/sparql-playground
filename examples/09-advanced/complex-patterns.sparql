@@ -1,59 +1,59 @@
-# Сложные SPARQL-паттерны
+# Complex SPARQL Patterns
 #
-# Демонстрация продвинутых возможностей: BIND, VALUES, MINUS, EXISTS.
+# Demonstration of advanced features: BIND, VALUES, MINUS, EXISTS.
 #
-# Ожидаемый результат: ADR с заданными статусами, имеющие системный контекст, без Redis
-# Время выполнения: < 1 секунды
+# Expected result: ADRs with specified statuses, having system context, without Redis
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?adr ?label ?technology ?confidence ?hasEvidence
 WHERE {
-    VALUES ?targetStatus { :Accepted :Proposed }  # Ограничить статусы списком
+    VALUES ?targetStatus { :Accepted :Proposed }  # Limit statuses to list
     
-    ?adr a :ADR ;                      # Найти все ADR
-         rdfs:label ?label ;           # Получить название
-         :hasStatus ?targetStatus ;    # Фильтр: только указанные статусы
-         :decidesTechnology ?tech ;    # Получить технологию
-         :hasConfidence ?confidence .  # Получить уверенность
+    ?adr a :ADR ;                      # Find all ADRs
+         rdfs:label ?label ;           # Get label
+         :hasStatus ?targetStatus ;    # Filter: only specified statuses
+         :decidesTechnology ?tech ;    # Get technology
+         :hasConfidence ?confidence .  # Get confidence
     
-    ?tech rdfs:label ?technology .     # Название технологии
+    ?tech rdfs:label ?technology .     # Technology label
     
-    FILTER EXISTS {                    # Проверить наличие системного контекста
-        ?adr :appliesTo ?system .      # ADR должен быть привязан к системе
+    FILTER EXISTS {                    # Check presence of system context
+        ?adr :appliesTo ?system .      # ADR must be bound to system
     }
     
-    MINUS {                            # Исключить Redis
-        ?adr :decidesTechnology :Redis . # Убрать ADR о Redis
+    MINUS {                            # Exclude Redis
+        ?adr :decidesTechnology :Redis . # Remove ADRs about Redis
     }
     
-    BIND(                              # Вычислить наличие доказательств
+    BIND(                              # Calculate evidence presence
         EXISTS {
             ?statement a <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> ;
                        <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> ?adr ;
                        :evidenceSource ?source .
         }
-        AS ?hasEvidence                # Присвоить результат переменной
+        AS ?hasEvidence                # Assign result to variable
     )
 }
-ORDER BY DESC(?confidence)             # Сортировать по уверенности (убывание)
+ORDER BY DESC(?confidence)             # Sort by confidence (descending)
 
-# Пояснение:
-# Демонстрирует четыре продвинутых возможности SPARQL:
+# Explanation:
+# Demonstrates four advanced SPARQL features:
 # 
-# 1. VALUES - задаёт список допустимых значений (IN в SQL)
+# 1. VALUES - specifies list of allowed values (IN in SQL)
 #    VALUES ?targetStatus { :Accepted :Proposed }
 # 
-# 2. FILTER EXISTS - проверяет наличие паттерна
-#    Оставляет только ADR с системным контекстом
+# 2. FILTER EXISTS - checks pattern presence
+#    Keeps only ADRs with system context
 # 
-# 3. MINUS - исключает результаты, соответствующие паттерну
-#    Убирает все ADR о Redis из результатов
+# 3. MINUS - excludes results matching pattern
+#    Removes all ADRs about Redis from results
 # 
-# 4. BIND с EXISTS - создаёт вычисляемую переменную
-#    Проверяет наличие доказательств для каждого ADR
+# 4. BIND with EXISTS - creates computed variable
+#    Checks evidence presence for each ADR
 # 
-# В SQL: комбинация WHERE IN, EXISTS, NOT IN и подзапросов.
-# В Property Graph: фильтры на узлах и рёбрах.
-# В SPARQL: декларативный и выразительный синтаксис!
+# In SQL: combination of WHERE IN, EXISTS, NOT IN and subqueries.
+# In Property Graph: filters on nodes and edges.
+# In SPARQL: declarative and expressive syntax!

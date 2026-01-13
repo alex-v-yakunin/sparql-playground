@@ -1,9 +1,9 @@
-# История отклонённых решений
+# History of Rejected Decisions
 #
-# Отследить историю изменений статуса ADR (аудит).
+# Track history of ADR status changes (audit).
 #
-# Ожидаемый результат: 1 запись (ADR-004 был Accepted → Deprecated)
-# Время выполнения: < 1 секунды
+# Expected result: 1 record (ADR-004 was Accepted → Deprecated)
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -11,26 +11,26 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT ?adrLabel ?oldStatus ?newStatus ?changedBy ?changedOn ?reason
 WHERE {
-    ?statement a rdf:Statement ;       # Найти реифицированное утверждение
-               rdf:subject ?adr ;      # Субъект: о каком ADR утверждение
-               rdf:predicate :hasStatus ; # Предикат: свойство :hasStatus
-               rdf:object ?newStatus ;    # Объект: новый статус
-               :previousValue ?oldStatus ; # Предыдущее значение статуса
-               :statedBy ?person ;         # Кто изменил
-               :statedOn ?changedOn ;      # Когда изменил
-               :changeReason ?reason .     # Причина изменения
+    ?statement a rdf:Statement ;       # Find reified statement
+               rdf:subject ?adr ;      # Subject: which ADR is the statement about
+               rdf:predicate :hasStatus ; # Predicate: :hasStatus property
+               rdf:object ?newStatus ;    # Object: new status
+               :previousValue ?oldStatus ; # Previous status value
+               :statedBy ?person ;         # Who changed it
+               :statedOn ?changedOn ;      # When changed it
+               :changeReason ?reason .     # Reason for change
     
-    ?adr rdfs:label ?adrLabel .        # Название ADR
-    ?person rdfs:label ?changedBy .    # Имя человека
+    ?adr rdfs:label ?adrLabel .        # ADR label
+    ?person rdfs:label ?changedBy .    # Person's name
 }
-ORDER BY ?changedOn                    # Сортировать по дате изменения
+ORDER BY ?changedOn                    # Sort by change date
 
-# Пояснение:
-# Reification позволяет делать утверждения об утверждениях.
-# Структура: rdf:subject, rdf:predicate, rdf:object описывают исходный триплет.
-# Дополнительные свойства (:previousValue, :statedBy, :statedOn, :changeReason)
-# добавляют метаданные к изменению.
-# Критично для аудита и комплаенса: кто, когда и почему изменил статус.
-# В SQL: таблица audit_log с триггерами.
-# В Property Graph: мета-рёбра или гипергрифы.
-# В RDF: встроенная поддержка через reification.
+# Explanation:
+# Reification allows making statements about statements.
+# Structure: rdf:subject, rdf:predicate, rdf:object describe original triple.
+# Additional properties (:previousValue, :statedBy, :statedOn, :changeReason)
+# add metadata to the change.
+# Critical for audit and compliance: who, when and why changed the status.
+# In SQL: audit_log table with triggers.
+# In Property Graph: meta-edges or hypergraphs.
+# In RDF: built-in support through reification.

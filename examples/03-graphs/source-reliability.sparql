@@ -1,27 +1,27 @@
-# Анализ надёжности источников данных
+# Data Source Reliability Analysis
 #
-# Рассчитать средний уровень уверенности для каждого источника данных.
+# Calculate average confidence level for each data source.
 #
-# Ожидаемый результат: 3 источника (adr-registry: ~0.94, confluence: ~0.76, interview-notes: ~0.54)
-# Время выполнения: < 1 секунды
+# Expected result: 3 sources (adr-registry: ~0.94, confluence: ~0.76, interview-notes: ~0.54)
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 
 SELECT ?source 
-       (AVG(?confidence) AS ?avgConfidence)    # Средняя уверенность по источнику
-       (COUNT(?adr) AS ?adrCount)              # Количество ADR в источнике
+       (AVG(?confidence) AS ?avgConfidence)    # Average confidence by source
+       (COUNT(?adr) AS ?adrCount)              # Number of ADRs in source
 WHERE {
-    GRAPH ?source {                    # Для каждого именованного графа
-        ?adr a :ADR ;                  # Найти все ADR
-             :hasConfidence ?confidence .  # Получить уровень уверенности
+    GRAPH ?source {                    # For each named graph
+        ?adr a :ADR ;                  # Find all ADRs
+             :hasConfidence ?confidence .  # Get confidence level
     }
 }
-GROUP BY ?source                       # Группировать по источнику
-ORDER BY DESC(?avgConfidence)          # Сортировать от лучшего к худшему
+GROUP BY ?source                       # Group by source
+ORDER BY DESC(?avgConfidence)          # Sort from best to worst
 
-# Пояснение:
-# Помогает оценить, какие источники предоставляют данные более высокого качества.
-# Агрегация по именованным графам - уникальная возможность SPARQL.
-# AVG вычисляет среднее значение уверенности для каждого источника.
-# В SQL: SELECT source, AVG(confidence), COUNT(*) FROM ... GROUP BY source
-# В Property Graph: агрегация по меткам/свойствам узлов.
+# Explanation:
+# Helps evaluate which sources provide higher quality data.
+# Aggregation by named graphs - unique SPARQL capability.
+# AVG calculates average confidence for each source.
+# In SQL: SELECT source, AVG(confidence), COUNT(*) FROM ... GROUP BY source
+# In Property Graph: aggregation by node labels/properties.

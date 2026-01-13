@@ -1,9 +1,9 @@
-# Граф зависимостей (до 3 уровней)
+# Dependency Graph (Up to 3 Levels)
 #
-# Построить полный граф зависимостей с явным указанием глубины.
+# Build complete dependency graph with explicit depth indication.
 #
-# Ожидаемый результат: 15 связей (уровни 1, 2, 3)
-# Время выполнения: < 1 секунды
+# Expected result: 15 relationships (levels 1, 2, 3)
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -11,30 +11,30 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ?from ?to ?depth
 WHERE {
     {
-        ?fromTech :dependsOn ?toTech .           # Уровень 1: прямая зависимость
-        BIND(1 AS ?depth)                        # Глубина = 1
+        ?fromTech :dependsOn ?toTech .           # Level 1: direct dependency
+        BIND(1 AS ?depth)                        # Depth = 1
     }
     UNION
     {
-        ?fromTech :dependsOn/:dependsOn ?toTech . # Уровень 2: цепочка из 2 шагов
-        BIND(2 AS ?depth)                         # Глубина = 2
+        ?fromTech :dependsOn/:dependsOn ?toTech . # Level 2: chain of 2 steps
+        BIND(2 AS ?depth)                         # Depth = 2
     }
     UNION
     {
-        ?fromTech :dependsOn/:dependsOn/:dependsOn ?toTech . # Уровень 3: цепочка из 3 шагов
-        BIND(3 AS ?depth)                                     # Глубина = 3
+        ?fromTech :dependsOn/:dependsOn/:dependsOn ?toTech . # Level 3: chain of 3 steps
+        BIND(3 AS ?depth)                                     # Depth = 3
     }
     
-    ?fromTech rdfs:label ?from .                 # Название технологии-источника
-    ?toTech rdfs:label ?to .                     # Название технологии-назначения
+    ?fromTech rdfs:label ?from .                 # Source technology label
+    ?toTech rdfs:label ?to .                     # Target technology label
 }
-ORDER BY ?from ?depth                            # Сортировать по источнику и глубине
+ORDER BY ?from ?depth                            # Sort by source and depth
 
-# Пояснение:
-# Property Path / означает "следовать по связи" (аналог JOIN в SQL).
-# :dependsOn/:dependsOn - два последовательных шага по :dependsOn.
-# :dependsOn/:dependsOn/:dependsOn - три последовательных шага.
-# UNION объединяет все три уровня в один результат.
-# Полезно для визуализации и понимания сложных архитектурных зависимостей.
-# В SQL: рекурсивные CTE с ограничением глубины.
-# В Property Graph: обход в ширину с контролем глубины.
+# Explanation:
+# Property Path / means "follow relationship" (similar to JOIN in SQL).
+# :dependsOn/:dependsOn - two sequential steps through :dependsOn.
+# :dependsOn/:dependsOn/:dependsOn - three sequential steps.
+# UNION combines all three levels into one result.
+# Useful for visualization and understanding complex architectural dependencies.
+# In SQL: recursive CTEs with depth limit.
+# In Property Graph: breadth-first traversal with depth control.

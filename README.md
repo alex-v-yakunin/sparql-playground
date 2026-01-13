@@ -1,64 +1,64 @@
-# 🔥 SPARQL Playground: Уникальные возможности RDF
+# 🔥 SPARQL Playground: Unique RDF Capabilities
 
-> **Интерактивная площадка для изучения того, чем RDF фундаментально отличается от реляционных и графовых баз данных**
+> **Interactive playground for exploring how RDF fundamentally differs from relational and graph databases**
 
 ---
 
-## ⚡ Быстрый старт
+## ⚡ Quick Start
 
-### 🤖 Вариант А: Автоматизированный (рекомендуется)
+### 🤖 Option A: Automated (recommended)
 
-**Один скрипт делает всё за вас:**
+**One script does everything:**
 
 ```bash
 ./start.sh
 ```
 
-Скрипт автоматически:
-- ✅ Запускает GraphDB в Docker
-- ✅ Создаёт repository `sparql-playground`
-- ✅ Загружает все 6 RDF файлов
-- ✅ Проверяет корректность загрузки
+The script automatically:
+- ✅ Starts GraphDB in Docker
+- ✅ Creates repository `sparql-playground`
+- ✅ Loads all 6 RDF files
+- ✅ Verifies data loaded correctly
 
-**Готово за 30 секунд!** 🎉
+**Ready in 30 seconds!** 🎉
 
-Теперь откройте http://localhost:7200 → выберите SPARQL → начните экспериментировать!
+Now open http://localhost:7200 → select SPARQL → start experimenting!
 
 ---
 
-### 👐 Вариант Б: Ручная загрузка через GraphDB Workbench
+### 👐 Option B: Manual load via GraphDB Workbench
 
-**Для тех, кто хочет полный контроль над процессом:**
+**For those who want full control:**
 
 <details>
-<summary>📖 Пошаговая инструкция (нажмите, чтобы развернуть)</summary>
+<summary>📖 Step-by-step instructions (click to expand)</summary>
 
-#### Шаг 1: Запустить GraphDB
+#### Step 1: Start GraphDB
 
 ```bash
 cd infra
 docker compose up -d
 ```
 
-Дождитесь запуска: http://localhost:7200
+Wait for startup: http://localhost:7200
 
-#### Шаг 2: Создать Repository в GraphDB Workbench
+#### Step 2: Create Repository in GraphDB Workbench
 
-1. Откройте GraphDB Workbench: http://localhost:7200
-2. В меню слева выберите **Setup** → **Repositories**
-3. Нажмите **Create new repository**
-4. Заполните форму:
+1. Open GraphDB Workbench: http://localhost:7200
+2. In the left menu select **Setup** → **Repositories**
+3. Click **Create new repository**
+4. Fill the form:
    - **Repository ID**: `sparql-playground`
    - **Repository title**: `SPARQL Playground`
    - **Ruleset**: `RDFS-Plus (Optimized)`
-5. Нажмите **Create**
+5. Click **Create**
 
-#### Шаг 3: Загрузить dataset через GraphDB Workbench
+#### Step 3: Load dataset via GraphDB Workbench
 
-1. Выберите repository `sparql-playground` в выпадающем списке (справа сверху)
-2. В меню слева выберите **Import** → **RDF**
-3. Нажмите **Upload RDF files**
-4. Загрузите файлы из папки `data/` **в следующем порядке**:
+1. Select repository `sparql-playground` in the dropdown (top right)
+2. In the left menu select **Import** → **RDF**
+3. Click **Upload RDF files**
+4. Upload files from `data/` folder **in this order**:
 
 ```
 1. data/prefixes.ttl
@@ -69,151 +69,151 @@ docker compose up -d
 6. data/adr-people-reified.trig
 ```
 
-5. Для каждого файла:
-   - Нажмите **Import**
-   - Дождитесь сообщения "Imported successfully"
+5. For each file:
+   - Click **Import**
+   - Wait for "Imported successfully" message
 
-#### Шаг 4: Проверить загрузку
+#### Step 4: Verify loading
 
-1. Перейдите на вкладку **SPARQL**
-2. Выполните запрос:
+1. Go to **SPARQL** tab
+2. Execute query:
 
 ```sparql
 PREFIX : <http://example.org/adr#>
 SELECT (COUNT(*) as ?count) WHERE { ?s a :ADR }
 ```
 
-Должно вернуться: **count = 8** ✅
+Should return: **count = 8** ✅
 
 </details>
 
 ---
 
-**Теперь вы готовы!** Откройте любой пример из `examples/` и выполните в SPARQL редакторе.
+**Now you're ready!** Open any example from `examples/` and execute in SPARQL editor.
 
 ---
 
-## 🎯 Что это?
+## 🎯 What is this?
 
-Это **интерактивная площадка** для изучения **уникальных возможностей RDF/SPARQL**, которые невозможно или крайне сложно реализовать в SQL.
+This is an **interactive playground** for exploring **unique RDF/SPARQL capabilities** that are impossible or very difficult to implement in SQL.
 
-### Датасет
+### Dataset
 
-**Synthetic ADR (Architecture Decision Records)** — архитектурные решения технологической компании:
-- 8 ADR (решений)
-- 7 технологий с зависимостями (Kafka, PostgreSQL, MongoDB, Redis, Kubernetes, Docker, etcd)
-- 5 архитекторов с метаданными
-- 7 named graphs (источники данных и метаданные)
-- Реифицированные утверждения (метаданные о решениях)
-- Онтология (RDFS/OWL для reasoning)
+**Synthetic ADR (Architecture Decision Records)** — architectural decisions of a tech company:
+- 8 ADRs (decisions)
+- 7 technologies with dependencies (Kafka, PostgreSQL, MongoDB, Redis, Kubernetes, Docker, etcd)
+- 5 architects with metadata
+- 7 named graphs (data sources and metadata)
+- Reified statements (metadata about decisions)
+- Ontology (RDFS/OWL for reasoning)
 
-📖 **[Подробное описание датасета →](DATASET.md)**
+📖 **[Detailed dataset description →](DATASET.md)**
 
 ---
 
-## 📁 Структура
+## 📁 Structure
 
 ```
 sparql-playground/
-├── start.sh                    # 🚀 Запустить (один клик!)
-├── EXAMPLES.md                 # 📚 Каталог примеров SPARQL
-├── QUICKSTART.md               # 📖 Пошаговый гайд (30 минут)
-├── SPARQL-CHEATSHEET.md        # 📝 Шпаргалка по SPARQL
+├── start.sh                    # 🚀 Start (one click!)
+├── EXAMPLES.md                 # 📚 Examples catalog
+├── QUICKSTART.md               # 📖 Step-by-step guide (30 minutes)
+├── SPARQL-CHEATSHEET.md        # 📝 SPARQL cheat sheet
 │
 ├── infra/
-│   └── docker-compose.yml      # GraphDB Free в Docker
+│   └── docker-compose.yml      # GraphDB Free in Docker
 │
-├── data/                        # RDF датасет
-│   ├── prefixes.ttl            # Префиксы
-│   ├── adr-core.ttl            # Базовые концепции
-│   ├── adr-ontology.ttl        # 🔥 RDFS/OWL для reasoning
-│   ├── technology-dependencies.ttl  # 🔥 Транзитивные зависимости
-│   ├── adr-provenance.trig     # Named graphs (провенанс)
-│   └── adr-people-reified.trig # 🔥 Reification (метаданные о фактах)
+├── data/                        # RDF dataset
+│   ├── prefixes.ttl            # Prefixes
+│   ├── adr-core.ttl            # Core concepts
+│   ├── adr-ontology.ttl        # 🔥 RDFS/OWL for reasoning
+│   ├── technology-dependencies.ttl  # 🔥 Transitive dependencies
+│   ├── adr-provenance.trig     # Named graphs (provenance)
+│   └── adr-people-reified.trig # 🔥 Reification (metadata about facts)
 │
-├── examples/                    # SPARQL запросы
-│   ├── 01-basics/              # Базовые SELECT (5 примеров)
-│   ├── 02-filtering/           # Фильтрация (4 примера)
-│   ├── 03-graphs/              # Named graphs (4 примера)
-│   ├── 04-analysis/            # Агрегация и анализ (4 примера)
+├── examples/                    # SPARQL queries
+│   ├── 01-basics/              # Basic SELECT (5 examples)
+│   ├── 02-filtering/           # Filtering (4 examples)
+│   ├── 03-graphs/              # Named graphs (4 examples)
+│   ├── 04-analysis/            # Aggregation and analysis (4 examples)
 │   │
-│   ├── 05-property-paths/      # 🔥 Транзитивные запросы (5 примеров)
-│   ├── 06-reification/         # 🔥 Метаданные о фактах (4 примера)
-│   ├── 07-reasoning/           # 🔥 RDFS/OWL вывод (2 примера)
-│   ├── 08-construct/           # 🔥 Генерация графов (2 примера)
-│   └── 09-advanced/            # 🔥 Продвинутые техники (2 примера)
+│   ├── 05-property-paths/      # 🔥 Transitive queries (5 examples)
+│   ├── 06-reification/         # 🔥 Metadata about facts (4 examples)
+│   ├── 07-reasoning/           # 🔥 RDFS/OWL inference (2 examples)
+│   ├── 08-construct/           # 🔥 Graph generation (2 examples)
+│   └── 09-advanced/            # 🔥 Advanced techniques (2 examples)
 │
 └── scripts/
-    ├── setup.sh                # Создание repository и загрузка данных
-    ├── health-check.sh         # Проверка здоровья GraphDB
-    ├── test-queries.sh         # 🧪 Тестирование всех 32 SPARQL запросов
-    ├── stop.sh                 # Остановить GraphDB
-    └── reset.sh                # Полный сброс
+    ├── setup.sh                # Create repository and load data
+    ├── health-check.sh         # Check GraphDB health
+    ├── test-queries.sh         # 🧪 Test all 32 SPARQL queries
+    ├── stop.sh                 # Stop GraphDB
+    └── reset.sh                # Full reset
 ```
 
 ---
 
-## 🔥 Что делает SPARQL уникальным?
+## 🔥 What makes SPARQL unique?
 
-### 1. **Property Paths** — Навигация по графу одной строкой
-В SQL нужен рекурсивный CTE на 20+ строк. В SPARQL: `:Kubernetes :dependsOn+ ?dep` 🚀
+### 1. **Property Paths** — Graph navigation in one line
+In SQL you need recursive CTE with 20+ lines. In SPARQL: `:Kubernetes :dependsOn+ ?dep` 🚀
 
-**Пример**: `examples/05-property-paths/transitive-dependencies.sparql`
+**Example**: `examples/05-property-paths/transitive-dependencies.sparql`
 
-### 2. **Reification** — Метаданные о фактах
-В SQL нужна отдельная таблица с foreign keys. В RDF это естественная концепция — метаданные О ТРИПЛЕТАХ.
+### 2. **Reification** — Metadata about facts
+In SQL you need a separate table with foreign keys. In RDF it's a natural concept — metadata ABOUT TRIPLES.
 
-**Пример**: `examples/06-reification/who-decided.sparql` — кто принял решение, когда и с какой уверенностью
+**Example**: `examples/06-reification/who-decided.sparql` — who made the decision, when and with what confidence
 
-### 3. **Reasoning** — Автоматический вывод новых фактов
-В SQL нужны триггеры и хранимые процедуры. В RDF определяешь правило один раз: `:usesMicroservices rdfs:subPropertyOf :requiresOrchestration` — и все запросы автоматически учитывают иерархию!
+### 3. **Reasoning** — Automatic inference of new facts
+In SQL you need triggers and stored procedures. In RDF you define a rule once: `:usesMicroservices rdfs:subPropertyOf :requiresOrchestration` — and all queries automatically account for the hierarchy!
 
-**Файл**: `data/adr-ontology.ttl`
-
----
-
-## 📊 Сравнение с SQL
-
-| Возможность | SQL | SPARQL | Преимущество |
-|-------------|-----|--------|--------------|
-| **Транзитивные запросы** | Recursive CTE (20+ строк) | `:dependsOn+` (1 строка) | **20x короче** |
-| **Метаданные о фактах** | Отдельная таблица + FK | Reification (естественно) | **Нативная поддержка** |
-| **Множественные типы** | Junction tables | `a :Type1, :Type2` | **Нет JOIN'ов** |
-| **Автоматический вывод** | Триггеры/процедуры | RDFS/OWL reasoning | **Декларативно** |
-| **Генерация графов** | CREATE VIEW (ограниченно) | CONSTRUCT | **Новая структура** |
+**File**: `data/adr-ontology.ttl`
 
 ---
 
-## 📖 С чего начать?
+## 📊 Comparison with SQL
 
-### Вариант 1: Quick Start (5 минут)
+| Capability | SQL | SPARQL | Advantage |
+|------------|-----|--------|-----------|
+| **Transitive queries** | Recursive CTE (20+ lines) | `:dependsOn+` (1 line) | **20x shorter** |
+| **Metadata about facts** | Separate table + FK | Reification (natural) | **Native support** |
+| **Multiple types** | Junction tables | `a :Type1, :Type2` | **No JOINs** |
+| **Automatic inference** | Triggers/procedures | RDFS/OWL reasoning | **Declarative** |
+| **Graph generation** | CREATE VIEW (limited) | CONSTRUCT | **New structure** |
+
+---
+
+## 📖 Where to start?
+
+### Option 1: Quick Start (5 minutes)
 ```bash
 ./start.sh
-# Открыть examples/05-property-paths/transitive-dependencies.sparql
+# Open examples/05-property-paths/transitive-dependencies.sparql
 ```
 
-### Вариант 2: Полный гайд (30 минут)
+### Option 2: Full guide (30 minutes)
 ```bash
 ./start.sh
-# Читать QUICKSTART.md, выполнять примеры
+# Read QUICKSTART.md, execute examples
 ```
 
-### Вариант 3: Каталог примеров
+### Option 3: Examples catalog
 ```bash
 ./start.sh
-# Открыть EXAMPLES.md — каталог всех 32 примеров
+# Open EXAMPLES.md — catalog of all 32 examples
 ```
 
 
 ---
 
-## 🛠 Требования
+## 🛠 Requirements
 
-- **Docker** (с поддержкой docker-compose)
-- **Браузер** (Chrome/Firefox для GraphDB UI)
-- **8 GB RAM** (минимум 4 GB для GraphDB)
+- **Docker** (with docker-compose support)
+- **Browser** (Chrome/Firefox for GraphDB UI)
+- **8 GB RAM** (minimum 4 GB for GraphDB)
 
-Проверка:
+Check:
 ```bash
 docker --version          # Docker 20.10+
 docker compose version    # Compose V2 recommended
@@ -221,42 +221,42 @@ docker compose version    # Compose V2 recommended
 
 ---
 
-## 💡 Команды
+## 💡 Commands
 
 ```bash
-# Запустить playground
+# Start playground
 ./start.sh
 
-# Проверка состояния системы
+# Check system status
 ./scripts/health-check.sh
 
-# Тестирование всех 32 SPARQL запросов
+# Test all 32 SPARQL queries
 ./scripts/test-queries.sh
 
-# Остановить GraphDB (данные сохраняются)
+# Stop GraphDB (data preserved)
 ./scripts/stop.sh
 
-# Полный сброс (удалить все данные и перезагрузить)
+# Full reset (delete all data and reload)
 ./scripts/reset.sh
 ```
 
 ---
 
-## 🧪 Тестирование
+## 🧪 Testing
 
-Проект включает автоматические тесты для всех SPARQL запросов:
+The project includes automatic tests for all SPARQL queries:
 
 ```bash
 ./scripts/test-queries.sh
 ```
 
-Скрипт выполняет **32 SPARQL запроса** и проверяет их корректность:
-- ✅ SELECT запросы — проверка JSON response
-- ✅ CONSTRUCT запросы — проверка RDF/Turtle output
-- ✅ Отчет о пройденных/упавших тестах
-- ✅ Время выполнения и количество результатов
+The script executes **32 SPARQL queries** and checks their correctness:
+- ✅ SELECT queries — check JSON response
+- ✅ CONSTRUCT queries — check RDF/Turtle output
+- ✅ Report on passed/failed tests
+- ✅ Execution time and result count
 
-**Пример вывода:**
+**Example output:**
 ```
 ═══ 01-basics ═══
 [01-basics] Testing: hello-world ... ✓
@@ -272,59 +272,59 @@ Failed:        0
 
 ---
 
-## 📚 Документация
+## 📚 Documentation
 
-| Файл | Описание | Время |
-|------|----------|-------|
-| [DATASET.md](DATASET.md) | Подробное описание датасета | 10 мин |
-| [EXAMPLES.md](EXAMPLES.md) | Каталог примеров (32 запроса) | 5 мин |
-| [QUICKSTART.md](QUICKSTART.md) | Пошаговый гайд для новичков | 30 мин |
-| [SPARQL-CHEATSHEET.md](SPARQL-CHEATSHEET.md) | Шпаргалка по синтаксису | 5 мин |
-
----
-
-## 🎯 Для кого этот playground?
-
-- **Enterprise Architects** — управление архитектурным знанием
-- **Data Architects** — оценка графовых технологий
-- **CTOs** — стратегические решения по knowledge management
-- **Технические лиды** — альтернативы реляционным БД
-- **Разработчики** — кто хочет понять уникальность RDF
+| File | Description | Time |
+|------|-------------|------|
+| [DATASET.md](DATASET.md) | Detailed dataset description | 10 min |
+| [EXAMPLES.md](EXAMPLES.md) | Examples catalog (32 queries) | 5 min |
+| [QUICKSTART.md](QUICKSTART.md) | Step-by-step guide for beginners | 30 min |
+| [SPARQL-CHEATSHEET.md](SPARQL-CHEATSHEET.md) | Syntax cheat sheet | 5 min |
 
 ---
 
-## 🏆 Что вы узнаете?
+## 🎯 Who is this playground for?
 
-После работы с playground вы поймёте:
-
-✅ **Property paths** — навигация по графу без рекурсии  
-✅ **Reification** — метаданные о фактах (audit trail)  
-✅ **Reasoning** — автоматический вывод новых фактов  
-✅ **Multi-typing** — естественный полиморфизм  
-✅ **CONSTRUCT** — генерация новых графов  
-✅ **Schema evolution** — без миграций  
-✅ **Named graphs** — встроенный провенанс  
-✅ **Open World Assumption** — отличие от closed world SQL  
+- **Enterprise Architects** — architectural knowledge management
+- **Data Architects** — evaluating graph technologies
+- **CTOs** — strategic knowledge management decisions
+- **Tech Leads** — alternatives to relational databases
+- **Developers** — who want to understand RDF uniqueness
 
 ---
 
-## 📈 Результат
+## 🏆 What will you learn?
 
-**Понимание фундаментальных отличий RDF от SQL и других графовых БД.**
+After working with the playground you'll understand:
 
-Это не просто "ещё одна база данных" — это **граф знаний** с машиночитаемой семантикой, reasoning и интеграцией с внешними источниками.
-
----
-
-## 🙏 Технологии
-
-- **GraphDB Free** — semantic graph database от Ontotext
-- **SPARQL 1.1** — W3C стандарт для RDF запросов
-- **RDFS/OWL** — онтологии и reasoning
-- **Docker** — контейнеризация
+✅ **Property paths** — graph navigation without recursion  
+✅ **Reification** — metadata about facts (audit trail)  
+✅ **Reasoning** — automatic inference of new facts  
+✅ **Multi-typing** — natural polymorphism  
+✅ **CONSTRUCT** — generating new graphs  
+✅ **Schema evolution** — without migrations  
+✅ **Named graphs** — built-in provenance  
+✅ **Open World Assumption** — difference from closed world SQL  
 
 ---
 
+## 📈 Result
+
+**Understanding fundamental differences between RDF and SQL and other graph databases.**
+
+This is not just "another database" — it's a **knowledge graph** with machine-readable semantics, reasoning, and integration with external sources.
+
 ---
 
-**Начни прямо сейчас** → `./start.sh` 🚀
+## 🙏 Technologies
+
+- **GraphDB Free** — semantic graph database by Ontotext
+- **SPARQL 1.1** — W3C standard for RDF queries
+- **RDFS/OWL** — ontologies and reasoning
+- **Docker** — containerization
+
+---
+
+---
+
+**Start right now** → `./start.sh` 🚀

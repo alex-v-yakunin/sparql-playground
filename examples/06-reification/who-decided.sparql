@@ -1,9 +1,9 @@
-# Кто принял решение о технологии
+# Who Decided on Technology
 #
-# Определить, кто и когда принял решение об использовании технологии.
+# Determine who and when decided to use a technology.
 #
-# Ожидаемый результат: 7 решений с указанием автора, даты и уверенности
-# Время выполнения: < 1 секунды
+# Expected result: 7 decisions with author, date and confidence
+# Execution time: < 1 second
 
 PREFIX : <http://example.org/adr#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -11,25 +11,25 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT ?adrLabel ?technology ?decisionMaker ?decisionDate ?confidence
 WHERE {
-    ?statement a rdf:Statement ;       # Найти реифицированное утверждение
-               rdf:subject ?adr ;      # Субъект: о каком ADR утверждение
-               rdf:predicate :decidesTechnology ; # Предикат: выбор технологии
-               rdf:object ?tech ;      # Объект: какая технология
-               :statedBy ?person ;     # Кто принял решение
-               :statedOn ?decisionDate ; # Когда принял решение
-               :confidence ?confidence . # С какой уверенностью
+    ?statement a rdf:Statement ;       # Find reified statement
+               rdf:subject ?adr ;      # Subject: which ADR is the statement about
+               rdf:predicate :decidesTechnology ; # Predicate: technology choice
+               rdf:object ?tech ;      # Object: which technology
+               :statedBy ?person ;     # Who made the decision
+               :statedOn ?decisionDate ; # When made the decision
+               :confidence ?confidence . # With what confidence
     
-    ?adr rdfs:label ?adrLabel .        # Название ADR
-    ?tech rdfs:label ?technology .     # Название технологии
-    ?person rdfs:label ?decisionMaker . # Имя человека
+    ?adr rdfs:label ?adrLabel .        # ADR label
+    ?tech rdfs:label ?technology .     # Technology label
+    ?person rdfs:label ?decisionMaker . # Person's name
 }
-ORDER BY ?decisionDate                 # Сортировать по дате (хронологический порядок)
+ORDER BY ?decisionDate                 # Sort by date (chronological order)
 
-# Пояснение:
-# Это суть reification: метаданные об утверждениях.
-# Структура rdf:Statement описывает исходный триплет (?adr :decidesTechnology ?tech).
-# Дополнительные свойства (:statedBy, :statedOn, :confidence) добавляют контекст.
-# Невозможно в обычных триплетах RDF без reification!
-# В SQL: отдельная таблица metadata с foreign key.
-# В Property Graph: свойства на рёбрах.
-# В RDF: встроенная поддержка через reification.
+# Explanation:
+# This is the essence of reification: metadata about statements.
+# Structure rdf:Statement describes original triple (?adr :decidesTechnology ?tech).
+# Additional properties (:statedBy, :statedOn, :confidence) add context.
+# Impossible in regular RDF triples without reification!
+# In SQL: separate metadata table with foreign key.
+# In Property Graph: properties on edges.
+# In RDF: built-in support through reification.
