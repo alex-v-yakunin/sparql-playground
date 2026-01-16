@@ -1,6 +1,6 @@
 # RDF-star Projection from Reification
 #
-# Build RDF-star metadata directly from reified statements.
+# Transform standard RDF reification into RDF-star format using CONSTRUCT.
 #
 # Expected result: RDF-star statements for decisions with full metadata
 # Execution time: < 1 second
@@ -9,17 +9,25 @@ PREFIX : <http://example.org/adr#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 CONSTRUCT {
-    << ?adr :decidesTechnology ?tech >>
+    << ?adr :decidesTechnology ?tech >>  # Output: RDF-star quoted triple
         :statedBy ?person ;
         :statedOn ?decisionDate ;
         :confidence ?confidence .
 }
 WHERE {
-    ?statement a rdf:Statement ;
-               rdf:subject ?adr ;
-               rdf:predicate :decidesTechnology ;
-               rdf:object ?tech ;
-               :statedBy ?person ;
-               :statedOn ?decisionDate ;
-               :confidence ?confidence .
+    ?statement a rdf:Statement ;         # Input: standard reification
+               rdf:subject ?adr ;        # Subject of the statement
+               rdf:predicate :decidesTechnology ; # Predicate
+               rdf:object ?tech ;        # Object of the statement
+               :statedBy ?person ;       # Metadata: who
+               :statedOn ?decisionDate ; # Metadata: when
+               :confidence ?confidence . # Metadata: confidence
 }
+
+# Explanation:
+# CONSTRUCT transforms reification to RDF-star format.
+# Input: rdf:Statement with 4+ triples per statement.
+# Output: quoted triple << s p o >> with attached metadata.
+# Use case: migrate legacy reification to RDF-star, create compact views.
+# View results in "Raw Response" mode for Turtle output.
+# Benefits: fewer triples, simpler queries, direct triple embedding.

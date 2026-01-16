@@ -11,19 +11,26 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ?adrLabel ?technology ?decisionMaker ?confidence
 WHERE {
     GRAPH :decision-metadata-rdfstar {
-        << ?adr :decidesTechnology ?tech >>
+        << ?adr :decidesTechnology ?tech >> # Quoted triple with metadata
             :statedBy ?person ;
             :confidence ?confidence .
 
-        OPTIONAL {
+        OPTIONAL {                       # Try to match evidenceSource
             << ?adr :decidesTechnology ?tech >> :evidenceSource ?evidenceSource .
         }
     }
 
-    FILTER (!BOUND(?evidenceSource))
+    FILTER (!BOUND(?evidenceSource))     # Keep only where evidence is missing
 
-    ?adr rdfs:label ?adrLabel .
-    ?tech rdfs:label ?technology .
-    ?person rdfs:label ?decisionMaker .
+    ?adr rdfs:label ?adrLabel .          # ADR label
+    ?tech rdfs:label ?technology .       # Technology label
+    ?person rdfs:label ?decisionMaker .  # Person's name
 }
-ORDER BY DESC(?confidence)
+ORDER BY DESC(?confidence)               # Highest confidence first
+
+# Explanation:
+# Pattern OPTIONAL + FILTER (!BOUND()) finds missing data.
+# OPTIONAL attempts to match evidenceSource; if absent, variable stays unbound.
+# FILTER (!BOUND(?evidenceSource)) keeps only unbound cases.
+# Use case: compliance auditing, data quality checks.
+# Same pattern works for finding incomplete metadata in any RDF-star data.
