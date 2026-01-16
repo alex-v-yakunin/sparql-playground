@@ -100,45 +100,45 @@
 
 :uses rdfs:domain :System ;
       rdfs:range :Technology ;
-      rdfs:label "использует" .
+      rdfs:label "uses" .
 
 :ownedBy rdfs:range :Team ;
-         rdfs:label "принадлежит" .
+         rdfs:label "owned by" .
 
 :hasStatus rdfs:domain :ADR ;
            rdfs:range :Status ;
-           rdfs:label "имеет статус" .
+           rdfs:label "has status" .
 
 :hasConfidence rdfs:domain :ADR ;
                rdfs:range xsd:decimal ;
-               rdfs:label "имеет уверенность" .
+               rdfs:label "has confidence" .
 
-# ----- OWL правила и ограничения -----
+# ----- OWL rules and constraints -----
 
-# Определение архитектуры микросервисов
+# Definition of microservices architecture
 :MicroserviceArchitecture a owl:Class ;
-    rdfs:label "Архитектура микросервисов" ;
+    rdfs:label "Microservices Architecture" ;
     owl:equivalentClass [
         a owl:Restriction ;
         owl:onProperty :usesMicroservices ;
         owl:someValuesFrom :Technology
     ] .
 
-# Если ADR использует микросервисы, он автоматически требует оркестрацию
-# (это выводится через rdfs:subPropertyOf выше)
+# If ADR uses microservices, it automatically requires orchestration
+# (this is inferred via rdfs:subPropertyOf above)
 
-# Ограничение: только один статус на ADR
+# Constraint: only one status per ADR
 :hasStatus a owl:FunctionalProperty ;
-    rdfs:comment "ADR может иметь только один статус одновременно" .
+    rdfs:comment "ADR can have only one status at a time" .
 
-# Симметричное свойство для конфликтов
+# Symmetric property for conflicts
 :conflictsWith a owl:SymmetricProperty ;
-    rdfs:label "конфликтует с" ;
-    rdfs:comment "Если A конфликтует с B, то B конфликтует с A" .
+    rdfs:label "conflicts with" ;
+    rdfs:comment "If A conflicts with B, then B conflicts with A" .
 
-# Транзитивное свойство для зависимостей
+# Transitive property for dependencies
 :dependsOn a owl:TransitiveProperty ;
-    rdfs:comment "Если A зависит от B, и B зависит от C, то A зависит от C" .
+    rdfs:comment "If A depends on B, and B depends on C, then A depends on C" .
 
 # ----- Technology categories -----
 
