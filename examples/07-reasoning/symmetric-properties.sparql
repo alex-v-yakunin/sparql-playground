@@ -1,0 +1,44 @@
+# Symmetric Properties (OWL Reasoning)
+#
+# Demonstrate owl:SymmetricProperty — automatic inference of bidirectional relationships.
+#
+# Expected result: Pairs of conflicting technologies (both directions)
+# Execution time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?tech1 ?tech1Label ?tech2 ?tech2Label
+WHERE {
+    # Query using :conflictsWith (symmetric property)
+    # Defined in ontology: :conflictsWith a owl:SymmetricProperty
+    ?tech1 :conflictsWith ?tech2 .
+    
+    OPTIONAL { ?tech1 rdfs:label ?tech1Label }
+    OPTIONAL { ?tech2 rdfs:label ?tech2Label }
+    
+    # Avoid duplicate pairs (A,B) and (B,A)
+    FILTER(STR(?tech1) < STR(?tech2))
+}
+ORDER BY ?tech1 ?tech2
+
+# Explanation:
+# OWL symmetric property axiom: :conflictsWith a owl:SymmetricProperty
+# 
+# The reasoner automatically infers the reverse relationship:
+#   if (?A :conflictsWith ?B), then (?B :conflictsWith ?A)
+# 
+# Example:
+#   Asserted: :MongoDB :conflictsWith :PostgreSQL
+#   Inferred: :PostgreSQL :conflictsWith :MongoDB
+# 
+# This ensures relationship can be queried from either direction
+# without explicit bidirectional assertions.
+# 
+# Note: The dataset may not have :conflictsWith assertions.
+# To test, add to technology-dependencies.ttl:
+#   :MongoDB :conflictsWith :PostgreSQL .
+# 
+# SQL equivalent: CHECK constraint or trigger for bidirectional INSERT.
+# Property Graph: duplicate edges or undirected edge type.
+# OWL reasoning: declarative symmetric property definition.

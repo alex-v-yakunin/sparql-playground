@@ -1,6 +1,6 @@
 # SPARQL Examples Catalog
 
-Production-ready queries organized by category.
+Curated SPARQL query examples organized by capability category.
 
 ---
 
@@ -87,7 +87,7 @@ Executes all queries and reports test results.
 
 ### 05-property-paths/ — Graph Navigation
 
-SQL requires recursive CTEs for equivalent functionality.
+SQL requires recursive Common Table Expressions (CTEs) for equivalent functionality.
 
 | # | Query | Description | File |
 |---|-------|-------------|------|
@@ -112,7 +112,7 @@ SQL requires recursive CTEs for equivalent functionality.
 
 ### 06-reification/ — Metadata about Facts
 
-SQL requires separate metadata tables with foreign keys.
+SQL requires auxiliary metadata tables with foreign key relationships.
 
 | # | Query | Description | File |
 |---|-------|-------------|------|
@@ -133,26 +133,35 @@ SQL requires separate metadata tables with foreign keys.
 
 ### 07-reasoning/ — RDFS/OWL Automatic Inference
 
-SQL requires triggers and stored procedures.
+SQL requires procedural extensions (triggers, stored procedures) for equivalent functionality.
 
 | # | Query | Description | File |
 |---|-------|-------------|------|
 | 1 | Subproperty inference | usesMicroservices → requiresInfrastructure | `subproperty-inference.sparql` |
-| 2 | Class hierarchy | Automatic type inference | `class-hierarchy.sparql` |
+| 2 | Class hierarchy | Automatic type inference via rdfs:subClassOf | `class-hierarchy.sparql` |
+| 3 | Inverse properties | owl:inverseOf — :requiredBy vs :dependsOn | `inverse-properties.sparql` |
+| 4 | Transitive reasoning | owl:TransitiveProperty vs SPARQL + | `transitive-reasoning.sparql` |
+| 5 | Symmetric properties | owl:SymmetricProperty — :conflictsWith | `symmetric-properties.sparql` |
 
-**Reasoning enables**:
-- One-time rule definitions
-- Automatic fact inference
-- Simplified queries
-- Reduced data duplication
+**RDFS reasoning** (W3C RDF Schema):
+- `rdfs:subClassOf` — class hierarchy inference
+- `rdfs:subPropertyOf` — property hierarchy inference
 
-**Rules file**: `data/adr-ontology.ttl`
+**OWL reasoning** (W3C Web Ontology Language):
+- `owl:inverseOf` — automatic inverse relationship inference
+- `owl:TransitiveProperty` — materialized transitive closure
+- `owl:SymmetricProperty` — bidirectional relationship inference
+- `owl:FunctionalProperty` — cardinality constraints
+
+**Ontology file**: `data/adr-ontology.ttl`
+
+**Recommended starting point**: `inverse-properties.sparql`
 
 ---
 
 ### 08-construct/ — Generating New Graphs
 
-SQL CREATE VIEW provides limited structural transformation.
+SQL CREATE VIEW provides limited structural transformation capabilities compared to CONSTRUCT.
 
 | # | Query | Description | File |
 |---|-------|-------------|------|
@@ -176,16 +185,16 @@ SQL CREATE VIEW provides limited structural transformation.
 | 1 | Federated queries | Integration with DBpedia | `federation.sparql` |
 | 2 | Complex patterns | BIND, VALUES, MINUS, EXISTS | `complex-patterns.sparql` |
 
-**Federated queries**:
-- Query external SPARQL endpoints
-- No ETL or data import required
-- Real-time integration
+**Federated queries (SERVICE keyword)**:
+- Query remote SPARQL endpoints within a single query
+- No ETL or data replication required
+- Real-time cross-repository data integration
 
 ---
 
 ### 10-rdf-star/ — RDF-star (Quoted Triples)
 
-Compact metadata without rdf:Statement.
+Compact statement-level metadata without explicit rdf:Statement reification.
 
 | # | Query | Description | File |
 |---|-------|-------------|------|
@@ -194,11 +203,40 @@ Compact metadata without rdf:Statement.
 | 3 | Projection from reification | RDF-star view from reified statements | `rdf-star-projection-from-reification.sparql` |
 
 **RDF-star enables**:
-- Concise metadata about triples
-- Fewer joins and boilerplate
-- Quoted triples in SPARQL*
+- Concise statement-level metadata
+- Reduced syntactic overhead compared to reification
+- Native quoted triple patterns in SPARQL-star queries
 
 **Recommended starting point**: `who-decided-rdf-star.sparql`
+
+---
+
+### 11-shacl/ — SHACL Data Validation
+
+SQL uses CHECK constraints and triggers. SHACL provides declarative constraint definitions.
+
+| # | Query | Description | File |
+|---|-------|-------------|------|
+| 1 | Validate ADRs | Query SHACL validation report | `validate-adrs.sparql` |
+| 2 | Find violations | Manual constraint checking | `find-violations.sparql` |
+| 3 | Shapes overview | Explore SHACL shapes | `shacl-shapes-overview.sparql` |
+
+**SHACL (Shapes Constraint Language)**:
+- W3C Recommendation for RDF validation
+- Closed World Assumption (unlike OWL's Open World)
+- Declarative constraint definitions
+- Standardized validation report format
+
+**Key concepts**:
+- `sh:NodeShape` — constraints for class instances
+- `sh:PropertyShape` — constraints for properties
+- `sh:minCount/sh:maxCount` — cardinality constraints
+- `sh:datatype` — value type validation
+- `sh:pattern` — regex validation
+
+**Shapes file**: `data/adr-shapes.ttl`
+
+**Recommended starting point**: `find-violations.sparql`
 
 ---
 

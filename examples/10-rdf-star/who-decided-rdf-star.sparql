@@ -24,9 +24,10 @@ WHERE {
 ORDER BY ?decisionDate                   # Sort by date (chronological order)
 
 # Explanation:
-# RDF-star allows metadata directly on triples using << >> notation.
-# << ?adr :decidesTechnology ?tech >> is a quoted triple - the statement itself.
-# Metadata properties attach directly to the quoted triple, not to rdf:Statement.
-# Compare with reification: fewer triples, simpler queries.
-# In SQL: separate metadata table with foreign keys.
-# In RDF-star: native support for statement-level metadata.
+# RDF-star (W3C Community Group extension) enables statement-level metadata
+# using quoted triple syntax << subject predicate object >>.
+# << ?adr :decidesTechnology ?tech >> denotes a quoted triple as a first-class entity.
+# Metadata properties attach directly to the quoted triple without rdf:Statement overhead.
+# Compared to standard reification: reduced triple count, simplified query patterns.
+# SQL requires auxiliary metadata tables with foreign key relationships.
+# RDF-star provides syntactically concise statement-level annotation.

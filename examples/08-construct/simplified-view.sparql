@@ -24,15 +24,15 @@ WHERE {
 }
 
 # Explanation:
-# CONSTRUCT creates new RDF graph instead of result table.
-# CONSTRUCT { ... } block defines which triples to create.
-# WHERE { ... } block finds source data.
+# CONSTRUCT generates a derived RDF graph rather than a tabular result set.
+# CONSTRUCT { ... } clause specifies the graph template for output triples.
+# WHERE { ... } clause provides the graph pattern for source data binding.
 # 
-# Simplify graph:
-# - Instead of technology and status URIs, use their labels
-# - Remove complex properties, keeping only key ones
-# - Perfect for visualization or export
+# Graph transformation:
+# - Dereferences URI identifiers to human-readable labels
+# - Projects only essential properties for downstream consumption
+# - Suitable for visualization pipelines or data export
 # 
-# In SQL: CREATE VIEW with simplified JOINs.
-# In Property Graph: graph projection.
-# In SPARQL: CONSTRUCT - powerful transformation tool!
+# SQL equivalent: CREATE VIEW with JOIN operations (limited structural flexibility).
+# Property Graph: graph projection or subgraph extraction.
+# SPARQL CONSTRUCT: declarative graph-to-graph transformation.

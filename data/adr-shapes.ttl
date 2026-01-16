@@ -1,0 +1,209 @@
+@prefix : <http://example.org/adr#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+# ============================================
+# SHACL SHAPES FOR ADR VALIDATION
+# ============================================
+#
+# SHACL (Shapes Constraint Language) defines constraints
+# for validating RDF graphs. Unlike OWL (Open World),
+# SHACL uses Closed World Assumption for validation.
+#
+# W3C Recommendation: https://www.w3.org/TR/shacl/
+# ============================================
+
+# ----- ADR Shape -----
+# Validates Architecture Decision Records
+
+:ADRShape a sh:NodeShape ;
+    sh:targetClass :ADR ;
+    rdfs:label "ADR Validation Shape" ;
+    rdfs:comment "Constraints for valid Architecture Decision Records" ;
+    
+    # Required: every ADR must have a label
+    sh:property [
+        sh:path rdfs:label ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:severity sh:Violation ;
+        sh:message "ADR must have exactly one rdfs:label of type string"
+    ] ;
+    
+    # Required: every ADR must have a status
+    sh:property [
+        sh:path :hasStatus ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class :Status ;
+        sh:severity sh:Violation ;
+        sh:message "ADR must have exactly one :hasStatus referencing a :Status"
+    ] ;
+    
+    # Required: every ADR must decide on at least one technology
+    sh:property [
+        sh:path :decidesTechnology ;
+        sh:minCount 1 ;
+        sh:class :Technology ;
+        sh:severity sh:Violation ;
+        sh:message "ADR must decide on at least one :Technology"
+    ] ;
+    
+    # Optional but recommended: confidence score
+    sh:property [
+        sh:path :hasConfidence ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive 0.0 ;
+        sh:maxInclusive 1.0 ;
+        sh:severity sh:Warning ;
+        sh:message "Confidence must be a decimal between 0.0 and 1.0"
+    ] ;
+    
+    # Optional but recommended: applies to system
+    sh:property [
+        sh:path :appliesTo ;
+        sh:class :System ;
+        sh:severity sh:Info ;
+        sh:message "ADR should specify which system it applies to"
+    ] .
+
+# ----- System Shape -----
+# Validates Software Systems
+
+:SystemShape a sh:NodeShape ;
+    sh:targetClass :System ;
+    rdfs:label "System Validation Shape" ;
+    rdfs:comment "Constraints for valid Software Systems" ;
+    
+    # Required: every system must have a label
+    sh:property [
+        sh:path rdfs:label ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:severity sh:Violation ;
+        sh:message "System must have exactly one rdfs:label"
+    ] ;
+    
+    # Required: every system must have an owner
+    sh:property [
+        sh:path :ownedBy ;
+        sh:minCount 1 ;
+        sh:class :Team ;
+        sh:severity sh:Warning ;
+        sh:message "System should have an owner (:ownedBy :Team)"
+    ] .
+
+# ----- Technology Shape -----
+# Validates Technologies
+
+:TechnologyShape a sh:NodeShape ;
+    sh:targetClass :Technology ;
+    rdfs:label "Technology Validation Shape" ;
+    rdfs:comment "Constraints for valid Technologies" ;
+    
+    # Required: every technology must have a label
+    sh:property [
+        sh:path rdfs:label ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:severity sh:Violation ;
+        sh:message "Technology must have exactly one rdfs:label"
+    ] .
+
+# ----- Person Shape -----
+# Validates Person entities
+
+:PersonShape a sh:NodeShape ;
+    sh:targetClass :Person ;
+    rdfs:label "Person Validation Shape" ;
+    rdfs:comment "Constraints for valid Person entities" ;
+    
+    # Required: every person must have a label
+    sh:property [
+        sh:path rdfs:label ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "Person must have exactly one rdfs:label"
+    ] ;
+    
+    # Optional: email format validation
+    sh:property [
+        sh:path :email ;
+        sh:maxCount 1 ;
+        sh:pattern "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$" ;
+        sh:severity sh:Warning ;
+        sh:message "Email must be a valid email address format"
+    ] ;
+    
+    # Optional: years of experience must be positive
+    sh:property [
+        sh:path :yearsOfExperience ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:maxInclusive 50 ;
+        sh:severity sh:Warning ;
+        sh:message "Years of experience must be between 0 and 50"
+    ] .
+
+# ----- Reified Statement Shape -----
+# Validates reified statements about decisions
+
+:StatementShape a sh:NodeShape ;
+    sh:targetClass rdf:Statement ;
+    rdfs:label "Reified Statement Validation Shape" ;
+    rdfs:comment "Constraints for valid reified statements" ;
+    
+    # Required: statement must have subject, predicate, object
+    sh:property [
+        sh:path rdf:subject ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "Reified statement must have exactly one rdf:subject"
+    ] ;
+    
+    sh:property [
+        sh:path rdf:predicate ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "Reified statement must have exactly one rdf:predicate"
+    ] ;
+    
+    sh:property [
+        sh:path rdf:object ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "Reified statement must have exactly one rdf:object"
+    ] ;
+    
+    # Required for provenance: who stated this
+    sh:property [
+        sh:path :statedBy ;
+        sh:minCount 1 ;
+        sh:class :Person ;
+        sh:severity sh:Warning ;
+        sh:message "Reified statement should have :statedBy referencing a :Person"
+    ] ;
+    
+    # Required for provenance: when stated
+    sh:property [
+        sh:path :statedOn ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:or (
+            [ sh:datatype xsd:date ]
+            [ sh:datatype xsd:dateTime ]
+        ) ;
+        sh:severity sh:Warning ;
+        sh:message "Reified statement should have :statedOn with date or dateTime"
+    ] .

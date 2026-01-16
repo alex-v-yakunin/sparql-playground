@@ -1,6 +1,6 @@
 # SPARQL Quick Reference
 
-Quick lookup for SPARQL syntax and common patterns.
+Reference guide for SPARQL 1.1 syntax and common query patterns.
 
 ---
 
@@ -66,7 +66,7 @@ GRAPH :decision-metadata-rdfstar {
 }
 ```
 
-**Use case**: Metadata about a triple without full reification.
+**Use case**: Statement-level metadata without explicit rdf:Statement reification.
 
 ---
 
@@ -80,7 +80,7 @@ OPTIONAL {
 }
 ```
 
-**Use case**: Some entities may not have the property.
+**Use case**: Handling missing data under the Open World Assumption (some entities may lack certain properties).
 
 ---
 
@@ -119,7 +119,7 @@ FILTER NOT EXISTS {
 }
 ```
 
-**Use case**: Find what is NOT in the graph.
+**Use case**: Negation as failure — find patterns that are absent from the graph.
 
 ---
 
@@ -362,7 +362,7 @@ SELECT DISTINCT ?tech WHERE { ?adr :decidesTechnology ?tech }
 | `GRAPH` | Database/schema | Data partition |
 | `.` | End of statement | Pattern separator |
 
-**Key difference**: SPARQL matches patterns in graphs; SQL queries tables with rows.
+**Key difference**: SPARQL performs pattern matching over graph structures; SQL operates on relational tables with fixed schemas.
 
 ---
 
@@ -377,9 +377,9 @@ SELECT DISTINCT ?tech WHERE { ?adr :decidesTechnology ?tech }
 - Name aggregations: `(COUNT(?x) AS ?count)` not just `COUNT(?x)`
 
 **Avoid:**
-- Assuming SQL logic: graphs work differently
-- Forgetting prefixes: needed for short notation
-- Overcomplicating: simple patterns often work best
+- Assuming relational (SQL) semantics: graph pattern matching differs fundamentally
+- Omitting PREFIX declarations: required for compact URI notation
+- Over-engineering queries: simple patterns are often most effective
 
 ---
 

@@ -1,0 +1,82 @@
+# Find Potential SHACL Violations (Manual Check)
+#
+# Query to find ADRs that would violate SHACL constraints,
+# without requiring SHACL validation to be enabled.
+#
+# This demonstrates what SHACL shapes are checking for.
+#
+# Expected result: ADRs missing required properties
+# Execution time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?adr ?adrLabel ?issue ?severity
+WHERE {
+    ?adr a :ADR .
+    OPTIONAL { ?adr rdfs:label ?adrLabel }
+    
+    {
+        # Violation: ADR without label
+        FILTER NOT EXISTS { ?adr rdfs:label ?label }
+        BIND("Missing rdfs:label" AS ?issue)
+        BIND("Violation" AS ?severity)
+    }
+    UNION
+    {
+        # Violation: ADR without status
+        FILTER NOT EXISTS { ?adr :hasStatus ?status }
+        BIND("Missing :hasStatus" AS ?issue)
+        BIND("Violation" AS ?severity)
+    }
+    UNION
+    {
+        # Violation: ADR without technology decision
+        FILTER NOT EXISTS { ?adr :decidesTechnology ?tech }
+        BIND("Missing :decidesTechnology" AS ?issue)
+        BIND("Violation" AS ?severity)
+    }
+    UNION
+    {
+        # Warning: ADR without confidence score
+        FILTER NOT EXISTS { ?adr :hasConfidence ?conf }
+        BIND("Missing :hasConfidence" AS ?issue)
+        BIND("Warning" AS ?severity)
+    }
+    UNION
+    {
+        # Info: ADR without system context
+        FILTER NOT EXISTS { ?adr :appliesTo ?system }
+        BIND("Missing :appliesTo (no system context)" AS ?issue)
+        BIND("Info" AS ?severity)
+    }
+    UNION
+    {
+        # Warning: Confidence out of range (0.0-1.0)
+        ?adr :hasConfidence ?conf .
+        FILTER(?conf < 0.0 || ?conf > 1.0)
+        BIND(CONCAT("Confidence out of range: ", STR(?conf)) AS ?issue)
+        BIND("Warning" AS ?severity)
+    }
+}
+ORDER BY ?severity ?adr
+
+# Explanation:
+# This query manually checks constraints defined in adr-shapes.ttl.
+# 
+# SHACL automates these checks declaratively:
+# - sh:minCount 1 → FILTER NOT EXISTS { ... }
+# - sh:datatype xsd:decimal → type checking
+# - sh:minInclusive/sh:maxInclusive → FILTER range checks
+# 
+# Benefits of SHACL over manual queries:
+# 1. Declarative constraint definition (no SPARQL required)
+# 2. Automatic validation on data insert
+# 3. Standardized validation report format
+# 4. Reusable shapes across applications
+# 
+# This query is useful when:
+# - SHACL validation is not enabled in triplestore
+# - You want to preview what violations exist
+# - You're debugging SHACL shapes

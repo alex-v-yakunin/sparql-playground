@@ -1,0 +1,59 @@
+# SHACL Validation Report
+#
+# Query the SHACL validation report to find constraint violations.
+#
+# Prerequisites:
+# 1. Load adr-shapes.ttl into the repository
+# 2. Enable SHACL validation in GraphDB (Setup → Repositories → Edit → SHACL)
+#
+# Expected result: Validation results showing any violations
+# Execution time: < 1 second
+
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX : <http://example.org/adr#>
+
+SELECT ?focusNode ?nodeLabel ?severity ?message ?path ?value
+WHERE {
+    # Query SHACL validation results
+    ?result a sh:ValidationResult ;
+            sh:focusNode ?focusNode ;
+            sh:resultSeverity ?severity ;
+            sh:resultMessage ?message .
+    
+    # Optional: get the property path that caused violation
+    OPTIONAL { ?result sh:resultPath ?path }
+    
+    # Optional: get the actual value that violated constraint
+    OPTIONAL { ?result sh:value ?value }
+    
+    # Optional: get label of the focus node for readability
+    OPTIONAL { ?focusNode rdfs:label ?nodeLabel }
+}
+ORDER BY ?severity ?focusNode
+
+# Explanation:
+# SHACL (Shapes Constraint Language) validates RDF data against shapes.
+# 
+# Key concepts:
+# - sh:NodeShape: defines constraints for nodes of a specific class
+# - sh:PropertyShape: defines constraints for specific properties
+# - sh:ValidationResult: result of validation (violations)
+# 
+# Severity levels:
+# - sh:Violation: constraint MUST be satisfied (error)
+# - sh:Warning: constraint SHOULD be satisfied (warning)
+# - sh:Info: informational (recommendation)
+# 
+# SHACL vs OWL:
+# - OWL uses Open World Assumption (missing data = unknown)
+# - SHACL uses Closed World Assumption (missing data = constraint violation)
+# 
+# To enable SHACL validation in GraphDB:
+# 1. Go to Setup → Repositories
+# 2. Edit repository settings
+# 3. Enable "SHACL validation"
+# 4. Load adr-shapes.ttl into repository
+# 
+# Note: GraphDB validates on data insert, not on query.
+# This query retrieves cached validation results.

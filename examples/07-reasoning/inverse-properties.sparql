@@ -1,0 +1,36 @@
+# Inverse Properties (OWL Reasoning)
+#
+# Demonstrate owl:inverseOf — automatic inference of inverse relationships.
+#
+# Expected result: Technologies with their dependents (reverse of :dependsOn)
+# Execution time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?technology ?technologyLabel ?dependent ?dependentLabel
+WHERE {
+    # Query using :requiredBy (inverse of :dependsOn)
+    # Defined in ontology: :requiredBy owl:inverseOf :dependsOn
+    ?technology :requiredBy ?dependent .
+    
+    OPTIONAL { ?technology rdfs:label ?technologyLabel }
+    OPTIONAL { ?dependent rdfs:label ?dependentLabel }
+}
+ORDER BY ?technology ?dependent
+
+# Explanation:
+# OWL inverse property axiom: :requiredBy owl:inverseOf :dependsOn
+# 
+# The reasoner automatically infers:
+#   if (?A :dependsOn ?B), then (?B :requiredBy ?A)
+# 
+# Data asserts: :Kubernetes :dependsOn :Docker
+# Reasoner infers: :Docker :requiredBy :Kubernetes
+# 
+# This enables querying relationships in both directions
+# without storing redundant triples.
+# 
+# SQL equivalent: self-JOIN or separate reverse relationship table.
+# Property Graph: duplicate edges or runtime traversal.
+# OWL reasoning: declarative inverse property definition.

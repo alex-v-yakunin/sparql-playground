@@ -26,10 +26,10 @@ WHERE {
 ORDER BY ?decisionDate                 # Sort by date (chronological order)
 
 # Explanation:
-# This is the essence of reification: metadata about statements.
-# Structure rdf:Statement describes original triple (?adr :decidesTechnology ?tech).
-# Additional properties (:statedBy, :statedOn, :confidence) add context.
-# Impossible in regular RDF triples without reification!
-# In SQL: separate metadata table with foreign key.
-# In Property Graph: properties on edges.
-# In RDF: built-in support through reification.
+# RDF reification enables statement-level metadata (metadata about triples).
+# The rdf:Statement resource represents the original triple (?adr :decidesTechnology ?tech).
+# Additional properties (:statedBy, :statedOn, :confidence) provide provenance context.
+# Standard RDF cannot express metadata about triples without reification.
+# SQL requires auxiliary metadata tables with foreign key relationships.
+# Property Graph databases support properties on edges natively.
+# RDF provides reification as a W3C-standardized mechanism.

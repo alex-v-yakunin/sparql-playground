@@ -17,14 +17,16 @@ WHERE {
 ORDER BY ?adr ?type                    # Sort by ADR and type
 
 # Explanation:
-# In the ontology defined: :ADR rdfs:subClassOf :ArchitecturalDecision
-# GraphDB with RDFS reasoning enabled automatically infers:
-# if (?x a :ADR), then (?x a :ArchitecturalDecision)
+# RDFS class hierarchy (rdfs:subClassOf) enables automatic type inference.
+# Ontology defines: :ADR rdfs:subClassOf :ArchitecturalDecision
 # 
-# Each ADR has both types:
-# - Explicitly stated: :ADR
-# - Automatically inferred: :ArchitecturalDecision
+# The reasoner automatically infers:
+#   if (?x rdf:type :ADR), then (?x rdf:type :ArchitecturalDecision)
 # 
-# In SQL: would require triggers, views or complex normalization.
-# In Property Graph: duplicate labels or separate nodes.
-# In RDF with reasoning: automatic deduction based on ontology!
+# Each ADR instance has multiple types:
+# - Explicitly asserted: :ADR (in data)
+# - Automatically inferred: :ArchitecturalDecision (via rdfs:subClassOf)
+# 
+# SQL equivalent requires triggers, materialized views, or complex normalization.
+# Property Graph databases require duplicate labels or separate node types.
+# RDFS reasoning provides declarative, schema-level class subsumption.

@@ -77,7 +77,7 @@ PREFIX : <http://example.org/adr#>
 SELECT (COUNT(*) as ?count) WHERE { ?s a :ADR }
 ```
 
-Expected result: `count = 8`
+Expected result: ADR count matching loaded data
 
 </details>
 
@@ -114,7 +114,7 @@ ORDER BY ?adr
 
 Press **Ctrl+Enter** to execute.
 
-Expected result: 8 architectural decisions
+Expected result: All architectural decisions with labels
 
 **Query breakdown:**
 - `?adr a :ADR` — find all resources of type ADR
@@ -142,7 +142,7 @@ WHERE {
 ORDER BY DESC(?confidence)
 ```
 
-Expected result: 3-4 ADRs with confidence > 0.9
+Expected result: ADRs with confidence > 0.9
 
 **Key concepts:**
 - `FILTER(?confidence > 0.9)` — filtering condition
@@ -179,7 +179,7 @@ Expected result: Statistics by status (Accepted, Deprecated, etc.)
 
 ## Step 6: Property Paths
 
-**This capability requires recursive CTEs in SQL.**
+**Equivalent SQL requires recursive Common Table Expressions (CTEs).**
 
 Find all transitive dependencies of Kubernetes:
 
@@ -199,7 +199,7 @@ ORDER BY ?depLabel
 
 Expected result: Docker, Linux, etcd, Go, Kernel, ContainerRuntime...
 
-**SQL equivalent requires recursive CTEs (20+ lines):**
+**SQL equivalent requires recursive CTEs (typically 10-15 lines):**
 
 ```sql
 WITH RECURSIVE deps AS (
@@ -213,7 +213,7 @@ WITH RECURSIVE deps AS (
 SELECT * FROM deps;
 ```
 
-SPARQL achieves this in one line using the `+` operator.
+SPARQL achieves equivalent functionality in a single property path expression using the `+` (one-or-more) operator.
 
 ---
 
@@ -245,7 +245,7 @@ ORDER BY DESC(?date)
 
 Expected result: Decision metadata including author, date, and confidence level.
 
-SQL requires separate metadata tables with foreign keys. RDF provides native support for metadata about triples.
+SQL requires auxiliary metadata tables with foreign key relationships. RDF reification provides native support for statement-level metadata.
 
 ---
 
@@ -273,9 +273,9 @@ WHERE {
 ORDER BY DESC(?date)
 ```
 
-Expected result: Same insight as reification, with shorter syntax.
+Expected result: Equivalent metadata as reification, with more concise syntax.
 
-**Note**: Requires RDF-star/SPARQL* support (GraphDB 10.7+).
+**Note**: Requires RDF-star/SPARQL-star support (GraphDB 10.7+, Stardog, Blazegraph).
 
 ---
 
@@ -310,7 +310,7 @@ Switch view to **Raw Response** to see RDF triples:
 :Kafka rdfs:label "Apache Kafka" .
 ```
 
-CONSTRUCT generates new graphs with arbitrary structure, unlike SQL's limited CREATE VIEW.
+CONSTRUCT generates derived RDF graphs with arbitrary structure, providing greater flexibility than SQL's CREATE VIEW for structural transformation.
 
 ---
 
@@ -347,7 +347,7 @@ Expected result: ADRs with source indication (adr-registry, confluence, intervie
 | Basic SELECT | Simple SELECT | Triple patterns |
 | Filtering | WHERE clause | FILTER |
 | Aggregation | GROUP BY | GROUP BY |
-| **Transitive queries** | Recursive CTE (20+ lines) | `:dependsOn+` (1 line) |
+| **Transitive queries** | Recursive CTE (10-15 lines) | `:dependsOn+` (1 expression) |
 | **Metadata about facts** | Separate table + FK | Reification |
 | **Quoted triples** | Separate table + FK | RDF-star |
 | **Graph generation** | CREATE VIEW (limited) | CONSTRUCT |
@@ -440,11 +440,11 @@ A: Run `./scripts/test-queries.sh`
 
 ## Conclusion
 
-This guide demonstrated unique SPARQL capabilities not available in SQL:
+This guide demonstrated distinctive SPARQL capabilities that are difficult to express concisely in SQL:
 
-- Property paths for graph navigation
-- Reification for metadata about facts
-- CONSTRUCT for generating new graphs
-- Named graphs for provenance
+- Property paths for declarative graph traversal
+- Reification for statement-level metadata
+- CONSTRUCT for declarative graph generation
+- Named graphs for native provenance management
 
 Continue learning: [EXAMPLES.md](EXAMPLES.md)

@@ -5,13 +5,15 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 # ============================================
-# ADR ONTOLOGY
+# ADR ONTOLOGY (RDFS/OWL)
 # ============================================
 #
-# This file demonstrates RDFS/OWL reasoning -
-# automatic inference of new facts from rules
+# This file demonstrates semantic reasoning:
+# automated inference of implicit facts from
+# declarative schema-level rules.
 #
-# In SQL this requires triggers and procedures!
+# Equivalent SQL functionality requires
+# procedural extensions (triggers, stored procedures).
 # ============================================
 
 # ----- Decision class hierarchy -----
@@ -129,16 +131,16 @@
 
 # Constraint: only one status per ADR
 :hasStatus a owl:FunctionalProperty ;
-    rdfs:comment "ADR can have only one status at a time" .
+    rdfs:comment "Functional property constraint: each ADR has at most one status value" .
 
 # Symmetric property for conflicts
 :conflictsWith a owl:SymmetricProperty ;
     rdfs:label "conflicts with" ;
-    rdfs:comment "If A conflicts with B, then B conflicts with A" .
+    rdfs:comment "Symmetric relation: if A conflictsWith B, then B conflictsWith A is inferred" .
 
 # Transitive property for dependencies
 :dependsOn a owl:TransitiveProperty ;
-    rdfs:comment "If A depends on B, and B depends on C, then A depends on C" .
+    rdfs:comment "Transitive closure: if A dependsOn B and B dependsOn C, then A dependsOn C is inferred" .
 
 # ----- Technology categories -----
 

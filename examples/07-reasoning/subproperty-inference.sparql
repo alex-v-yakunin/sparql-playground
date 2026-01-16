@@ -26,17 +26,19 @@ WHERE {
 ORDER BY ?adrLabel                     # Sort by ADR label
 
 # Explanation:
-# In the ontology defined:
-# :usesMicroservices rdfs:subPropertyOf :requiresInfrastructure
-# :requiresDistributedSystem rdfs:subPropertyOf :requiresInfrastructure
-# :usesContainers rdfs:subPropertyOf :requiresInfrastructure
+# RDFS property hierarchy (rdfs:subPropertyOf) enables automatic inference.
+# Ontology defines:
+#   :usesMicroservices rdfs:subPropertyOf :requiresOrchestration
+#   :requiresOrchestration rdfs:subPropertyOf :requiresInfrastructure
+#   :requiresDistributedSystem rdfs:subPropertyOf :requiresInfrastructure
+#   :usesContainers rdfs:subPropertyOf :requiresOrchestration
 # 
-# GraphDB automatically infers:
-# if (?adr :usesMicroservices ?tech), then (?adr :requiresInfrastructure ?tech)
+# The reasoner automatically infers:
+#   if (?adr :usesMicroservices ?tech), then (?adr :requiresInfrastructure ?tech)
 # 
-# We can query by general property :requiresInfrastructure,
-# and the reasoner will find all ADRs with any specific subproperties!
+# Queries against the superclass property :requiresInfrastructure
+# automatically match all subproperty assertions.
 # 
-# In SQL: would require triggers or complex UNION queries.
-# In Property Graph: duplicate edges or meta-queries.
-# In RDF with reasoning: automatic deduction based on ontology!
+# SQL equivalent requires triggers, stored procedures, or complex UNION queries.
+# Property Graph databases require edge duplication or meta-level queries.
+# RDFS/OWL reasoning provides declarative, schema-level inference rules.

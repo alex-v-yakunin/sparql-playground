@@ -1,6 +1,6 @@
 # Automation Scripts
 
-Bash scripts for managing SPARQL Playground.
+Automation scripts for SPARQL Playground environment management.
 
 ---
 
@@ -19,8 +19,8 @@ Bash scripts for managing SPARQL Playground.
 1. Starts GraphDB container in Docker
 2. Waits for GraphDB ready (up to 60 seconds)
 3. Creates repository `sparql-playground`
-4. Loads 7 RDF files from `data/`
-5. Verifies loading correctness (8 ADRs)
+4. Loads all RDF files from `data/`
+5. Verifies loading correctness
 
 **Modes**:
 - Interactive: prompts for confirmation if repository exists
@@ -46,12 +46,7 @@ Bash scripts for managing SPARQL Playground.
 2. GraphDB container running
 3. GraphDB HTTP endpoint accessible
 4. Repository exists
-5. Data loaded correctly:
-   - 8 ADRs
-   - 5 Systems
-   - 7 Technologies
-   - 5 Teams
-   - 8 Named Graphs
+5. Data loaded correctly (validates entity counts)
 
 **Exit codes**:
 - `0` — all checks passed
@@ -61,11 +56,11 @@ Bash scripts for managing SPARQL Playground.
 ```
 Entity Type          Expected   Actual     Status    
 ────────────────────────────────────────────────────
-ADRs                 8          8          OK       
-Systems              5          5          OK       
-Technologies         7          7          OK       
-Teams                5          5          OK       
-Named Graphs         8          8          OK       
+ADRs                 N          N          OK       
+Systems              N          N          OK       
+Technologies         N          N          OK       
+Teams                N          N          OK       
+Named Graphs         N          N          OK       
 
 All checks passed.
 ```
@@ -102,9 +97,9 @@ All checks passed.
 ```
 === 01-basics ===
 [01-basics] Testing: hello-world ... OK
-  Results: 10 rows
+  Results: N rows
 [01-basics] Testing: list-all-adrs ... OK
-  Results: 8 rows
+  Results: N rows
 
 === Test Summary ===
 Total tests:   N
@@ -160,7 +155,7 @@ All queries passed.
 2. Deletes repository `sparql-playground`
 3. Runs `setup.sh` for full reload
 
-**Warning**: Deletes all data. Operation is irreversible.
+**Warning**: Destructive operation. Deletes all repository data. This action is irreversible.
 
 **Exit codes**:
 - `0` — successful reset and reload

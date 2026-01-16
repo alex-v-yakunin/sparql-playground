@@ -18,7 +18,8 @@ WHERE {
 ORDER BY ?source ?adr                  # Sort by source, then by ADR
 
 # Explanation:
-# Demonstrates data provenance tracking.
-# Named Graphs in SPARQL - built-in capability for storing provenance.
-# In SQL would require separate sources table with JOIN.
-# In Property Graph: tags/labels on nodes or metadata on edges.
+# Demonstrates native data provenance tracking via named graphs.
+# The GRAPH keyword binds the graph context to a variable for inspection.
+# Named graphs (quads) provide first-class support for data partitioning and provenance.
+# SQL equivalent requires auxiliary source tables with foreign key relationships.
+# Property Graph: node/edge labels or separate metadata properties.

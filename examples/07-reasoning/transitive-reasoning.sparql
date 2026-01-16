@@ -1,0 +1,47 @@
+# Transitive Reasoning (OWL vs SPARQL Property Paths)
+#
+# Demonstrate the difference between owl:TransitiveProperty and SPARQL +.
+#
+# Expected result: All transitive dependencies via OWL reasoning
+# Execution time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+# Query 1: Using OWL TransitiveProperty (materialized by reasoner)
+# :dependsOn is declared as owl:TransitiveProperty in ontology
+SELECT ?technology ?dependency
+WHERE {
+    # Simple pattern — reasoner has already materialized transitive closure
+    :Kubernetes :dependsOn ?dependency .
+    
+    OPTIONAL { ?dependency rdfs:label ?depLabel }
+    
+    BIND(:Kubernetes AS ?technology)
+}
+ORDER BY ?dependency
+
+# Explanation:
+# OWL transitive property axiom: :dependsOn a owl:TransitiveProperty
+# 
+# The reasoner automatically materializes transitive closure:
+#   Asserted: :Kubernetes :dependsOn :Docker
+#   Asserted: :Docker :dependsOn :Linux
+#   Inferred: :Kubernetes :dependsOn :Linux (via transitivity)
+# 
+# Two approaches to transitive queries:
+# 
+# 1. OWL owl:TransitiveProperty (this example):
+#    - Reasoner pre-computes transitive closure at load time
+#    - Simple triple pattern in query: ?x :dependsOn ?y
+#    - Triples are materialized in the graph
+#    - Faster query execution, more storage
+# 
+# 2. SPARQL Property Path + (see 05-property-paths/):
+#    - Computed at query execution time
+#    - Pattern: ?x :dependsOn+ ?y
+#    - No materialization required
+#    - More flexible, less storage
+# 
+# Both approaches yield the same results for transitive queries.
+# Choice depends on use case: frequent queries vs storage constraints.

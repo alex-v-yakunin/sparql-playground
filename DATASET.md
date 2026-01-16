@@ -1,6 +1,6 @@
 # Dataset Description
 
-**Synthetic ADR (Architecture Decision Records)** — a demonstration dataset showcasing RDF/SPARQL capabilities.
+**Synthetic ADR (Architecture Decision Records)** — a demonstration dataset designed to illustrate RDF/SPARQL capabilities in an enterprise architecture context.
 
 ---
 
@@ -23,7 +23,7 @@ Models architectural knowledge within a technology organization:
 
 ## File Structure
 
-The dataset consists of 7 RDF files that must be loaded in strict order:
+The dataset consists of 8 RDF files that must be loaded in strict order:
 
 ### 1. `prefixes.ttl` — Prefixes
 
@@ -143,7 +143,7 @@ SELECT ?dep WHERE {
 }
 ```
 
-SQL equivalent requires recursive CTEs (20+ lines).
+SQL equivalent requires recursive Common Table Expressions (typically 10-15 lines).
 
 ---
 
@@ -210,7 +210,7 @@ SELECT ?adr ?label WHERE {
 
 ### 6. `adr-people-reified.trig` — Reification with Metadata
 
-Demonstrates reification for metadata about triples.
+Demonstrates RDF reification for attaching metadata to statements (triples).
 
 This file contains:
 1. Architect profiles (in named graph `:people`)
@@ -277,13 +277,13 @@ SELECT ?adr ?tech ?person ?date ?confidence WHERE {
 
 Result: Decision authorship, timing, and confidence levels.
 
-SQL requires separate `statement_metadata` tables with multiple JOINs.
+SQL equivalent requires auxiliary metadata tables with foreign key relationships and multiple JOIN operations.
 
 ---
 
 ### 7. `adr-people-rdfstar.trig` — RDF-star (Quoted Triples)
 
-Demonstrates RDF-star for compact metadata about triples.
+Demonstrates RDF-star (RDF 1.2 extension) for compact statement-level metadata using quoted triples.
 
 This file contains quoted triples inside a named graph:
 
@@ -311,7 +311,59 @@ SELECT ?adr ?tech ?person ?date ?confidence WHERE {
 
 Result: Same metadata as reification with less boilerplate.
 
-**Note**: Requires RDF-star/SPARQL* support in the RDF store.
+**Note**: Requires RDF-star/SPARQL-star support in the triplestore (e.g., GraphDB 10.7+, Stardog, Blazegraph).
+
+---
+
+### 8. `adr-shapes.ttl` — SHACL Shapes (Data Validation)
+
+Demonstrates SHACL (Shapes Constraint Language) for declarative data validation.
+
+SHACL provides Closed World Assumption validation (unlike OWL's Open World):
+- Missing required properties → constraint violation
+- Invalid data types → constraint violation
+- Out-of-range values → constraint violation
+
+**Defined shapes:**
+
+| Shape | Target Class | Key Constraints |
+|-------|--------------|-----------------|
+| `:ADRShape` | `:ADR` | Required: label, status, technology |
+| `:SystemShape` | `:System` | Required: label; Recommended: owner |
+| `:TechnologyShape` | `:Technology` | Required: label |
+| `:PersonShape` | `:Person` | Required: label; Optional: email pattern, experience range |
+| `:StatementShape` | `rdf:Statement` | Required: subject, predicate, object; Recommended: statedBy, statedOn |
+
+**Example shape:**
+```turtle
+:ADRShape a sh:NodeShape ;
+    sh:targetClass :ADR ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:severity sh:Violation ;
+        sh:message "ADR must have exactly one rdfs:label"
+    ] ;
+    sh:property [
+        sh:path :hasConfidence ;
+        sh:minInclusive 0.0 ;
+        sh:maxInclusive 1.0 ;
+        sh:severity sh:Warning ;
+        sh:message "Confidence must be between 0.0 and 1.0"
+    ] .
+```
+
+**SHACL vs OWL:**
+
+| Aspect | OWL | SHACL |
+|--------|-----|-------|
+| Semantics | Open World Assumption | Closed World Assumption |
+| Purpose | Inference (derive new facts) | Validation (check constraints) |
+| Missing data | Unknown (may exist) | Violation (must exist) |
+
+**W3C Specification**: [SHACL](https://www.w3.org/TR/shacl/)
 
 ---
 
@@ -323,12 +375,13 @@ Result: Same metadata as reification with less boilerplate.
 |------|----------------|--------------|
 | `prefixes.ttl` | ~5 | Prefix definitions |
 | `adr-core.ttl` | ~150 | Vocabulary + 8 ADRs + systems + teams |
-| `adr-ontology.ttl` | ~80 | Class and property hierarchy |
+| `adr-ontology.ttl` | ~80 | Class and property hierarchy (RDFS/OWL) |
+| `adr-shapes.ttl` | ~120 | SHACL shapes for validation |
 | `technology-dependencies.ttl` | ~100 | Technologies + dependencies |
 | `adr-provenance.trig` | ~60 | 8 ADRs in 4 named graphs |
 | `adr-people-reified.trig` | ~150 | 5 architects + 8 reifications |
 | `adr-people-rdfstar.trig` | ~40 | 4 RDF-star statements |
-| **TOTAL** | **~585** | **Complete dataset** |
+| **TOTAL** | **~705** | **Complete dataset** |
 
 ### Entities
 
@@ -461,7 +514,7 @@ ADR-008 (Redis) supersedes ADR-004 (Kafka for notifications)
 ```
 
 ### Incomplete Data
-ADR-006 and ADR-007 lack `:appliesTo` — demonstrates Open World Assumption.
+ADR-006 and ADR-007 lack `:appliesTo` — demonstrates the Open World Assumption (absence of information ≠ negation).
 
 ### Confidence Levels
 - High (0.95+): ADR-001, ADR-007

@@ -235,6 +235,7 @@ main() {
     load_rdf_file "data/prefixes.ttl"
     load_rdf_file "data/adr-core.ttl"
     load_rdf_file "data/adr-ontology.ttl"
+    load_rdf_file "data/adr-shapes.ttl"
     load_rdf_file "data/technology-dependencies.ttl"
     load_rdf_file "data/adr-provenance.trig"
     load_rdf_file "data/adr-people-reified.trig"

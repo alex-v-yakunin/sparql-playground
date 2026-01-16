@@ -1,0 +1,79 @@
+# SHACL Shapes Overview
+#
+# Query to explore SHACL shapes defined in the repository.
+#
+# Prerequisites: Load adr-shapes.ttl into the repository
+#
+# Expected result: List of shapes with their constraints
+# Execution time: < 1 second
+
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX : <http://example.org/adr#>
+
+SELECT ?shape ?shapeLabel ?targetClass ?propertyPath ?constraint ?severity
+WHERE {
+    # Find all node shapes
+    ?shape a sh:NodeShape ;
+           sh:targetClass ?targetClass .
+    
+    OPTIONAL { ?shape rdfs:label ?shapeLabel }
+    
+    # Find property constraints
+    OPTIONAL {
+        ?shape sh:property ?propShape .
+        ?propShape sh:path ?propertyPath .
+        
+        # Get constraint details
+        OPTIONAL {
+            {
+                ?propShape sh:minCount ?min .
+                BIND(CONCAT("minCount: ", STR(?min)) AS ?constraint)
+            }
+            UNION
+            {
+                ?propShape sh:maxCount ?max .
+                BIND(CONCAT("maxCount: ", STR(?max)) AS ?constraint)
+            }
+            UNION
+            {
+                ?propShape sh:datatype ?dt .
+                BIND(CONCAT("datatype: ", STR(?dt)) AS ?constraint)
+            }
+            UNION
+            {
+                ?propShape sh:class ?cls .
+                BIND(CONCAT("class: ", STR(?cls)) AS ?constraint)
+            }
+            UNION
+            {
+                ?propShape sh:pattern ?pat .
+                BIND(CONCAT("pattern: ", ?pat) AS ?constraint)
+            }
+        }
+        
+        OPTIONAL { ?propShape sh:severity ?severity }
+    }
+}
+ORDER BY ?shape ?propertyPath
+
+# Explanation:
+# This query explores SHACL shapes loaded in the repository.
+# 
+# SHACL vocabulary:
+# - sh:NodeShape: shape that applies to nodes (instances)
+# - sh:targetClass: which class the shape validates
+# - sh:property: property constraint within the shape
+# - sh:path: which property the constraint applies to
+# 
+# Common constraint types:
+# - sh:minCount/sh:maxCount: cardinality
+# - sh:datatype: value type (xsd:string, xsd:decimal, etc.)
+# - sh:class: value must be instance of class
+# - sh:pattern: regex pattern for strings
+# - sh:minInclusive/sh:maxInclusive: numeric range
+# 
+# Severity levels indicate importance:
+# - sh:Violation: error (must fix)
+# - sh:Warning: warning (should fix)
+# - sh:Info: informational (nice to fix)

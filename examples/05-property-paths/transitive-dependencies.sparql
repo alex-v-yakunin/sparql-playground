@@ -18,8 +18,9 @@ WHERE {
 ORDER BY ?dependency                   # Sort by label
 
 # Explanation:
-# Property Path :dependsOn+ means "one or more steps through :dependsOn".
-# Finds all technologies that Kubernetes depends on directly or indirectly.
-# In SQL would require recursive CTE (WITH RECURSIVE).
-# In Property Graph: depth-first/breadth-first traversal.
-# SPARQL does this naturally and concisely - the power of graph databases!
+# Property path operator + denotes transitive closure (one or more steps).
+# :dependsOn+ computes the transitive closure of the :dependsOn relation.
+# Finds all technologies that Kubernetes depends on directly or transitively.
+# SQL equivalent requires recursive Common Table Expressions (WITH RECURSIVE).
+# Property Graph databases require explicit traversal algorithms.
+# SPARQL property paths provide declarative graph navigation.

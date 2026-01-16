@@ -121,29 +121,29 @@
 # ========================================
 # RDFS REASONING: Infrastructure Requirements
 # ========================================
-# Demonstration of automatic inference through rdfs:subPropertyOf
+# Demonstrates automated inference via rdfs:subPropertyOf property hierarchy.
 # 
 # Property hierarchy (defined in adr-ontology.ttl):
-# :usesMicroservices rdfs:subPropertyOf :requiresOrchestration
-# :requiresOrchestration rdfs:subPropertyOf :requiresInfrastructure
+#   :usesMicroservices rdfs:subPropertyOf :requiresOrchestration
+#   :requiresOrchestration rdfs:subPropertyOf :requiresInfrastructure
 #
-# Queries to :requiresInfrastructure automatically find
-# everything that uses :usesMicroservices or :requiresOrchestration!
+# SPARQL queries against :requiresInfrastructure automatically match
+# all assertions using subproperties (:usesMicroservices, :requiresOrchestration).
 
-# ADR-001: Kafka for Order Service - uses microservices
+# ADR-001: Kafka for Order Service — microservices architecture
 :ADR-001 :usesMicroservices :Kubernetes .
-# ^ Automatically inferred:
-#   :ADR-001 :requiresOrchestration :Kubernetes (via subPropertyOf)
-#   :ADR-001 :requiresInfrastructure :Kubernetes (via transitivity)
+# Inferred via RDFS reasoning:
+#   :ADR-001 :requiresOrchestration :Kubernetes (rdfs:subPropertyOf)
+#   :ADR-001 :requiresInfrastructure :Kubernetes (transitive subproperty chain)
 
-# ADR-007: Kubernetes - uses containers
+# ADR-007: Kubernetes — container orchestration
 :ADR-007 :usesContainers :Docker .
-# ^ Automatically inferred:
+# Inferred via RDFS reasoning:
 #   :ADR-007 :requiresOrchestration :Docker
 #   :ADR-007 :requiresInfrastructure :Docker
 
-# ADR-003: Kafka for Analytics - requires distributed system
+# ADR-003: Kafka for Analytics — distributed system requirement
 :ADR-003 :requiresDistributedSystem :Kafka .
-# ^ Automatically inferred:
+# Inferred via RDFS reasoning:
 #   :ADR-003 :requiresInfrastructure :Kafka
 

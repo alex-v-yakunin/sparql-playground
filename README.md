@@ -1,4 +1,4 @@
-# SPARQL Playground: Unique RDF Capabilities
+# SPARQL Playground: RDF/RDFS/OWL/SHACL Capabilities
 
 > Hands-on environment demonstrating RDF's distinctive capabilities compared to relational and graph databases
 
@@ -17,7 +17,7 @@ Single command setup:
 The script automatically:
 - Starts GraphDB in Docker
 - Creates repository `sparql-playground`
-- Loads all 7 RDF files
+- Loads all RDF files from `data/` directory
 - Verifies data loaded correctly
 
 Open http://localhost:7200, select SPARQL, and begin querying.
@@ -77,7 +77,7 @@ PREFIX : <http://example.org/adr#>
 SELECT (COUNT(*) as ?count) WHERE { ?s a :ADR }
 ```
 
-Expected result: `count = 8`
+Expected result: ADR count matching loaded data
 
 </details>
 
@@ -90,13 +90,14 @@ An interactive environment demonstrating RDF/SPARQL capabilities that are imprac
 ### Dataset
 
 **Synthetic ADR (Architecture Decision Records)** — architectural decisions of a technology organization:
-- 8 ADRs (architectural decisions)
-- 7 technologies with dependencies (Kafka, PostgreSQL, MongoDB, Redis, Kubernetes, Docker, etcd)
-- 5 architects with metadata
-- 8 named graphs (data sources and provenance)
+- ADRs (architectural decisions)
+- Technologies with dependencies (Kafka, PostgreSQL, MongoDB, Redis, Kubernetes, Docker, etcd)
+- Architects with metadata
+- Named graphs (data sources and provenance)
 - Reified statements (metadata about decisions)
 - RDF-star statements (quoted triples with metadata)
 - Ontology (RDFS/OWL for reasoning)
+- SHACL shapes (data validation constraints)
 
 See [DATASET.md](DATASET.md) for detailed dataset description.
 
@@ -118,6 +119,7 @@ sparql-playground/
 │   ├── prefixes.ttl            # Common prefixes
 │   ├── adr-core.ttl            # Core vocabulary
 │   ├── adr-ontology.ttl        # RDFS/OWL ontology for reasoning
+│   ├── adr-shapes.ttl          # SHACL shapes for validation
 │   ├── technology-dependencies.ttl  # Transitive dependencies
 │   ├── adr-provenance.trig     # Named graphs with provenance
 │   ├── adr-people-reified.trig # Reification (metadata about facts)
@@ -128,12 +130,13 @@ sparql-playground/
 │   ├── 02-filtering/           # Filtering techniques
 │   ├── 03-graphs/              # Named graphs
 │   ├── 04-analysis/            # Aggregation and analysis
-│   ├── 05-property-paths/      # Transitive queries
+│   ├── 05-property-paths/      # Transitive queries (SPARQL 1.1)
 │   ├── 06-reification/         # Metadata about facts
 │   ├── 07-reasoning/           # RDFS/OWL inference
 │   ├── 08-construct/           # Graph generation
 │   ├── 09-advanced/            # Advanced techniques
-│   └── 10-rdf-star/            # RDF-star queries
+│   ├── 10-rdf-star/            # RDF-star queries
+│   └── 11-shacl/               # SHACL validation
 │
 └── scripts/
     ├── setup.sh                # Repository creation and data loading
@@ -149,7 +152,7 @@ sparql-playground/
 
 ### 1. Property Paths — Graph Navigation
 
-SQL requires recursive CTEs (20+ lines). SPARQL achieves the same with: `:Kubernetes :dependsOn+ ?dep`
+SQL requires recursive CTEs (typically 10-15 lines). SPARQL achieves the same in a single expression: `:Kubernetes :dependsOn+ ?dep`
 
 **Example**: `examples/05-property-paths/transitive-dependencies.sparql`
 
@@ -167,11 +170,21 @@ Concise metadata without `rdf:Statement`, using quoted triples in SPARQL*.
 
 **Note**: Requires RDF-star/SPARQL* support in the triplestore.
 
-### 4. Reasoning — Automatic Inference
+### 4. Reasoning — Automatic Inference (RDFS/OWL)
 
 SQL requires triggers and stored procedures. RDF uses declarative rules for automatic inference.
 
-**File**: `data/adr-ontology.ttl`
+**Examples**: `examples/07-reasoning/` (subproperty inference, inverse properties, transitive reasoning)
+
+**Ontology**: `data/adr-ontology.ttl`
+
+### 5. SHACL — Data Validation
+
+SQL uses CHECK constraints and triggers. SHACL provides declarative constraint definitions with Closed World semantics.
+
+**Shapes**: `data/adr-shapes.ttl`
+
+**Examples**: `examples/11-shacl/`
 
 ---
 
@@ -179,11 +192,12 @@ SQL requires triggers and stored procedures. RDF uses declarative rules for auto
 
 | Capability | SQL | SPARQL | Advantage |
 |------------|-----|--------|-----------|
-| Transitive queries | Recursive CTE (20+ lines) | `:dependsOn+` (1 line) | Significantly shorter |
+| Transitive queries | Recursive CTE (10-15 lines) | `:dependsOn+` (1 expression) | Significantly more concise |
 | Metadata about facts | Separate table + FK | Reification | Native support |
 | Quoted triples | Separate table + FK | RDF-star | Less boilerplate |
 | Multiple types | Junction tables | `a :Type1, :Type2` | No JOINs required |
 | Automatic inference | Triggers/procedures | RDFS/OWL reasoning | Declarative |
+| Data validation | CHECK + triggers | SHACL shapes | Declarative constraints |
 | Graph generation | CREATE VIEW (limited) | CONSTRUCT | Flexible structure |
 
 ---
@@ -284,29 +298,34 @@ The script executes SPARQL queries and validates:
 
 This playground provides understanding of:
 
-- **Property paths** — graph navigation without recursion
-- **Reification** — metadata about facts for audit trails
-- **Reasoning** — automatic inference of new facts
-- **Multi-typing** — natural polymorphism in RDF
-- **CONSTRUCT** — generating new graph structures
-- **Schema evolution** — flexibility without migrations
-- **Named graphs** — built-in provenance tracking
-- **Open World Assumption** — semantic difference from SQL
+- **Property paths** — declarative graph traversal without explicit recursion
+- **Reification** — first-class metadata about statements for audit trails
+- **RDFS reasoning** — class/property hierarchy inference (subClassOf, subPropertyOf)
+- **OWL reasoning** — advanced inference (inverseOf, TransitiveProperty, SymmetricProperty)
+- **SHACL validation** — declarative data quality constraints with Closed World semantics
+- **Multi-typing** — native support for multiple class membership
+- **CONSTRUCT** — declarative generation of derived graph structures
+- **Schema evolution** — additive schema changes without migrations
+- **Named graphs** — native provenance and context management
+- **Open World Assumption** — fundamental semantic distinction from Closed World (SQL)
 
 ---
 
 ## Key Takeaway
 
-RDF represents a distinct paradigm: a knowledge graph with machine-readable semantics, reasoning capabilities, and seamless integration with external data sources.
+RDF represents a distinct data modeling paradigm: a knowledge graph with formal semantics, automated reasoning capabilities, and native support for data integration across heterogeneous sources.
 
 ---
 
-## Technologies
+## Technologies and Standards
 
 - **GraphDB Free** — semantic graph database by Ontotext
-- **SPARQL 1.1** — W3C standard for RDF queries
-- **RDFS/OWL** — ontologies and reasoning
-- **Docker** — containerization
+- **SPARQL 1.1** — W3C Recommendation for RDF query language ([W3C SPARQL 1.1](https://www.w3.org/TR/sparql11-query/))
+- **RDF 1.1** — W3C Recommendation for graph data model ([W3C RDF 1.1](https://www.w3.org/TR/rdf11-concepts/))
+- **RDFS/OWL** — W3C standards for ontology definition and reasoning ([RDFS](https://www.w3.org/TR/rdf-schema/), [OWL 2](https://www.w3.org/TR/owl2-overview/))
+- **RDF-star** — W3C Community Group extension for statement-level metadata ([RDF-star](https://www.w3.org/2021/12/rdf-star.html))
+- **SHACL** — W3C Recommendation for RDF validation ([SHACL](https://www.w3.org/TR/shacl/))
+- **Docker** — container runtime environment
 
 ---
 
