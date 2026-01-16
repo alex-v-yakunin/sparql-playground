@@ -1,0 +1,25 @@
+# RDF-star Projection from Reification
+#
+# Build RDF-star metadata directly from reified statements.
+#
+# Expected result: RDF-star statements for decisions with full metadata
+# Execution time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+CONSTRUCT {
+    << ?adr :decidesTechnology ?tech >>
+        :statedBy ?person ;
+        :statedOn ?decisionDate ;
+        :confidence ?confidence .
+}
+WHERE {
+    ?statement a rdf:Statement ;
+               rdf:subject ?adr ;
+               rdf:predicate :decidesTechnology ;
+               rdf:object ?tech ;
+               :statedBy ?person ;
+               :statedOn ?decisionDate ;
+               :confidence ?confidence .
+}

@@ -17,7 +17,7 @@
 The script automatically:
 - ✅ Starts GraphDB in Docker
 - ✅ Creates repository `sparql-playground`
-- ✅ Loads all 6 RDF files
+- ✅ Loads all 7 RDF files
 - ✅ Verifies data loaded correctly
 
 **Setup completes in ~30 seconds.** 🎉
@@ -67,6 +67,7 @@ Wait for startup: http://localhost:7200
 4. data/technology-dependencies.ttl
 5. data/adr-provenance.trig
 6. data/adr-people-reified.trig
+7. data/adr-people-rdfstar.trig
 ```
 
 5. For each file:
@@ -103,8 +104,9 @@ An **interactive environment** demonstrating **RDF/SPARQL capabilities** that ar
 - 8 ADRs (decisions)
 - 7 technologies with dependencies (Kafka, PostgreSQL, MongoDB, Redis, Kubernetes, Docker, etcd)
 - 5 architects with metadata
-- 7 named graphs (data sources and metadata)
+- 8 named graphs (data sources and metadata)
 - Reified statements (metadata about decisions)
+- RDF-star statements (quoted triples with metadata)
 - Ontology (RDFS/OWL for reasoning)
 
 📖 **[Detailed dataset description →](DATASET.md)**
@@ -117,7 +119,7 @@ An **interactive environment** demonstrating **RDF/SPARQL capabilities** that ar
 sparql-playground/
 ├── start.sh                    # 🚀 Start (one click!)
 ├── EXAMPLES.md                 # 📚 Examples catalog
-├── QUICKSTART.md               # 📖 Step-by-step guide (30 minutes)
+├── QUICKSTART.md               # 📖 Step-by-step guide
 ├── SPARQL-CHEATSHEET.md        # 📝 SPARQL cheat sheet
 │
 ├── infra/
@@ -129,24 +131,26 @@ sparql-playground/
 │   ├── adr-ontology.ttl        # 🔥 RDFS/OWL for reasoning
 │   ├── technology-dependencies.ttl  # 🔥 Transitive dependencies
 │   ├── adr-provenance.trig     # Named graphs (provenance)
-│   └── adr-people-reified.trig # 🔥 Reification (metadata about facts)
+│   ├── adr-people-reified.trig # 🔥 Reification (metadata about facts)
+│   └── adr-people-rdfstar.trig # 🔥 RDF-star (quoted triples)
 │
 ├── examples/                    # SPARQL queries
-│   ├── 01-basics/              # Basic SELECT (5 examples)
-│   ├── 02-filtering/           # Filtering (4 examples)
-│   ├── 03-graphs/              # Named graphs (4 examples)
-│   ├── 04-analysis/            # Aggregation and analysis (4 examples)
+│   ├── 01-basics/              # Basic SELECT
+│   ├── 02-filtering/           # Filtering
+│   ├── 03-graphs/              # Named graphs
+│   ├── 04-analysis/            # Aggregation and analysis
 │   │
-│   ├── 05-property-paths/      # 🔥 Transitive queries (5 examples)
-│   ├── 06-reification/         # 🔥 Metadata about facts (4 examples)
-│   ├── 07-reasoning/           # 🔥 RDFS/OWL inference (2 examples)
-│   ├── 08-construct/           # 🔥 Graph generation (2 examples)
-│   └── 09-advanced/            # 🔥 Advanced techniques (2 examples)
+│   ├── 05-property-paths/      # 🔥 Transitive queries
+│   ├── 06-reification/         # 🔥 Metadata about facts
+│   ├── 07-reasoning/           # 🔥 RDFS/OWL inference
+│   ├── 08-construct/           # 🔥 Graph generation
+│   ├── 09-advanced/            # 🔥 Advanced techniques
+│   └── 10-rdf-star/            # 🔥 RDF-star
 │
 └── scripts/
     ├── setup.sh                # Create repository and load data
     ├── health-check.sh         # Check GraphDB health
-    ├── test-queries.sh         # 🧪 Test all 32 SPARQL queries
+    ├── test-queries.sh         # 🧪 Test all SPARQL queries
     ├── stop.sh                 # Stop GraphDB
     └── reset.sh                # Full reset
 ```
@@ -165,7 +169,14 @@ SQL requires separate tables with foreign keys. RDF provides native support for 
 
 **Example**: `examples/06-reification/who-decided.sparql` — who made the decision, when and with what confidence
 
-### 3. **Reasoning** — Automatic inference of new facts
+### 3. **RDF-star** — Quoted triples (metadata in one line)
+Concise metadata without `rdf:Statement`, using quoted triples in SPARQL*.
+
+**Example**: `examples/10-rdf-star/who-decided-rdf-star.sparql`
+
+**Note**: Requires RDF-star/SPARQL* support in the triplestore.
+
+### 4. **Reasoning** — Automatic inference of new facts
 SQL requires triggers and stored procedures. RDF uses declarative rules: `:usesMicroservices rdfs:subPropertyOf :requiresOrchestration` — queries automatically inherit the hierarchy.
 
 **File**: `data/adr-ontology.ttl`
@@ -178,6 +189,7 @@ SQL requires triggers and stored procedures. RDF uses declarative rules: `:usesM
 |------------|-----|--------|-----------|
 | **Transitive queries** | Recursive CTE (20+ lines) | `:dependsOn+` (1 line) | **20x shorter** |
 | **Metadata about facts** | Separate table + FK | Reification (natural) | **Native support** |
+| **Quoted triples** | Separate table + FK | RDF-star (compact) | **Less boilerplate** |
 | **Multiple types** | Junction tables | `a :Type1, :Type2` | **No JOINs** |
 | **Automatic inference** | Triggers/procedures | RDFS/OWL reasoning | **Declarative** |
 | **Graph generation** | CREATE VIEW (limited) | CONSTRUCT | **New structure** |
@@ -186,13 +198,13 @@ SQL requires triggers and stored procedures. RDF uses declarative rules: `:usesM
 
 ## 📖 Where to start?
 
-### Option 1: Quick Start (5 minutes)
+### Option 1: Quick Start
 ```bash
 ./start.sh
 # Open examples/05-property-paths/transitive-dependencies.sparql
 ```
 
-### Option 2: Full guide (30 minutes)
+### Option 2: Full guide
 ```bash
 ./start.sh
 # Read QUICKSTART.md, execute examples
@@ -201,7 +213,7 @@ SQL requires triggers and stored procedures. RDF uses declarative rules: `:usesM
 ### Option 3: Examples catalog
 ```bash
 ./start.sh
-# Open EXAMPLES.md — catalog of all 32 examples
+# Open EXAMPLES.md — examples catalog
 ```
 
 
@@ -230,7 +242,7 @@ docker compose version    # Compose V2 recommended
 # Check system status
 ./scripts/health-check.sh
 
-# Test all 32 SPARQL queries
+# Test all 35 SPARQL queries
 ./scripts/test-queries.sh
 
 # Stop GraphDB (data preserved)
@@ -250,7 +262,7 @@ The project includes automatic tests for all SPARQL queries:
 ./scripts/test-queries.sh
 ```
 
-The script executes **32 SPARQL queries** and checks their correctness:
+The script executes **SPARQL queries** and checks their correctness:
 - ✅ SELECT queries — check JSON response
 - ✅ CONSTRUCT queries — check RDF/Turtle output
 - ✅ Report on passed/failed tests
@@ -276,10 +288,10 @@ Failed:        0
 
 | File | Description | Time |
 |------|-------------|------|
-| [DATASET.md](DATASET.md) | Detailed dataset description | 10 min |
-| [EXAMPLES.md](EXAMPLES.md) | Examples catalog (32 queries) | 5 min |
-| [QUICKSTART.md](QUICKSTART.md) | Step-by-step guide for beginners | 30 min |
-| [SPARQL-CHEATSHEET.md](SPARQL-CHEATSHEET.md) | Syntax cheat sheet | 5 min |
+| [DATASET.md](DATASET.md) | Detailed dataset description
+| [EXAMPLES.md](EXAMPLES.md) | Examples catalog
+| [QUICKSTART.md](QUICKSTART.md) | Step-by-step guide for beginners
+| [SPARQL-CHEATSHEET.md](SPARQL-CHEATSHEET.md) | Syntax cheat sheet
 
 ---
 

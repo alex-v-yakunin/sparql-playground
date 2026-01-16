@@ -19,7 +19,7 @@ Set of bash scripts for managing SPARQL Playground.
 1. Starts GraphDB container in Docker
 2. Waits for GraphDB ready (up to 60 seconds)
 3. Creates repository `sparql-playground`
-4. Loads 6 RDF files from `data/`
+4. Loads 7 RDF files from `data/`
 5. Verifies loading correctness (8 ADRs)
 
 **Modes**:
@@ -51,7 +51,7 @@ Set of bash scripts for managing SPARQL Playground.
    - 5 Systems
    - 7 Technologies
    - 5 Teams
-   - 7 Named Graphs
+  - 8 Named Graphs
 
 **Exit codes**:
 - `0` — all checks passed
@@ -65,7 +65,7 @@ ADRs                 8          8          ✓
 Systems              5          5          ✓       
 Technologies         7          7          ✓       
 Teams                5          5          ✓       
-Named Graphs         7          7          ✓       
+Named Graphs         8          8          ✓       
 
 ✓ All checks passed!
 ```
@@ -107,8 +107,8 @@ Named Graphs         7          7          ✓
   → Results: 8 rows
 
 ═══ Test Summary ═══
-Total tests:   32
-Passed:        32
+Total tests:   N
+Passed:        N
 Failed:        0
 
 ✓ All queries passed! 🎉

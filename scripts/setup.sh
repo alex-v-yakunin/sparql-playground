@@ -238,6 +238,7 @@ main() {
     load_rdf_file "data/technology-dependencies.ttl"
     load_rdf_file "data/adr-provenance.trig"
     load_rdf_file "data/adr-people-reified.trig"
+    load_rdf_file "data/adr-people-rdfstar.trig"
     
     echo ""
     echo -e "${BLUE}Step 4/4: Verifying installation...${NC}"

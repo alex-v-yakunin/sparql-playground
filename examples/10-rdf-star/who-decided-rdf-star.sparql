@@ -1,0 +1,24 @@
+# Who Decided on Technology (RDF-star)
+#
+# Same question as reification example, using quoted triples.
+#
+# Expected result: 4 decisions with author, date and confidence
+# Execution time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?adrLabel ?technology ?decisionMaker ?decisionDate ?confidence
+WHERE {
+    GRAPH :decision-metadata-rdfstar {
+        << ?adr :decidesTechnology ?tech >>
+            :statedBy ?person ;
+            :statedOn ?decisionDate ;
+            :confidence ?confidence .
+    }
+
+    ?adr rdfs:label ?adrLabel .
+    ?tech rdfs:label ?technology .
+    ?person rdfs:label ?decisionMaker .
+}
+ORDER BY ?decisionDate

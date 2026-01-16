@@ -14,15 +14,16 @@ Models **architectural knowledge within a technology organization**:
 | **Technologies** | 7 | Kafka, PostgreSQL, MongoDB, Redis, Kubernetes, Docker, etcd |
 | **Systems** | 5 services | OrderService, PaymentService, AnalyticsService, etc. |
 | **Architects** | 5 people | With profiles, roles, and expertise |
-| **Named Graphs** | 7 sources | Different knowledge sources with provenance and metadata |
+| **Named Graphs** | 8 sources | Different knowledge sources with provenance and metadata |
 | **Dependencies** | 20+ links | Transitive technology dependencies |
 | **Reification** | 8 statements | Metadata about WHO made decision and WHEN |
+| **RDF-star** | 4 statements | Quoted triples with decision metadata |
 
 ---
 
 ## 📁 File Structure
 
-Dataset consists of **6 RDF files** that must be loaded **in strict order**:
+Dataset consists of **7 RDF files** that must be loaded **in strict order**:
 
 ### 1. `prefixes.ttl` — Prefixes
 Defines common prefixes for all files.
@@ -278,6 +279,40 @@ SQL requires separate `statement_metadata` tables with multiple JOINs.
 
 ---
 
+### 7. `adr-people-rdfstar.trig` — RDF-star (Quoted Triples)
+
+🔥 **Demonstrates RDF-star** — compact metadata about triples
+
+This file contains **quoted triples** inside a named graph:
+
+```turtle
+GRAPH :decision-metadata-rdfstar {
+    << :ADR-001 :decidesTechnology :Kafka >>
+        :statedBy :person_IvanPetrov ;
+        :statedOn "2024-12-15T14:30:00"^^xsd:dateTime ;
+        :confidence 0.95 ;
+        :evidenceSource :LoadTestResults .
+}
+```
+
+**RDF-star query:**
+```sparql
+SELECT ?adr ?tech ?person ?date ?confidence WHERE {
+    GRAPH :decision-metadata-rdfstar {
+        << ?adr :decidesTechnology ?tech >>
+            :statedBy ?person ;
+            :statedOn ?date ;
+            :confidence ?confidence .
+    }
+}
+```
+
+Result: Same metadata as reification with less boilerplate.
+
+**Note**: Requires RDF-star / SPARQL* support in the RDF store.
+
+---
+
 ## 📈 Dataset Statistics
 
 ### Triples by File
@@ -290,7 +325,8 @@ SQL requires separate `statement_metadata` tables with multiple JOINs.
 | `technology-dependencies.ttl` | ~100 | Technologies + dependencies |
 | `adr-provenance.trig` | ~60 | 8 ADRs in 4 named graphs |
 | `adr-people-reified.trig` | ~150 | 5 architects + 8 reifications |
-| **TOTAL** | **~545** | **Complete dataset** |
+| `adr-people-rdfstar.trig` | ~40 | 4 RDF-star statements |
+| **TOTAL** | **~585** | **Complete dataset** |
 
 ### Entities
 
@@ -301,8 +337,9 @@ SQL requires separate `statement_metadata` tables with multiple JOINs.
 | **Technologies** | 7 | Kafka, PostgreSQL, MongoDB, Redis, Kubernetes, Docker, etcd |
 | **Teams** | 5 | TeamCheckout, TeamPayments, TeamData, TeamPlatform, Security |
 | **Architects** | 5 | Ivan Petrov, Maria Sidorova, Alexey Kozlov, Elena Nikitina, Dmitry Volkov |
-| **Named Graphs** | 7 | adr-registry, confluence, confluence-metadata, decision-metadata, decision-timeline, interview-notes, people |
+| **Named Graphs** | 8 | adr-registry, confluence, confluence-metadata, decision-metadata, decision-metadata-rdfstar, decision-timeline, interview-notes, people |
 | **Reifications** | 8 | statement_001, ..., statement_008 |
+| **RDF-star statements** | 4 | ADR-001, ADR-002, ADR-004, ADR-006 |
 
 ### Properties (relationships)
 
@@ -351,7 +388,20 @@ SELECT ?person ?date ?confidence WHERE {
 }
 ```
 
-### 4. Reasoning (automatic inference)
+### 4. RDF-star (quoted triples)
+```sparql
+# Same question with RDF-star
+SELECT ?person ?date ?confidence WHERE {
+    GRAPH :decision-metadata-rdfstar {
+        << :ADR-001 :decidesTechnology :Kafka >>
+            :statedBy ?person ;
+            :statedOn ?date ;
+            :confidence ?confidence .
+    }
+}
+```
+
+### 5. Reasoning (automatic inference)
 ```sparql
 # Find ALL infrastructure requirements
 # (including microservices through property hierarchy)
@@ -360,7 +410,7 @@ SELECT ?adr ?requirement WHERE {
 }
 ```
 
-### 5. CONSTRUCT (generating new graphs)
+### 6. CONSTRUCT (generating new graphs)
 ```sparql
 # Create simplified graph: System → uses → Technology
 CONSTRUCT {
@@ -371,7 +421,7 @@ CONSTRUCT {
 }
 ```
 
-### 6. Aggregation and Analysis
+### 7. Aggregation and Analysis
 ```sparql
 # Technology popularity
 SELECT ?tech (COUNT(?adr) as ?count) WHERE {
@@ -381,7 +431,7 @@ GROUP BY ?tech
 ORDER BY DESC(?count)
 ```
 
-### 7. Multi-source
+### 8. Multi-source
 ```sparql
 # Find ADRs that exist in multiple sources
 SELECT ?adr (COUNT(DISTINCT ?source) as ?sourceCount) WHERE {
@@ -435,6 +485,6 @@ Dataset can be easily extended:
 - **[README.md](README.md)** — project overview
 - **[QUICKSTART.md](QUICKSTART.md)** — quick start
 - **[EXAMPLES.md](EXAMPLES.md)** — query examples catalog
-- **[examples/](examples/)** — 32 SPARQL queries for working with dataset
+- **[examples/](examples/)** — SPARQL queries for working with dataset
 
 ---

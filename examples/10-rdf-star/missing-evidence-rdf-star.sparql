@@ -1,0 +1,29 @@
+# Decisions Missing Evidence (RDF-star)
+#
+# Find decisions recorded without evidenceSource in RDF-star metadata.
+#
+# Expected result: 1 decision (ADR-006)
+# Execution time: < 1 second
+
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?adrLabel ?technology ?decisionMaker ?confidence
+WHERE {
+    GRAPH :decision-metadata-rdfstar {
+        << ?adr :decidesTechnology ?tech >>
+            :statedBy ?person ;
+            :confidence ?confidence .
+
+        OPTIONAL {
+            << ?adr :decidesTechnology ?tech >> :evidenceSource ?evidenceSource .
+        }
+    }
+
+    FILTER (!BOUND(?evidenceSource))
+
+    ?adr rdfs:label ?adrLabel .
+    ?tech rdfs:label ?technology .
+    ?person rdfs:label ?decisionMaker .
+}
+ORDER BY DESC(?confidence)

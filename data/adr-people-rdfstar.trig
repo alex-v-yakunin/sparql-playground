@@ -1,0 +1,48 @@
+@prefix : <http://example.org/adr#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================
+# RDF-STAR: METADATA ABOUT DECISIONS
+# ============================================
+#
+# This file demonstrates RDF-star (quoted triples) -
+# a compact alternative to classical reification.
+#
+# It coexists with reification examples in the dataset.
+# ============================================
+
+GRAPH :decision-metadata-rdfstar {
+    # ADR-001 decision metadata
+    << :ADR-001 :decidesTechnology :Kafka >>
+        :statedBy :person_IvanPetrov ;
+        :statedOn "2024-12-15T14:30:00"^^xsd:dateTime ;
+        :confidence 0.95 ;
+        :evidenceSource :LoadTestResults ;
+        :decisionRationale "Event streaming needed for Order Service" .
+
+    # ADR-002 decision metadata
+    << :ADR-002 :decidesTechnology :PostgreSQL >>
+        :statedBy :person_JohnSmith ;
+        :statedOn "2024-11-20T10:15:00"^^xsd:dateTime ;
+        :confidence 0.92 ;
+        :evidenceSource :DatabaseBenchmark ;
+        :decisionRationale "ACID compliance critical for payment transactions" .
+
+    # ADR-004 rejected decision metadata
+    << :ADR-004 :decidesTechnology :MongoDB >>
+        :statedBy :person_IvanPetrov ;
+        :statedOn "2024-01-10T10:00:00"^^xsd:dateTime ;
+        :confidence 0.45 ;
+        :rejectedOn "2024-06-20T15:00:00"^^xsd:dateTime ;
+        :rejectedBy :person_JohnSmith ;
+        :rejectionReason "Performance issues in production, lack of ACID" ;
+        :supersededBy :ADR-005 .
+
+    # ADR-006 decision without evidence
+    << :ADR-006 :decidesTechnology :Redis >>
+        :statedBy :person_MarkoKovacic ;
+        :statedOn "2024-12-10T16:00:00"^^xsd:dateTime ;
+        :confidence 0.65 .
+}

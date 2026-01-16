@@ -100,7 +100,7 @@ expected_adrs=8
 expected_systems=5
 expected_techs=7
 expected_teams=5
-expected_graphs=7
+expected_graphs=8
 
 # Print results
 printf "%-20s %-10s %-10s %-10s\n" "Entity Type" "Expected" "Actual" "Status"

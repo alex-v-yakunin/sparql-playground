@@ -54,6 +54,22 @@ LIMIT 10
 
 ---
 
+## RDF-star (Quoted Triples)
+
+```sparql
+<< :ADR-001 :decidesTechnology :Kafka >> :statedBy :person_IvanPetrov .
+```
+
+```sparql
+GRAPH :decision-metadata-rdfstar {
+    << ?adr :decidesTechnology ?tech >> :confidence ?confidence .
+}
+```
+
+**Use when**: You need metadata about a triple without full reification.
+
+---
+
 ## OPTIONAL (Handling Missing Data)
 
 ```sparql
@@ -278,7 +294,8 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 - `:adr-registry` — Official ADR registry (highest quality)
 - `:confluence` — Confluence documentation
 - `:confluence-metadata` — Metadata from Confluence
-- `:decision-metadata` — Decision metadata
+- `:decision-metadata` — Decision metadata (reification)
+- `:decision-metadata-rdfstar` — Decision metadata (RDF-star)
 - `:decision-timeline` — Decision timeline
 - `:interview-notes` — Interview notes (lowest quality)
 - `:people` — Architect and team profiles

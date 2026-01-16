@@ -1,12 +1,12 @@
 # 🚀 Quick Start Guide
 
-**Get hands-on with SPARQL Playground in ~30 minutes**
+**Get hands-on with SPARQL Playground**
 
 ---
 
 ## Step 1: Launch
 
-### 🤖 Option A: Automated Setup (recommended, ~2 minutes)
+### 🤖 Option A: Automated Setup (recommended)
 
 ```bash
 # Navigate to project directory
@@ -29,7 +29,7 @@ Setup complete. Proceed to **Step 2**.
 
 ---
 
-### 👐 Option B: Manual Setup via GraphDB Workbench (~10 minutes)
+### 👐 Option B: Manual Setup via GraphDB Workbench
 
 <details>
 <summary>📖 Manual repository configuration (click to expand)</summary>
@@ -66,6 +66,7 @@ Wait for GraphDB to start (30-60 seconds).
 4. technology-dependencies.ttl
 5. adr-provenance.trig
 6. adr-people-reified.trig
+7. adr-people-rdfstar.trig
 ```
 
 For each file click **Import** and wait for "Imported successfully".
@@ -85,7 +86,7 @@ Should return: `count = 8` ✅
 
 ---
 
-## Step 2: Open GraphDB (1 minute)
+## Step 2: Open GraphDB
 
 1. Open browser: **http://localhost:7200**
 2. Select **SPARQL** in left menu
@@ -98,7 +99,7 @@ The SPARQL editor displays three panels:
 
 ---
 
-## Step 3: Hello World (2 minutes)
+## Step 3: Hello World
 
 Copy and execute the first query:
 
@@ -125,7 +126,7 @@ ORDER BY ?adr
 
 ---
 
-## Step 4: First Filter (3 minutes)
+## Step 4: First Filter
 
 Find decisions with high confidence (> 0.9):
 
@@ -152,7 +153,7 @@ ORDER BY DESC(?confidence)
 
 ---
 
-## Step 5: Aggregation (3 minutes)
+## Step 5: Aggregation
 
 Count ADRs by status:
 
@@ -179,7 +180,7 @@ ORDER BY DESC(?count)
 
 ---
 
-## 🔥 Step 6: SPARQL Uniqueness — Property Paths (5 minutes)
+## 🔥 Step 6: SPARQL Uniqueness — Property Paths
 
 **Demonstrating capabilities that require recursive CTEs in SQL:**
 
@@ -221,7 +222,7 @@ SELECT * FROM deps;
 
 ---
 
-## 🔥 Step 7: Reification — Metadata about Facts (5 minutes)
+## 🔥 Step 7: Reification — Metadata about Facts
 
 **Unique RDF capability: metadata about triples**
 
@@ -259,7 +260,37 @@ RDF provides native support for metadata about triples.
 
 ---
 
-## 🔥 Step 8: CONSTRUCT — Generating New Graph (5 minutes)
+## 🔥 Step 8: RDF-star — Quoted Triples
+
+**Same metadata with less boilerplate (SPARQL\*)**
+
+```sparql
+PREFIX : <http://example.org/adr#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?adrLabel ?techLabel ?personName ?date ?confidence
+WHERE {
+    GRAPH :decision-metadata-rdfstar {
+        << ?adr :decidesTechnology ?tech >>
+            :statedBy ?person ;
+            :statedOn ?date ;
+            :confidence ?confidence .
+    }
+
+    ?adr rdfs:label ?adrLabel .
+    ?tech rdfs:label ?techLabel .
+    ?person rdfs:label ?personName .
+}
+ORDER BY DESC(?date)
+```
+
+✅ Result: Same insight as reification, with shorter syntax
+
+**Note**: Requires RDF-star / SPARQL* support (GraphDB 10.7 supports this).
+
+---
+
+## 🔥 Step 9: CONSTRUCT — Generating New Graph
 
 **Create a new RDF graph from existing data**
 
@@ -296,7 +327,7 @@ CONSTRUCT generates entirely new graphs with arbitrary structure.
 
 ---
 
-## 🔥 Step 9: Named Graphs — Data Provenance (4 minutes)
+## 🔥 Step 10: Named Graphs — Data Provenance
 
 **Where did the data come from? Named graphs know the answer!**
 
@@ -323,7 +354,7 @@ ORDER BY ?graph ?adr
 
 ---
 
-## 📊 What you learned in 30 minutes
+## 📊 What you learned
 
 | Capability | SQL Complexity | In SPARQL |
 |------------|----------------|-----------|
@@ -332,6 +363,7 @@ ORDER BY ?graph ?adr
 | ✅ Aggregation | GROUP BY | GROUP BY |
 | 🔥 **Transitive queries** | **Recursive CTE (20+ lines)** | **`:dependsOn+` (1 line)** |
 | 🔥 **Metadata about facts** | **Separate table + FK** | **Reification (natural)** |
+| 🔥 **Quoted triples** | **Separate table + FK** | **RDF-star (compact)** |
 | 🔥 **Graph generation** | **CREATE VIEW (limited)** | **CONSTRUCT (new structure)** |
 | 🔥 **Provenance** | **Separate tables** | **Named graphs (built-in)** |
 
@@ -343,12 +375,13 @@ ORDER BY ?graph ?adr
 Open **[EXAMPLES.md](EXAMPLES.md)** and choose examples by category:
 - 05-property-paths/ — graph navigation
 - 06-reification/ — metadata about facts
+- 10-rdf-star/ — quoted triples
 - 07-reasoning/ — automatic inference
 - 08-construct/ — graph generation
 - 09-advanced/ — federated queries
 
-### Option 2: Systematic study (2-3 hours)
-Open **[EXAMPLES.md](EXAMPLES.md)** and go through examples sequentially from 01-basics to 09-advanced.
+### Option 2: Systematic study
+Open **[EXAMPLES.md](EXAMPLES.md)** and go through examples sequentially from 01-basics to 10-rdf-star.
 
 ### Option 3: Create your own queries
 Use examples as templates to experiment with the dataset.
@@ -400,7 +433,7 @@ Open **[SPARQL-CHEATSHEET.md](SPARQL-CHEATSHEET.md)** — quick syntax reference
 ## ❓ FAQ
 
 **Q: How to check everything works correctly?**
-A: Run `./scripts/health-check.sh` to check system and `./scripts/test-queries.sh` to test all 32 SPARQL queries
+A: Run `./scripts/health-check.sh` to check system and `./scripts/test-queries.sh` to test all SPARQL queries
 
 **Q: Query returns no results**
 A: Check that repository **sparql-playground** is selected in dropdown
@@ -415,7 +448,7 @@ A: Run `./scripts/setup.sh` to create repository
 A: Execute `./scripts/reset.sh`, then `./start.sh`
 
 **Q: How to test all examples automatically?**
-A: Run `./scripts/test-queries.sh` — script will execute all 32 queries and show results
+A: Run `./scripts/test-queries.sh` — script will execute all queries and show results
 
 ---
 

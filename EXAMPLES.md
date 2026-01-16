@@ -1,6 +1,6 @@
 # 📚 SPARQL Examples Catalog
 
-**32 production-ready queries organized by category**
+**Production-ready queries organized by category**
 
 ---
 
@@ -18,7 +18,7 @@
 
 ### 🧪 Automated Testing
 
-To check all 32 examples automatically:
+To check all examples automatically:
 
 ```bash
 ./scripts/test-queries.sh
@@ -185,17 +185,37 @@ Executes all queries and reports test results.
 
 ---
 
+### 10-rdf-star/ — RDF-star (Quoted Triples)
+
+**💡 Compact metadata without rdf:Statement**
+
+| # | Query | Description | File |
+|---|-------|-------------|------|
+| 1 | **🔥 Who decided (RDF-star)** | WHO, WHEN, with what confidence | `who-decided-rdf-star.sparql` |
+| 2 | **Missing evidence** | Decisions without evidenceSource | `missing-evidence-rdf-star.sparql` |
+| 3 | **Projection from reification** | RDF-star view built from reified statements | `rdf-star-projection-from-reification.sparql` |
+
+**RDF-star enables**:
+- Concise metadata about triples
+- Fewer joins and boilerplate
+- Quoted triples in SPARQL*
+
+**Recommended starting point**: `who-decided-rdf-star.sparql`
+
+---
+
 ## 🎯 Recommended Tracks
 
-### 🚀 Quick Start (~30 minutes)
+### 🚀 Quick Start
 Essential queries demonstrating SPARQL's distinctive features:
 
 1. `05-property-paths/transitive-dependencies.sparql` ⚡
 2. `06-reification/who-decided.sparql` 🎯
-3. `08-construct/simplified-view.sparql` 🌟
-4. `09-advanced/federation.sparql` 🔥
+3. `10-rdf-star/who-decided-rdf-star.sparql` ✨
+4. `08-construct/simplified-view.sparql` 🌟
+5. `09-advanced/federation.sparql` 🔥
 
-### 📖 Comprehensive Study (~4 hours)
+### 📖 Comprehensive Study
 Progress sequentially from 01-basics through all categories.
 
 ### 🎨 Visualization and Dependency Analysis
@@ -236,7 +256,7 @@ GraphDB offers several modes:
 
 - **[README.md](README.md)** — project overview and quick start
 - **[DATASET.md](DATASET.md)** — dataset description
-- **[QUICKSTART.md](QUICKSTART.md)** — step-by-step guide (30 minutes)
+- **[QUICKSTART.md](QUICKSTART.md)** — step-by-step guide
 - **[SPARQL-CHEATSHEET.md](SPARQL-CHEATSHEET.md)** — syntax reference
 
 ---
