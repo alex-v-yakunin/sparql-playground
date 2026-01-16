@@ -1,12 +1,12 @@
-# 📊 Dataset Description
+# Dataset Description
 
 **Synthetic ADR (Architecture Decision Records)** — a demonstration dataset showcasing RDF/SPARQL capabilities.
 
 ---
 
-## 🎯 Dataset Contents
+## Dataset Contents
 
-Models **architectural knowledge within a technology organization**:
+Models architectural knowledge within a technology organization:
 
 | Data Type | Quantity | Description |
 |-----------|----------|-------------|
@@ -16,16 +16,17 @@ Models **architectural knowledge within a technology organization**:
 | **Architects** | 5 people | With profiles, roles, and expertise |
 | **Named Graphs** | 8 sources | Different knowledge sources with provenance and metadata |
 | **Dependencies** | 20+ links | Transitive technology dependencies |
-| **Reification** | 8 statements | Metadata about WHO made decision and WHEN |
+| **Reification** | 8 statements | Metadata about decision authorship and timing |
 | **RDF-star** | 4 statements | Quoted triples with decision metadata |
 
 ---
 
-## 📁 File Structure
+## File Structure
 
-Dataset consists of **7 RDF files** that must be loaded **in strict order**:
+The dataset consists of 7 RDF files that must be loaded in strict order:
 
 ### 1. `prefixes.ttl` — Prefixes
+
 Defines common prefixes for all files.
 
 ```turtle
@@ -38,6 +39,7 @@ Defines common prefixes for all files.
 ---
 
 ### 2. `adr-core.ttl` — Core Concepts
+
 Defines project vocabulary: classes and properties.
 
 **Classes:**
@@ -71,7 +73,7 @@ Defines project vocabulary: classes and properties.
 
 ### 3. `adr-ontology.ttl` — Ontology (RDFS/OWL)
 
-🔥 **Enables Reasoning** — automatic inference of new facts
+Enables reasoning through automatic inference of new facts.
 
 Defines:
 - **Class hierarchy** (subClassOf)
@@ -109,7 +111,7 @@ Queries for infrastructure requirements automatically include microservices.
 
 ### 4. `technology-dependencies.ttl` — Technology Dependencies
 
-🔥 **Demonstrates Property Paths** — native graph navigation without recursion
+Demonstrates property paths for native graph navigation without recursion.
 
 Defines transitive dependencies between technologies.
 
@@ -134,7 +136,7 @@ Kubernetes → Docker → Linux → Kernel
 Kubernetes → etcd → Go
 ```
 
-With SPARQL you can find **all** dependencies with one query:
+SPARQL query for all dependencies:
 ```sparql
 SELECT ?dep WHERE {
     :Kubernetes :dependsOn+ ?dep
@@ -147,12 +149,12 @@ SQL equivalent requires recursive CTEs (20+ lines).
 
 ### 5. `adr-provenance.trig` — Named Graphs with Provenance
 
-🔥 **Demonstrates Named Graphs** — native data provenance support
+Demonstrates named graphs for native data provenance support.
 
-Data is divided by **knowledge sources** (named graphs):
+Data is divided by knowledge sources (named graphs):
 
-#### Named Graph: `:adr-registry` 
-**Official ADR registry** (high quality)
+#### Named Graph: `:adr-registry`
+Official ADR registry (high quality)
 
 ```turtle
 :adr-registry {
@@ -167,7 +169,7 @@ Data is divided by **knowledge sources** (named graphs):
 ```
 
 #### Named Graph: `:confluence`
-**Confluence documentation** (medium quality)
+Confluence documentation (medium quality)
 
 ```turtle
 :confluence {
@@ -181,7 +183,7 @@ Data is divided by **knowledge sources** (named graphs):
 ```
 
 #### Named Graph: `:interview-notes`
-**Interview notes** (low quality, incomplete data)
+Interview notes (low quality, incomplete data)
 
 ```turtle
 :interview-notes {
@@ -208,11 +210,11 @@ SELECT ?adr ?label WHERE {
 
 ### 6. `adr-people-reified.trig` — Reification with Metadata
 
-🔥 **Demonstrates Reification** — metadata about triples
+Demonstrates reification for metadata about triples.
 
 This file contains:
-1. **Architect profiles** (in named graph `:people`)
-2. **Reified statements** about decisions (WHO decided, WHEN, with what CONFIDENCE)
+1. Architect profiles (in named graph `:people`)
+2. Reified statements about decisions (authorship, timing, confidence)
 
 #### Architect Profiles
 
@@ -240,7 +242,7 @@ GRAPH :people {
 
 #### Reified Statements
 
-Reification allows storing metadata **about a triple**:
+Reification allows storing metadata about a triple:
 
 ```turtle
 :statement_001 a rdf:Statement ;
@@ -273,7 +275,7 @@ SELECT ?adr ?tech ?person ?date ?confidence WHERE {
 }
 ```
 
-Result: Who made which decision, when, and with what confidence.
+Result: Decision authorship, timing, and confidence levels.
 
 SQL requires separate `statement_metadata` tables with multiple JOINs.
 
@@ -281,9 +283,9 @@ SQL requires separate `statement_metadata` tables with multiple JOINs.
 
 ### 7. `adr-people-rdfstar.trig` — RDF-star (Quoted Triples)
 
-🔥 **Demonstrates RDF-star** — compact metadata about triples
+Demonstrates RDF-star for compact metadata about triples.
 
-This file contains **quoted triples** inside a named graph:
+This file contains quoted triples inside a named graph:
 
 ```turtle
 GRAPH :decision-metadata-rdfstar {
@@ -309,11 +311,11 @@ SELECT ?adr ?tech ?person ?date ?confidence WHERE {
 
 Result: Same metadata as reification with less boilerplate.
 
-**Note**: Requires RDF-star / SPARQL* support in the RDF store.
+**Note**: Requires RDF-star/SPARQL* support in the RDF store.
 
 ---
 
-## 📈 Dataset Statistics
+## Dataset Statistics
 
 ### Triples by File
 
@@ -352,13 +354,13 @@ Result: Same metadata as reification with less boilerplate.
 
 ---
 
-## 🎓 Educational Scenarios
+## Educational Scenarios
 
 The dataset demonstrates:
 
 ### 1. Property Paths
 ```sparql
-# Find ALL transitive dependencies of Kubernetes
+# Find all transitive dependencies of Kubernetes
 SELECT ?dep WHERE {
     :Kubernetes :dependsOn+ ?dep
 }
@@ -403,7 +405,7 @@ SELECT ?person ?date ?confidence WHERE {
 
 ### 5. Reasoning (automatic inference)
 ```sparql
-# Find ALL infrastructure requirements
+# Find all infrastructure requirements
 # (including microservices through property hierarchy)
 SELECT ?adr ?requirement WHERE {
     ?adr :requiresInfrastructure ?requirement .
@@ -431,7 +433,7 @@ GROUP BY ?tech
 ORDER BY DESC(?count)
 ```
 
-### 8. Multi-source
+### 8. Multi-source Analysis
 ```sparql
 # Find ADRs that exist in multiple sources
 SELECT ?adr (COUNT(DISTINCT ?source) as ?sourceCount) WHERE {
@@ -445,10 +447,10 @@ HAVING (?sourceCount > 1)
 
 ---
 
-## 🔍 Interesting Patterns in Dataset
+## Notable Patterns
 
 ### Multiple Decisions about One Technology
-Kafka is used in **3 different ADRs**:
+Kafka is used in 3 different ADRs:
 - ADR-001: Event streaming for orders
 - ADR-003: Real-time analytics
 - ADR-004: Notification pipeline
@@ -459,32 +461,30 @@ ADR-008 (Redis) supersedes ADR-004 (Kafka for notifications)
 ```
 
 ### Incomplete Data
-ADR-006 and ADR-007 don't have `:appliesTo` — demonstrates Open World Assumption.
+ADR-006 and ADR-007 lack `:appliesTo` — demonstrates Open World Assumption.
 
-### Different Confidence
+### Confidence Levels
 - High (0.95+): ADR-001, ADR-007
 - Medium (0.85-0.92): ADR-002, ADR-003
 - Low (0.60-0.75): ADR-006, ADR-008
 
 ---
 
-## 💡 Extending the Dataset
+## Extending the Dataset
 
-Dataset can be easily extended:
+The dataset can be extended:
 
-1. **Add new ADRs** in `adr-provenance.trig`
-2. **Add technologies** in `technology-dependencies.ttl`
-3. **Add architects** in `adr-people-reified.trig`
-4. **Add new sources** (named graphs)
-5. **Enrich ontology** in `adr-ontology.ttl`
-
----
-
-## 📚 Related Files
-
-- **[README.md](README.md)** — project overview
-- **[QUICKSTART.md](QUICKSTART.md)** — quick start
-- **[EXAMPLES.md](EXAMPLES.md)** — query examples catalog
-- **[examples/](examples/)** — SPARQL queries for working with dataset
+1. Add new ADRs in `adr-provenance.trig`
+2. Add technologies in `technology-dependencies.ttl`
+3. Add architects in `adr-people-reified.trig`
+4. Add new sources (named graphs)
+5. Enrich ontology in `adr-ontology.ttl`
 
 ---
+
+## Related Files
+
+- [README.md](README.md) — project overview
+- [QUICKSTART.md](QUICKSTART.md) — quick start guide
+- [EXAMPLES.md](EXAMPLES.md) — query examples catalog
+- [examples/](examples/) — SPARQL queries for the dataset

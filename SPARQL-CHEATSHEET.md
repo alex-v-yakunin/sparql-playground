@@ -66,7 +66,7 @@ GRAPH :decision-metadata-rdfstar {
 }
 ```
 
-**Use when**: You need metadata about a triple without full reification.
+**Use case**: Metadata about a triple without full reification.
 
 ---
 
@@ -80,7 +80,7 @@ OPTIONAL {
 }
 ```
 
-**Use when**: Some entities may not have the property
+**Use case**: Some entities may not have the property.
 
 ---
 
@@ -119,7 +119,7 @@ FILTER NOT EXISTS {
 }
 ```
 
-**Use when**: Need to find what's NOT in the graph
+**Use case**: Find what is NOT in the graph.
 
 ---
 
@@ -254,7 +254,7 @@ FILTER NOT EXISTS {
 
 ---
 
-## Prefixes (Our Dataset)
+## Prefixes (Dataset)
 
 ```sparql
 PREFIX : <http://example.org/adr#>
@@ -265,7 +265,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 ---
 
-## Our Classes
+## Classes
 
 - `:ADR` — Architecture Decision Record
 - `:System` — Software system
@@ -275,7 +275,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 ---
 
-## Our Properties
+## Properties
 
 | Property | From | To | Meaning |
 |----------|------|-----|---------|
@@ -289,7 +289,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 ---
 
-## Our Named Graphs
+## Named Graphs
 
 - `:adr-registry` — Official ADR registry (highest quality)
 - `:confluence` — Confluence documentation
@@ -362,22 +362,24 @@ SELECT DISTINCT ?tech WHERE { ?adr :decidesTechnology ?tech }
 | `GRAPH` | Database/schema | Data partition |
 | `.` | End of statement | Pattern separator |
 
-**Key difference**: SPARQL matches **patterns in graphs**, SQL queries **tables with rows**.
+**Key difference**: SPARQL matches patterns in graphs; SQL queries tables with rows.
 
 ---
 
-## Quick Tips
+## Best Practices
 
-✅ **Start simple**: Basic pattern first, then add complexity  
-✅ **Use OPTIONAL**: For incomplete data (Open World Assumption)  
-✅ **Check BOUND()**: To know if optional variables matched  
-✅ **FILTER after pattern**: Define variables before filtering  
-✅ **Use DISTINCT**: For unique results  
-✅ **Name aggregations**: `(COUNT(?x) AS ?count)` not just `COUNT(?x)`  
+**Recommended:**
+- Start simple: basic pattern first, then add complexity
+- Use OPTIONAL for incomplete data (Open World Assumption)
+- Check BOUND() to know if optional variables matched
+- Place FILTER after pattern (variables must be defined)
+- Use DISTINCT for unique results
+- Name aggregations: `(COUNT(?x) AS ?count)` not just `COUNT(?x)`
 
-❌ **Don't assume SQL logic**: Graphs work differently  
-❌ **Don't forget prefixes**: Needed for short notation  
-❌ **Don't overcomplicate**: Simple patterns often work best  
+**Avoid:**
+- Assuming SQL logic: graphs work differently
+- Forgetting prefixes: needed for short notation
+- Overcomplicating: simple patterns often work best
 
 ---
 
@@ -409,4 +411,4 @@ LIMIT 100
 
 ---
 
-**Need more help?** See [EXAMPLES.md](EXAMPLES.md) for working examples.
+See [EXAMPLES.md](EXAMPLES.md) for working examples.

@@ -1,12 +1,12 @@
 # Automation Scripts
 
-Set of bash scripts for managing SPARQL Playground.
+Bash scripts for managing SPARQL Playground.
 
 ---
 
-## 📋 Script List
+## Script Reference
 
-### 🚀 setup.sh
+### setup.sh
 
 **Purpose**: Complete GraphDB setup and data loading.
 
@@ -15,7 +15,7 @@ Set of bash scripts for managing SPARQL Playground.
 ./scripts/setup.sh
 ```
 
-**What it does**:
+**Operations**:
 1. Starts GraphDB container in Docker
 2. Waits for GraphDB ready (up to 60 seconds)
 3. Creates repository `sparql-playground`
@@ -23,7 +23,7 @@ Set of bash scripts for managing SPARQL Playground.
 5. Verifies loading correctness (8 ADRs)
 
 **Modes**:
-- Interactive: asks for confirmation if repository exists
+- Interactive: prompts for confirmation if repository exists
 - Non-interactive: automatically uses existing repository
 
 **Exit codes**:
@@ -32,16 +32,16 @@ Set of bash scripts for managing SPARQL Playground.
 
 ---
 
-### ✅ health-check.sh
+### health-check.sh
 
-**Purpose**: Check system and data status.
+**Purpose**: Verify system and data status.
 
 **Usage**:
 ```bash
 ./scripts/health-check.sh
 ```
 
-**What it checks**:
+**Checks performed**:
 1. Docker daemon running
 2. GraphDB container running
 3. GraphDB HTTP endpoint accessible
@@ -51,7 +51,7 @@ Set of bash scripts for managing SPARQL Playground.
    - 5 Systems
    - 7 Technologies
    - 5 Teams
-  - 8 Named Graphs
+   - 8 Named Graphs
 
 **Exit codes**:
 - `0` — all checks passed
@@ -61,18 +61,18 @@ Set of bash scripts for managing SPARQL Playground.
 ```
 Entity Type          Expected   Actual     Status    
 ────────────────────────────────────────────────────
-ADRs                 8          8          ✓       
-Systems              5          5          ✓       
-Technologies         7          7          ✓       
-Teams                5          5          ✓       
-Named Graphs         8          8          ✓       
+ADRs                 8          8          OK       
+Systems              5          5          OK       
+Technologies         7          7          OK       
+Teams                5          5          OK       
+Named Graphs         8          8          OK       
 
-✓ All checks passed!
+All checks passed.
 ```
 
 ---
 
-### 🧪 test-queries.sh
+### test-queries.sh
 
 **Purpose**: Automated testing of all SPARQL queries.
 
@@ -81,10 +81,10 @@ Named Graphs         8          8          ✓
 ./scripts/test-queries.sh
 ```
 
-**What it does**:
+**Operations**:
 1. Finds all `.sparql` files in `examples/`
 2. Executes each query via HTTP API
-3. Checks response correctness:
+3. Validates response:
    - SELECT: valid JSON with `"head"` and `"bindings"`
    - CONSTRUCT: valid RDF/Turtle
 4. Counts results
@@ -100,21 +100,21 @@ Named Graphs         8          8          ✓
 
 **Example output**:
 ```
-═══ 01-basics ═══
-[01-basics] Testing: hello-world ... ✓
-  → Results: 10 rows
-[01-basics] Testing: list-all-adrs ... ✓
-  → Results: 8 rows
+=== 01-basics ===
+[01-basics] Testing: hello-world ... OK
+  Results: 10 rows
+[01-basics] Testing: list-all-adrs ... OK
+  Results: 8 rows
 
-═══ Test Summary ═══
+=== Test Summary ===
 Total tests:   N
 Passed:        N
 Failed:        0
 
-✓ All queries passed! 🎉
+All queries passed.
 ```
 
-**Using in CI/CD**:
+**CI/CD integration**:
 ```bash
 #!/bin/bash
 ./start.sh
@@ -125,7 +125,7 @@ Failed:        0
 
 ---
 
-### ⏹️ stop.sh
+### stop.sh
 
 **Purpose**: Stop GraphDB container.
 
@@ -134,19 +134,19 @@ Failed:        0
 ./scripts/stop.sh
 ```
 
-**What it does**:
+**Operations**:
 - Stops and removes container
 - Removes Docker network
-- **Preserves data** in Docker volume
+- Preserves data in Docker volume
 
-**Note**: Data is not deleted! For full reset use `reset.sh`.
+**Note**: Data is not deleted. For full reset, use `reset.sh`.
 
 **Exit codes**:
 - `0` — successful stop
 
 ---
 
-### 🔄 reset.sh
+### reset.sh
 
 **Purpose**: Full reset and data reload.
 
@@ -155,12 +155,12 @@ Failed:        0
 ./scripts/reset.sh
 ```
 
-**What it does**:
-1. Asks for user confirmation
+**Operations**:
+1. Prompts for user confirmation
 2. Deletes repository `sparql-playground`
 3. Runs `setup.sh` for full reload
 
-**Warning**: Deletes ALL data! Operation is irreversible.
+**Warning**: Deletes all data. Operation is irreversible.
 
 **Exit codes**:
 - `0` — successful reset and reload
@@ -168,7 +168,7 @@ Failed:        0
 
 ---
 
-## 🔧 Configuration
+## Configuration
 
 All scripts use common variables:
 
@@ -181,13 +181,13 @@ To change port or repository ID, edit the respective scripts.
 
 ---
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### Docker not running
 
 **Error**: `Docker is not running`
 
-**Solution**: Start Docker Desktop or docker daemon
+**Solution**: Start Docker Desktop or docker daemon.
 
 ### GraphDB unavailable
 
@@ -211,22 +211,22 @@ cd infra && docker compose logs
 **Error**: `Repository 'sparql-playground' already exists`
 
 **Solution**:
-- In interactive mode: answer `y` to recreate
-- In non-interactive: script automatically uses existing
-- Or execute: `./scripts/reset.sh`
+- Interactive mode: answer `y` to recreate
+- Non-interactive: script automatically uses existing
+- Alternative: execute `./scripts/reset.sh`
 
 ### Tests failed
 
 **Error**: `Some queries failed!`
 
 **Solution**:
-1. Check all data loaded: `./scripts/health-check.sh`
-2. View error details in `test-queries.sh` output
-3. Try reloading data: `./scripts/reset.sh`
+1. Verify data loaded: `./scripts/health-check.sh`
+2. Review error details in `test-queries.sh` output
+3. Reload data: `./scripts/reset.sh`
 
 ---
 
-## 📝 Development
+## Development
 
 ### Adding New Script
 
@@ -253,14 +253,14 @@ REPO_ID="sparql-playground"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
-# Your logic here
+# Implementation here
 ```
 
 ---
 
-## 🧪 Testing Scripts
+## Verification
 
-To check all scripts:
+To verify all scripts:
 
 ```bash
 # Full cycle
@@ -269,11 +269,11 @@ To check all scripts:
 ./scripts/test-queries.sh
 ./scripts/stop.sh
 
-# Check reset
+# Test reset
 ./scripts/reset.sh  # Confirm 'y'
 ./scripts/health-check.sh
 ```
 
 ---
 
-**All scripts tested and ready to use!** ✅
+All scripts tested and operational.

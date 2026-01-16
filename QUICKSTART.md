@@ -1,40 +1,37 @@
-# 🚀 Quick Start Guide
+# Quick Start Guide
 
-**Get hands-on with SPARQL Playground**
+This guide provides a hands-on introduction to SPARQL Playground.
 
 ---
 
 ## Step 1: Launch
 
-### 🤖 Option A: Automated Setup (recommended)
+### Option A: Automated Setup (recommended)
 
 ```bash
-# Navigate to project directory
 cd /path/to/sparql-playground
-
-# Start playground
 ./start.sh
 ```
 
-Output:
+Expected output:
 ```
-🚀 Starting SPARQL Playground...
-✓ GraphDB is running
-✓ Repository created
-✓ Data loaded
-🎉 Playground ready at http://localhost:7200
+Starting SPARQL Playground...
+GraphDB is running
+Repository created
+Data loaded
+Playground ready at http://localhost:7200
 ```
 
-Setup complete. Proceed to **Step 2**.
+Proceed to Step 2.
 
 ---
 
-### 👐 Option B: Manual Setup via GraphDB Workbench
+### Option B: Manual Setup via GraphDB Workbench
 
 <details>
-<summary>📖 Manual repository configuration (click to expand)</summary>
+<summary>Manual repository configuration</summary>
 
-#### 1.1 Start Docker container
+#### 1.1 Start Docker Container
 
 ```bash
 cd /path/to/sparql-playground/infra
@@ -43,21 +40,21 @@ docker compose up -d
 
 Wait for GraphDB to start (30-60 seconds).
 
-#### 1.2 Create Repository in GraphDB Workbench
+#### 1.2 Create Repository
 
 1. Open GraphDB Workbench: http://localhost:7200
-2. Left menu: **Setup** → **Repositories** → **Create new repository**
-3. Fill in:
+2. Navigate to **Setup** → **Repositories** → **Create new repository**
+3. Configure:
    - Repository ID: `sparql-playground`
    - Repository title: `SPARQL Playground`
    - Ruleset: `RDFS-Plus (Optimized)`
 4. Click **Create**
 
-#### 1.3 Load dataset via GraphDB Workbench
+#### 1.3 Load Dataset
 
-1. Select `sparql-playground` in dropdown (top right)
-2. Left menu: **Import** → **RDF** → **Upload RDF files**
-3. Upload files from `data/` folder **strictly in order**:
+1. Select `sparql-playground` in dropdown
+2. Navigate to **Import** → **RDF** → **Upload RDF files**
+3. Upload files from `data/` folder in order:
 
 ```
 1. prefixes.ttl
@@ -69,18 +66,18 @@ Wait for GraphDB to start (30-60 seconds).
 7. adr-people-rdfstar.trig
 ```
 
-For each file click **Import** and wait for "Imported successfully".
+For each file, click **Import** and wait for confirmation.
 
 #### 1.4 Verify
 
-Execute on **SPARQL** tab:
+Execute in **SPARQL** tab:
 
 ```sparql
 PREFIX : <http://example.org/adr#>
 SELECT (COUNT(*) as ?count) WHERE { ?s a :ADR }
 ```
 
-Should return: `count = 8` ✅
+Expected result: `count = 8`
 
 </details>
 
@@ -88,20 +85,20 @@ Should return: `count = 8` ✅
 
 ## Step 2: Open GraphDB
 
-1. Open browser: **http://localhost:7200**
+1. Open browser: http://localhost:7200
 2. Select **SPARQL** in left menu
-3. Select repository in dropdown: **sparql-playground**
+3. Select repository: **sparql-playground**
 
 The SPARQL editor displays three panels:
-- **Left** — query
-- **Right** — result
-- **Bottom** — saved queries
+- **Left**: Query editor
+- **Right**: Results
+- **Bottom**: Saved queries
 
 ---
 
 ## Step 3: Hello World
 
-Copy and execute the first query:
+Execute the following query:
 
 ```sparql
 PREFIX : <http://example.org/adr#>
@@ -115,18 +112,18 @@ WHERE {
 ORDER BY ?adr
 ```
 
-**Click Execute** (or Ctrl+Enter)
+Press **Ctrl+Enter** to execute.
 
-✅ Result: 8 architectural decisions
+Expected result: 8 architectural decisions
 
 **Query breakdown:**
 - `?adr a :ADR` — find all resources of type ADR
-- `rdfs:label ?label` — get their labels
-- `ORDER BY ?adr` — sort
+- `rdfs:label ?label` — retrieve their labels
+- `ORDER BY ?adr` — sort results
 
 ---
 
-## Step 4: First Filter
+## Step 4: Filtering
 
 Find decisions with high confidence (> 0.9):
 
@@ -145,11 +142,11 @@ WHERE {
 ORDER BY DESC(?confidence)
 ```
 
-✅ Result: 3-4 ADRs with confidence > 0.9
+Expected result: 3-4 ADRs with confidence > 0.9
 
-**New concepts:**
+**Key concepts:**
 - `FILTER(?confidence > 0.9)` — filtering condition
-- `DESC(?confidence)` — sort descending
+- `DESC(?confidence)` — descending sort
 
 ---
 
@@ -171,20 +168,20 @@ GROUP BY ?statusLabel
 ORDER BY DESC(?count)
 ```
 
-✅ Result: Statistics by status (Accepted, Deprecated, etc.)
+Expected result: Statistics by status (Accepted, Deprecated, etc.)
 
-**New concepts:**
-- `COUNT(?adr)` — counting
-- `GROUP BY` — grouping
-- `AS ?count` — variable renaming
+**Key concepts:**
+- `COUNT(?adr)` — aggregation function
+- `GROUP BY` — grouping clause
+- `AS ?count` — variable aliasing
 
 ---
 
-## 🔥 Step 6: SPARQL Uniqueness — Property Paths
+## Step 6: Property Paths
 
-**Demonstrating capabilities that require recursive CTEs in SQL:**
+**This capability requires recursive CTEs in SQL.**
 
-Find ALL transitive dependencies of Kubernetes:
+Find all transitive dependencies of Kubernetes:
 
 ```sparql
 PREFIX : <http://example.org/adr#>
@@ -193,7 +190,6 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ?dependency ?depLabel
 WHERE {
     # Operator + means "one or more steps"
-    # Automatically finds transitive dependencies
     :Kubernetes :dependsOn+ ?dependency .
     
     OPTIONAL { ?dependency rdfs:label ?depLabel }
@@ -201,12 +197,11 @@ WHERE {
 ORDER BY ?depLabel
 ```
 
-✅ Result: Docker, Linux, etcd, Go, Kernel, ContainerRuntime...
+Expected result: Docker, Linux, etcd, Go, Kernel, ContainerRuntime...
 
-**🔥 SQL equivalent requires recursive CTEs (20+ lines):**
+**SQL equivalent requires recursive CTEs (20+ lines):**
 
 ```sql
--- SQL equivalent (complex!)
 WITH RECURSIVE deps AS (
   SELECT tech_id, depends_on_id, 1 as level
   FROM dependencies WHERE tech_id = 'kubernetes'
@@ -218,15 +213,13 @@ WITH RECURSIVE deps AS (
 SELECT * FROM deps;
 ```
 
-**SPARQL achieves this in one line using the `+` operator** 🚀
+SPARQL achieves this in one line using the `+` operator.
 
 ---
 
-## 🔥 Step 7: Reification — Metadata about Facts
+## Step 7: Reification — Metadata about Facts
 
-**Unique RDF capability: metadata about triples**
-
-Find out WHO made the decision, WHEN and WITH WHAT CONFIDENCE:
+Find out who made each decision, when, and with what confidence:
 
 ```sparql
 PREFIX : <http://example.org/adr#>
@@ -235,12 +228,10 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?adrLabel ?techLabel ?personName ?date ?confidence
 WHERE {
-    # Reified statement - statement about decision
     ?stmt a rdf:Statement ;
           rdf:subject ?adr ;
           rdf:predicate :decidesTechnology ;
           rdf:object ?tech ;
-          # Metadata about the statement
           :statedBy ?person ;
           :statedOn ?date ;
           :confidence ?confidence .
@@ -252,17 +243,15 @@ WHERE {
 ORDER BY DESC(?date)
 ```
 
-✅ Result: Who, when and with what confidence made each decision
+Expected result: Decision metadata including author, date, and confidence level.
 
-**🔥 SQL requires separate statement_metadata tables with foreign keys**
-
-RDF provides native support for metadata about triples.
+SQL requires separate metadata tables with foreign keys. RDF provides native support for metadata about triples.
 
 ---
 
-## 🔥 Step 8: RDF-star — Quoted Triples
+## Step 8: RDF-star — Quoted Triples
 
-**Same metadata with less boilerplate (SPARQL\*)**
+Same metadata with less boilerplate using SPARQL*:
 
 ```sparql
 PREFIX : <http://example.org/adr#>
@@ -284,15 +273,15 @@ WHERE {
 ORDER BY DESC(?date)
 ```
 
-✅ Result: Same insight as reification, with shorter syntax
+Expected result: Same insight as reification, with shorter syntax.
 
-**Note**: Requires RDF-star / SPARQL* support (GraphDB 10.7 supports this).
+**Note**: Requires RDF-star/SPARQL* support (GraphDB 10.7+).
 
 ---
 
-## 🔥 Step 9: CONSTRUCT — Generating New Graph
+## Step 9: CONSTRUCT — Generating New Graphs
 
-**Create a new RDF graph from existing data**
+Create a new RDF graph from existing data:
 
 ```sparql
 PREFIX : <http://example.org/adr#>
@@ -312,24 +301,22 @@ WHERE {
 }
 ```
 
-✅ Result: **New RDF graph** (not a table!)
+Expected result: New RDF graph (not a table).
 
-**Switch view to "Raw Response"** to see RDF triples:
+Switch view to **Raw Response** to see RDF triples:
 ```turtle
 :OrderService :uses :Kafka .
 :OrderService rdfs:label "Order Processing Service" .
 :Kafka rdfs:label "Apache Kafka" .
 ```
 
-**🔥 SQL CREATE VIEW provides limited structural transformation**
-
-CONSTRUCT generates entirely new graphs with arbitrary structure.
+CONSTRUCT generates new graphs with arbitrary structure, unlike SQL's limited CREATE VIEW.
 
 ---
 
-## 🔥 Step 10: Named Graphs — Data Provenance
+## Step 10: Named Graphs — Data Provenance
 
-**Where did the data come from? Named graphs know the answer!**
+Query data with source tracking:
 
 ```sparql
 PREFIX : <http://example.org/adr#>
@@ -337,7 +324,6 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?graph ?adr ?label
 WHERE {
-    # Specify which named graph to query
     GRAPH ?graph {
         ?adr a :ADR ;
              rdfs:label ?label .
@@ -346,33 +332,33 @@ WHERE {
 ORDER BY ?graph ?adr
 ```
 
-✅ Result: ADRs with source indication (adr-registry, confluence, interview-notes)
+Expected result: ADRs with source indication (adr-registry, confluence, interview-notes)
 
-**What's new?**
-- `GRAPH ?graph { ... }` — query to named graph
-- Data provenance built into RDF
-
----
-
-## 📊 What you learned
-
-| Capability | SQL Complexity | In SPARQL |
-|------------|----------------|-----------|
-| ✅ Basic SELECT | Simple SELECT | Triple patterns |
-| ✅ Filtering | WHERE clause | FILTER |
-| ✅ Aggregation | GROUP BY | GROUP BY |
-| 🔥 **Transitive queries** | **Recursive CTE (20+ lines)** | **`:dependsOn+` (1 line)** |
-| 🔥 **Metadata about facts** | **Separate table + FK** | **Reification (natural)** |
-| 🔥 **Quoted triples** | **Separate table + FK** | **RDF-star (compact)** |
-| 🔥 **Graph generation** | **CREATE VIEW (limited)** | **CONSTRUCT (new structure)** |
-| 🔥 **Provenance** | **Separate tables** | **Named graphs (built-in)** |
+**Key concept:**
+- `GRAPH ?graph { ... }` — query named graph with variable binding
+- Data provenance is built into RDF
 
 ---
 
-## 🎯 Next Steps
+## Summary
 
-### Option 1: Quick start with key examples (recommended)
-Open **[EXAMPLES.md](EXAMPLES.md)** and choose examples by category:
+| Capability | SQL Complexity | SPARQL |
+|------------|----------------|--------|
+| Basic SELECT | Simple SELECT | Triple patterns |
+| Filtering | WHERE clause | FILTER |
+| Aggregation | GROUP BY | GROUP BY |
+| **Transitive queries** | Recursive CTE (20+ lines) | `:dependsOn+` (1 line) |
+| **Metadata about facts** | Separate table + FK | Reification |
+| **Quoted triples** | Separate table + FK | RDF-star |
+| **Graph generation** | CREATE VIEW (limited) | CONSTRUCT |
+| **Provenance** | Separate tables | Named graphs |
+
+---
+
+## Next Steps
+
+### Option 1: Key Examples
+Open [EXAMPLES.md](EXAMPLES.md) and explore:
 - 05-property-paths/ — graph navigation
 - 06-reification/ — metadata about facts
 - 10-rdf-star/ — quoted triples
@@ -380,39 +366,39 @@ Open **[EXAMPLES.md](EXAMPLES.md)** and choose examples by category:
 - 08-construct/ — graph generation
 - 09-advanced/ — federated queries
 
-### Option 2: Systematic study
-Open **[EXAMPLES.md](EXAMPLES.md)** and go through examples sequentially from 01-basics to 10-rdf-star.
+### Option 2: Systematic Study
+Progress through [EXAMPLES.md](EXAMPLES.md) sequentially from 01-basics to 10-rdf-star.
 
-### Option 3: Create your own queries
-Use examples as templates to experiment with the dataset.
+### Option 3: Experimentation
+Use examples as templates to create custom queries.
 
 ---
 
-## 💡 Useful Tips
+## Tips
 
-### Keyboard shortcuts in GraphDB
+### Keyboard Shortcuts
 - `Ctrl+Enter` — execute query
 - `Ctrl+/` — comment line
 - `Ctrl+Space` — prefix autocomplete
 
-### Result display modes
+### Result Display Modes
 - **Table** — tabular view (default)
 - **Raw Response** — RDF format (for CONSTRUCT)
 - **Pivot Table** — pivot table
 - **Google Charts** — charts (for COUNT/AVG)
 
-### Query debugging
+### Query Debugging
 1. Start with simple pattern
 2. Add conditions gradually
 3. Use LIMIT 10 for large results
 4. Check intermediate results
 
-### Cheat Sheet
-Open **[SPARQL-CHEATSHEET.md](SPARQL-CHEATSHEET.md)** — quick syntax reference.
+### Reference
+See [SPARQL-CHEATSHEET.md](SPARQL-CHEATSHEET.md) for syntax reference.
 
 ---
 
-## 🛠 Playground Management
+## Environment Management
 
 ```bash
 # Stop GraphDB (data preserved)
@@ -430,39 +416,35 @@ Open **[SPARQL-CHEATSHEET.md](SPARQL-CHEATSHEET.md)** — quick syntax reference
 
 ---
 
-## ❓ FAQ
+## FAQ
 
-**Q: How to check everything works correctly?**
-A: Run `./scripts/health-check.sh` to check system and `./scripts/test-queries.sh` to test all SPARQL queries
+**Q: How to verify correct operation?**
+A: Run `./scripts/health-check.sh` for system check and `./scripts/test-queries.sh` for query testing.
 
 **Q: Query returns no results**
-A: Check that repository **sparql-playground** is selected in dropdown
+A: Verify repository **sparql-playground** is selected in dropdown.
 
-**Q: GraphDB doesn't start**
+**Q: GraphDB fails to start**
 A: Check Docker is running: `docker ps`
 
 **Q: Error "repository not found"**
-A: Run `./scripts/setup.sh` to create repository
+A: Run `./scripts/setup.sh` to create repository.
 
-**Q: Want to start from scratch**
+**Q: Need to start from scratch**
 A: Execute `./scripts/reset.sh`, then `./start.sh`
 
 **Q: How to test all examples automatically?**
-A: Run `./scripts/test-queries.sh` — script will execute all queries and show results
+A: Run `./scripts/test-queries.sh`
 
 ---
 
-## 🎉 Completion
+## Conclusion
 
-You completed quick start in SPARQL Playground and saw **unique capabilities** not found in SQL:
+This guide demonstrated unique SPARQL capabilities not available in SQL:
 
-✅ Property paths for graph navigation  
-✅ Reification for metadata about facts  
-✅ CONSTRUCT for generating new graphs  
-✅ Named graphs for provenance  
+- Property paths for graph navigation
+- Reification for metadata about facts
+- CONSTRUCT for generating new graphs
+- Named graphs for provenance
 
-**Continue learning** → [EXAMPLES.md](EXAMPLES.md) 🚀
-
----
-
-**Need help?** Read comments in examples — they provide detailed explanations.
+Continue learning: [EXAMPLES.md](EXAMPLES.md)
