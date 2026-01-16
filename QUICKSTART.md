@@ -57,13 +57,14 @@ Wait for GraphDB to start (30-60 seconds).
 3. Upload files from `data/` folder in order:
 
 ```
-1. prefixes.ttl
-2. adr-core.ttl
-3. adr-ontology.ttl
-4. technology-dependencies.ttl
-5. adr-provenance.trig
-6. adr-people-reified.trig
-7. adr-people-rdfstar.trig
+prefixes.ttl
+adr-core.ttl
+adr-ontology.ttl
+adr-shapes.ttl
+technology-dependencies.ttl
+adr-provenance.trig
+adr-people-reified.trig
+adr-people-rdfstar.trig
 ```
 
 For each file, click **Import** and wait for confirmation.

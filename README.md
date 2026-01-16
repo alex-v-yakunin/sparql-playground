@@ -57,13 +57,14 @@ Wait for startup: http://localhost:7200
 4. Upload files from `data/` folder in order:
 
 ```
-1. data/prefixes.ttl
-2. data/adr-core.ttl
-3. data/adr-ontology.ttl
-4. data/technology-dependencies.ttl
-5. data/adr-provenance.trig
-6. data/adr-people-reified.trig
-7. data/adr-people-rdfstar.trig
+data/prefixes.ttl
+data/adr-core.ttl
+data/adr-ontology.ttl
+data/adr-shapes.ttl
+data/technology-dependencies.ttl
+data/adr-provenance.trig
+data/adr-people-reified.trig
+data/adr-people-rdfstar.trig
 ```
 
 5. For each file, click **Import** and wait for confirmation.
